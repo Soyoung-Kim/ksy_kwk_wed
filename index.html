@@ -1,376 +1,229 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
-    <title>소영 ❤ 우경 결혼합니다</title>
-    <meta
-      name="description"
-      content="2026년 11월 8일 일요일 오전 11시 30분 농심웨딩컨벤션"
-    />
 
-    <meta property="og:title" content="소영 ❤ 우경 결혼합니다" />
-    <meta
-      property="og:description"
-      content="2026년 11월 8일 일요일 오전 11시 30분 농심웨딩컨벤션"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="./assets/photos/main_logo.png" />
-    <meta name="theme-color" content="#fbf6f1" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <!-- 최상단 인트로 -->
-    <section class="intro-stage" id="intro-stage">
-      <div class="intro-sticky">
-        <div class="intro-media" id="intro-media">
-          <img
-            src="./assets/photos/main.jpg"
-            alt="웨딩 메인 사진"
-            class="intro-image"
-          />
-          <div class="intro-overlay"></div>
+  <title>소영 ❤ 우경 결혼합니다</title>
+  <meta name="description" content="2026년 11월 8일 일요일 오전 11시 30분 농심웨딩컨벤션" />
+
+  <meta property="og:title" content="소영 ❤ 우경 결혼합니다" />
+  <meta property="og:description" content="2026년 11월 8일 일요일 오전 11시 30분 농심웨딩컨벤션" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/photos/main_logo.png" />
+  <meta name="theme-color" content="#fbf6f1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+
+  <link rel="stylesheet" href="./styles/style.css" />
+</head>
+
+<body>
+  <section class="intro-stage" id="intro-stage">
+    <div class="intro-sticky">
+      <div class="intro-media" id="intro-media">
+        <img src="./assets/photos/main_logo.png" alt="웨딩 인트로 이미지" class="intro-image" />
+        <div class="intro-overlay"></div>
+      </div>
+
+      <div class="intro-copy" id="intro-copy">
+        <p class="intro-kicker">Wedding Invitation</p>
+        <div class="intro-flower">✿</div>
+
+        <h1 class="intro-title">저희의 예식에<br />초대 드립니다.</h1>
+        <p class="intro-subtitle">소중한 날, 따뜻한 마음으로 함께해 주세요</p>
+
+        <div class="intro-countdown-wrap">
+          <p class="intro-countdown-caption">예식까지 남은 시간</p>
+          <div class="intro-countdown-grid">
+            <div class="intro-countdown-item"><strong id="countdown-days">0</strong><span>일</span></div>
+            <div class="intro-countdown-item"><strong id="countdown-hours">00</strong><span>시간</span></div>
+            <div class="intro-countdown-item"><strong id="countdown-minutes">00</strong><span>분</span></div>
+            <div class="intro-countdown-item"><strong id="countdown-seconds">00</strong><span>초</span></div>
+          </div>
+          <p class="intro-dday-text" id="countdown-dday">소영 ❤ 우경의 결혼식이 D-0일 남았습니다.</p>
         </div>
 
-        <div class="intro-copy" id="intro-copy">
-          <p class="intro-kicker">Wedding Invitation</p>
-          <div class="intro-flower">✿</div>
+        <div class="intro-scroll"><span></span><em>scroll</em></div>
+      </div>
+    </div>
+  </section>
 
-          <h1 class="intro-title">
-            저희의 예식에<br />
-            초대 드립니다.
-          </h1>
+  <div class="page-shell">
+    <section class="hero-card">
+      <p class="hero-eyebrow">Wedding Invitation</p>
+      <div class="hero-flower">✿</div>
+      <h1 class="hero-title">소영 <span>❤</span> 우경</h1>
+      <p class="hero-date">2026.11.08 SUN AM 11:30</p>
+      <p class="hero-place">농심웨딩컨벤션</p>
+    </section>
 
-          <p class="intro-subtitle">
-            소중한 날, 따뜻한 마음으로 함께해 주세요
-          </p>
+    <section class="section">
+      <div class="section-header center">
+        <p class="section-kicker">Our Moment</p>
+        <h2>함께한 순간</h2>
+      </div>
 
-          <!-- 실시간 카운트다운 -->
-          <div class="intro-countdown-wrap" aria-label="예식까지 남은 시간">
-            <p class="intro-countdown-caption">예식까지 남은 시간</p>
+      <div class="slider" id="photo-slider">
+        <div class="slides" id="slides"></div>
+        <button class="slide-nav prev" id="slide-prev" type="button" aria-label="이전 사진">‹</button>
+        <button class="slide-nav next" id="slide-next" type="button" aria-label="다음 사진">›</button>
+        <div class="slide-dots" id="slide-dots"></div>
+      </div>
+    </section>
 
-            <div class="intro-countdown-grid">
-              <div class="intro-countdown-item">
-                <strong id="countdown-days">0</strong>
-                <span>일</span>
-              </div>
-              <div class="intro-countdown-item">
-                <strong id="countdown-hours">00</strong>
-                <span>시간</span>
-              </div>
-              <div class="intro-countdown-item">
-                <strong id="countdown-minutes">00</strong>
-                <span>분</span>
-              </div>
-              <div class="intro-countdown-item">
-                <strong id="countdown-seconds">00</strong>
-                <span>초</span>
-              </div>
-            </div>
+    <section class="section">
+      <div class="section-header center">
+        <p class="section-kicker">Gallery</p>
+        <h2>사진첩</h2>
+      </div>
+      <div class="gallery" id="gallery"></div>
+    </section>
 
-            <p class="intro-dday-text" id="countdown-dday">
-              소영 ❤ 우경의 결혼식이 D-0일 남았습니다.
-            </p>
-          </div>
+    <section class="section">
+      <div class="section-header">
+        <p class="section-kicker">Location</p>
+        <h2>예식 안내</h2>
+      </div>
 
-          <div class="intro-scroll">
-            <span></span>
-            <em>SCROLL</em>
-          </div>
+      <div class="detail-list">
+        <div class="detail-item">
+          <span class="detail-label">일시</span>
+          <p>2026년 11월 8일 일요일 오전 11시 30분</p>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">장소</span>
+          <p>농심웨딩컨벤션</p>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">주소</span>
+          <p>서울 동작구 여의대방로 112</p>
+        </div>
+      </div>
+
+      <div class="primary-actions">
+        <a class="button button-primary"
+          href="https://www.google.com/maps/dir/?api=1&destination=37.4965688,126.9187584&travelmode=driving"
+          target="_blank" rel="noreferrer">
+          지도 보기
+        </a>
+        <button class="button button-secondary" type="button" data-copy="서울 동작구 여의대방로 112">
+          주소 복사
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-section-title">내비게이션 바로가기</p>
+        <div class="nav-grid">
+          <button class="nav-card nav-google" id="nav-google" type="button"><span
+              class="nav-app">Google</span><strong>구글 지도</strong></button>
+          <button class="nav-card nav-naver" id="nav-naver" type="button"><span class="nav-app">Naver</span><strong>네이버
+              지도</strong></button>
+          <button class="nav-card nav-kakao" id="nav-kakao" type="button"><span
+              class="nav-app">Kakao</span><strong>카카오맵</strong></button>
+          <button class="nav-card nav-tmap" id="nav-tmap" type="button"><span class="nav-app">T map</span><strong>티맵
+              길안내</strong></button>
         </div>
       </div>
     </section>
 
-    <div class="page-shell">
-      <header class="hero-card">
-        <p class="hero-eyebrow">Wedding Invitation</p>
-        <div class="hero-flower">✿</div>
-        <h1 class="hero-title">소영 <span>❤</span> 우경</h1>
-        <p class="hero-date">2026.11.08 SUN AM 11:30</p>
-        <p class="hero-place">농심웨딩컨벤션</p>
-      </header>
-
-      <section class="section slider-card">
-        <div class="section-header center">
-          <p class="section-kicker">Our Moments</p>
-          <h2>우리의 순간</h2>
-        </div>
-
-        <div class="slider" id="photo-slider" aria-label="웨딩 사진 슬라이드">
-          <div class="slides" id="slides"></div>
-
-          <button
-            class="slide-nav prev"
-            id="slide-prev"
-            type="button"
-            aria-label="이전 사진"
-          >
-            ‹
-          </button>
-          <button
-            class="slide-nav next"
-            id="slide-next"
-            type="button"
-            aria-label="다음 사진"
-          >
-            ›
-          </button>
-
-          <div class="slide-dots" id="slide-dots"></div>
-        </div>
-      </section>
-
-      <section class="section intro-card">
-        <div class="section-header center">
-          <p class="section-kicker">With Love</p>
-          <h2>초대합니다</h2>
-        </div>
-
-        <p class="quote">
-          서로의 계절이 되어<br />
-          평생을 함께 걸어가려 합니다.
+    <section id="guestbook" class="section guestbook-section">
+      <div class="section-header">
+        <p class="section-kicker">Guestbook</p>
+        <h2 class="section-title">축하의 마음을 남겨주세요</h2>
+        <p class="section-description">
+          소중한 한마디를 남겨주시면 오래도록 간직하겠습니다.
         </p>
+      </div>
 
-        <div class="family-block">
-          <p><strong>신랑</strong> 김우경 · 김아버지 · 이어머니의 아들</p>
-          <p><strong>신부</strong> 김소영 · 김아버지 · 김어머니의 딸</p>
-        </div>
-      </section>
-
-      <section class="section details-card">
-        <div class="section-header">
-          <p class="section-kicker">Wedding Day</p>
-          <h2>예식 안내</h2>
-        </div>
-
-        <div class="detail-list">
-          <div class="detail-item">
-            <span class="detail-label">일시</span>
-            <p>2026년 11월 8일 일요일 오전 11시 30분</p>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">장소</span>
-            <p>농심웨딩컨벤션</p>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-label">주소</span>
-            <p id="venue-address">서울 동작구 여의대방로 112, 농심관 지하 1층</p>
-          </div>
-        </div>
-
-        <div class="primary-actions">
-          <a
-            class="button button-primary"
-            href="https://naver.me/xyT3YgW7"
-            target="_blank"
-            rel="noreferrer"
-          >
-            지도 보기
-          </a>
-
-          <button
-            class="button button-secondary copy-button"
-            type="button"
-            data-copy="서울 동작구 여의대방로 112, 농심관 지하 1층"
-          >
-            주소 복사
+      <div class="guestbook-box">
+        <div class="guestbook-toolbar">
+          <button type="button" id="guestbook-open-btn" class="button button-primary guestbook-open-btn">
+            방명록 작성
           </button>
         </div>
 
-        <div class="nav-section">
-          <p class="nav-section-title">빠른 길안내</p>
+        <div id="guestbook-form-panel" class="guestbook-form-panel" hidden>
+          <div class="guestbook-form-card">
+            <h3 id="guestbook-form-title" class="guestbook-form-title">
+              방명록 남기기
+            </h3>
+            <p id="guestbook-form-caption" class="guestbook-form-caption">
+              축하 메시지를 남겨 주세요.
+            </p>
 
-          <div class="nav-grid">
-            <a
-              class="nav-card nav-google"
-              href="https://www.google.com/maps/dir/?api=1&destination=37.4965688,126.9187584&travelmode=driving"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span class="nav-app">Google Maps</span>
-              <strong>구글맵 길안내</strong>
-            </a>
+            <form id="guestbook-form" class="guestbook-form">
+              <input type="hidden" id="guestbook-edit-id" value="" />
 
-            <a
-              class="nav-card nav-tmap"
-              href="tmap://route?goalname=농심웨딩컨벤션&goalx=126.9187584&goaly=37.4965688"
-            >
-              <span class="nav-app">TMAP</span>
-              <strong>티맵 길안내</strong>
-            </a>
-
-            <a
-              class="nav-card nav-kakao"
-              href="https://map.kakao.com/link/to/농심웨딩컨벤션,37.4965688,126.9187584"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span class="nav-app">KakaoMap</span>
-              <strong>카카오맵 길안내</strong>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section calendar-card">
-        <div class="section-header center">
-          <p class="section-kicker">Special Date</p>
-          <h2>예식일</h2>
-        </div>
-
-        <div class="calendar-box">
-          <div class="calendar-header">
-            <span>2026년 11월</span>
-          </div>
-
-          <div class="calendar-grid calendar-week">
-            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span
-            ><span>금</span><span>토</span>
-          </div>
-
-          <div class="calendar-grid calendar-days">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span
-            ><span>6</span><span>7</span>
-            <span class="day highlight">8</span><span>9</span><span>10</span
-            ><span>11</span><span>12</span><span>13</span><span>14</span>
-            <span>15</span><span>16</span><span>17</span><span>18</span
-            ><span>19</span><span>20</span><span>21</span>
-            <span>22</span><span>23</span><span>24</span><span>25</span
-            ><span>26</span><span>27</span><span>28</span>
-            <span>29</span><span>30</span><span class="muted"></span
-            ><span class="muted"></span><span class="muted"></span
-            ><span class="muted"></span><span class="muted"></span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section gallery-card">
-        <div class="section-header center">
-          <p class="section-kicker">Gallery</p>
-          <h2>갤러리</h2>
-        </div>
-
-        <div id="gallery" class="gallery"></div>
-      </section>
-
-      <section class="section contacts-card">
-        <div class="section-header">
-          <p class="section-kicker">Contact</p>
-          <h2>연락하기</h2>
-        </div>
-
-        <div class="contact-list">
-          <div class="contact-card">
-            <div class="contact-top">
-              <div>
-                <span class="contact-role">신랑</span>
-                <strong class="contact-name">김우경</strong>
+              <div class="tag-grid" id="guestbook-side-picker">
+                <button type="button" class="tag-button active" data-side="groom">
+                  신랑 지인
+                </button>
+                <button type="button" class="tag-button" data-side="bride">
+                  신부 지인
+                </button>
               </div>
-              <p class="contact-number">010-3202-8328</p>
-            </div>
 
-            <div class="contact-actions">
-              <a class="button button-primary" href="tel:01032028328">전화하기</a>
-              <a class="button button-secondary" href="sms:01032028328">문자하기</a>
-              <button
-                class="button button-secondary copy-button"
-                type="button"
-                data-copy="010-3202-8328"
-              >
-                번호 복사
-              </button>
-            </div>
-          </div>
+              <label class="guestbook-field">
+                <span class="guestbook-label">표시할 이름</span>
+                <input id="guestbook-name" class="guestbook-input" type="text" maxlength="20" placeholder="성함을 남겨주세요"
+                  required />
+              </label>
 
-          <div class="contact-card">
-            <div class="contact-top">
-              <div>
-                <span class="contact-role">신부</span>
-                <strong class="contact-name">김소영</strong>
+              <label class="guestbook-field">
+                <span class="guestbook-label">축하 메시지</span>
+                <textarea id="guestbook-message" class="guestbook-textarea" rows="5" maxlength="300"
+                  placeholder="저희의 결혼을 축하해주세요" required></textarea>
+              </label>
+
+              <label class="guestbook-field">
+                <span class="guestbook-label">비밀번호</span>
+                <input id="guestbook-password" class="guestbook-input" type="password" minlength="4" maxlength="20"
+                  placeholder="수정/삭제에 사용할 비밀번호" required />
+              </label>
+
+              <p class="guestbook-help">
+                비밀번호는 브라우저에 저장되지 않으며, 수정/삭제 시 다시 입력해야 합니다.
+              </p>
+
+              <div class="guestbook-actions">
+                <button class="button button-secondary" type="button" id="guestbook-cancel-btn">
+                  취소
+                </button>
+                <button class="button button-primary" type="submit" id="guestbook-submit-btn">
+                  작성 완료
+                </button>
               </div>
-              <p class="contact-number">010-4112-6269</p>
-            </div>
-
-            <div class="contact-actions">
-              <a class="button button-primary" href="tel:01041126269">전화하기</a>
-              <a class="button button-secondary" href="sms:01041126269">문자하기</a>
-              <button
-                class="button button-secondary copy-button"
-                type="button"
-                data-copy="010-4112-6269"
-              >
-                번호 복사
-              </button>
-            </div>
+            </form>
           </div>
         </div>
-      </section>
 
-      <section class="section account-card">
-        <div class="section-header">
-          <p class="section-kicker">Account</p>
-          <h2>마음 전하실 곳</h2>
+        <div class="guestbook-status" id="guestbook-status">
+          방명록을 불러오는 중입니다.
         </div>
 
-        <div class="account-list">
-          <div class="account-item">
-            <div class="account-info">
-              <span class="account-side">신랑측</span>
-              <p>국민은행 123456-78-123456 김우경</p>
-            </div>
+        <div class="guestbook-list" id="guestbook-list"></div>
+      </div>
+    </section>
 
-            <button
-              class="button button-secondary button-small copy-button"
-              type="button"
-              data-copy="국민은행 123456-78-123456 김우경"
-            >
-              계좌 복사
-            </button>
-          </div>
 
-          <div class="account-item">
-            <div class="account-info">
-              <span class="account-side">신부측</span>
-              <p>우리은행 1002-283-110119 김소영</p>
-            </div>
+    <footer class="footer">소영 ❤ 우경의 결혼식에 함께해 주셔서 감사합니다.</footer>
+  </div>
 
-            <button
-              class="button button-secondary button-small copy-button"
-              type="button"
-              data-copy="우리은행 1002-283-110119 김소영"
-            >
-              계좌 복사
-            </button>
-          </div>
-        </div>
-      </section>
+  <div class="lightbox hidden" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" type="button" aria-label="닫기">×</button>
+    <img id="lightbox-image" src="" alt="확대 이미지" />
+  </div>
 
-      <footer class="footer">
-        <p>소중한 걸음으로 함께해 주셔서 감사합니다.</p>
-      </footer>
-    </div>
+  <div class="toast" id="toast">복사되었습니다.</div>
 
-    <div id="lightbox" class="lightbox hidden" aria-hidden="true">
-      <button id="lightbox-close" class="lightbox-close" aria-label="닫기">
-        ×
-      </button>
-      <img id="lightbox-image" alt="확대된 사진" />
-    </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="./scripts/main.js"></script>
+</body>
 
-    <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
-
-    <script src="./script.js"></script>
-  </body>
 </html>

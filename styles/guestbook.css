@@ -1,0 +1,270 @@
+#guestbook[hidden],
+[hidden] {
+  display: none !important;
+}
+
+.guestbook-section {
+  margin-top: 28px;
+}
+
+.guestbook-box {
+  display: grid;
+  gap: 16px;
+}
+
+.guestbook-toolbar {
+  display: flex;
+  justify-content: center;
+}
+
+.guestbook-open-btn {
+  min-width: 160px;
+}
+
+.guestbook-form-panel {
+  display: block;
+}
+
+.guestbook-form-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(210, 188, 194, 0.45);
+  border-radius: 22px;
+  padding: 20px 16px 18px;
+  box-shadow: 0 14px 34px rgba(83, 57, 68, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.guestbook-form-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-strong, #372a30);
+}
+
+.guestbook-form-caption {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text, #5b4a52);
+}
+
+.guestbook-form {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tag-button {
+  appearance: none;
+  border: 1px solid rgba(185, 170, 213, 0.55);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text, #5b4a52);
+  border-radius: 999px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.tag-button.active {
+  background: linear-gradient(135deg, #c9b0bd, #b8aed5);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(133, 102, 118, 0.18);
+}
+
+.guestbook-field {
+  display: grid;
+  gap: 7px;
+}
+
+.guestbook-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-strong, #372a30);
+}
+
+.guestbook-input,
+.guestbook-textarea {
+  width: 100%;
+  border: 1px solid rgba(205, 188, 196, 0.75);
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 16px;
+  padding: 13px 14px;
+  font: inherit;
+  color: var(--text-strong, #372a30);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guestbook-input:focus,
+.guestbook-textarea:focus {
+  border-color: rgba(184, 174, 213, 0.9);
+  box-shadow: 0 0 0 4px rgba(184, 174, 213, 0.14);
+}
+
+.guestbook-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.65;
+}
+
+.guestbook-help {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(91, 74, 82, 0.76);
+}
+
+.guestbook-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.guestbook-actions .button {
+  flex: 1;
+}
+
+.guestbook-status {
+  min-height: 22px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text, #5b4a52);
+}
+
+.guestbook-status.is-loading {
+  color: #866874;
+}
+
+.guestbook-status.is-success {
+  color: #6e8c76;
+}
+
+.guestbook-status.is-error {
+  color: #b05874;
+}
+
+.guestbook-list {
+  display: grid;
+  gap: 12px;
+}
+
+.guestbook-empty-card,
+.guestbook-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(212, 191, 198, 0.42);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 12px 28px rgba(83, 57, 68, 0.06);
+}
+
+.guestbook-empty-card {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text, #5b4a52);
+}
+
+.guestbook-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guestbook-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.guestbook-side {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.guestbook-side--groom {
+  background: rgba(185, 170, 213, 0.2);
+  color: #6f5d8e;
+}
+
+.guestbook-side--bride {
+  background: rgba(217, 168, 183, 0.2);
+  color: #9c667c;
+}
+
+.guestbook-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-strong, #372a30);
+}
+
+.guestbook-date {
+  font-size: 12px;
+  color: rgba(91, 74, 82, 0.7);
+  white-space: nowrap;
+}
+
+.guestbook-message {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text, #5b4a52);
+  word-break: keep-all;
+}
+
+.guestbook-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.guestbook-card-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(239, 232, 235, 0.95);
+  color: var(--text-strong, #372a30);
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guestbook-card-btn.danger {
+  background: rgba(245, 223, 230, 0.95);
+  color: #b05874;
+}
+
+@media (max-width: 430px) {
+  .guestbook-form-card,
+  .guestbook-empty-card,
+  .guestbook-card {
+    border-radius: 18px;
+  }
+
+  .guestbook-card-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .guestbook-date {
+    white-space: normal;
+  }
+}
