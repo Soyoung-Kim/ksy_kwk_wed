@@ -1,0 +1,72 @@
+/* =========================================================
+   Contact
+========================================================= */
+.contact-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.contact-card {
+  padding: 24px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 12px 30px rgba(50, 50, 93, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.contact-role {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a28573;
+  letter-spacing: 0.06em;
+}
+
+.contact-name {
+  display: block;
+  font-size: 1.2rem;
+  color: #4b3f37;
+}
+
+.contact-number {
+  margin: 6px 0 0;
+  font-weight: 600;
+  color: #6d5f55;
+}
+
+.contact-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button-small {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .contact-list {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-actions {
+    flex-direction: column;
+  }
+
+  .contact-actions .button {
+    width: 100%;
+  }
+}
