@@ -147,11 +147,8 @@ function bindSliderEvents() {
   );
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      stopAutoplay();
-    } else {
-      startAutoplay();
-    }
+    if (document.hidden) stopAutoplay();
+    else startAutoplay();
   });
 }
 
@@ -254,6 +251,96 @@ function bindLightboxEvents() {
   });
 }
 
+function bindIntroParallax() {
+  const stage = document.getElementById("intro-stage");
+  const media = document.getElementById("intro-media");
+  const copy = document.getElementById("intro-copy");
+
+  if (!stage || !media || !copy) return;
+
+  let ticking = false;
+
+  function updateIntro() {
+    const rect = stage.getBoundingClientRect();
+    const total = stage.offsetHeight - window.innerHeight;
+
+    if (total <= 0) {
+      ticking = false;
+      return;
+    }
+
+    const progress = Math.min(Math.max(-rect.top / total, 0), 1);
+
+    const mediaTranslate = progress * 22;
+    const mediaScale = 1.08 - progress * 0.08;
+    const mediaOpacity = 1 - progress * 0.18;
+
+    const copyTranslate = progress * 64;
+    const copyOpacity = 1 - progress * 1.05;
+
+    media.style.transform = `translate3d(0, ${mediaTranslate}px, 0) scale(${mediaScale})`;
+    media.style.opacity = String(Math.max(mediaOpacity, 0.82));
+
+    copy.style.transform = `translate3d(0, ${copyTranslate}px, 0)`;
+    copy.style.opacity = String(Math.max(copyOpacity, 0));
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateIntro();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  updateIntro();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+}
+
+function bindWeddingCountdown() {
+  const daysEl = document.getElementById("countdown-days");
+  const hoursEl = document.getElementById("countdown-hours");
+  const minutesEl = document.getElementById("countdown-minutes");
+  const secondsEl = document.getElementById("countdown-seconds");
+  const ddayEl = document.getElementById("countdown-dday");
+
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl || !ddayEl) return;
+
+  const weddingDate = new Date("2026-11-08T11:30:00+09:00").getTime();
+
+  function updateCountdown() {
+    const now = Date.now();
+    const distance = weddingDate - now;
+
+    if (distance <= 0) {
+      daysEl.textContent = "0";
+      hoursEl.textContent = "00";
+      minutesEl.textContent = "00";
+      secondsEl.textContent = "00";
+      ddayEl.textContent = "소영 ❤ 우경의 결혼식이 오늘입니다.";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((distance / (1000 * 60)) % 60);
+    const seconds = Math.floor((distance / 1000) % 60);
+
+    daysEl.textContent = String(days);
+    hoursEl.textContent = String(hours).padStart(2, "0");
+    minutesEl.textContent = String(minutes).padStart(2, "0");
+    secondsEl.textContent = String(seconds).padStart(2, "0");
+
+    ddayEl.textContent = `소영 ❤ 우경의 결혼식이 D-${days}일 남았습니다.`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
 async function init() {
   const gallery = document.getElementById("gallery");
 
@@ -274,6 +361,8 @@ async function init() {
 
   bindCopyButtons();
   bindLightboxEvents();
+  bindIntroParallax();
+  bindWeddingCountdown();
 }
 
 init();
