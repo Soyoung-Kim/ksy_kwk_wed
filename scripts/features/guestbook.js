@@ -731,7 +731,7 @@ function bindEvents() {
       setSelectedSide(state.aiTarget);
       closeAiModal();
       els.messageInput?.focus();
-      showToast('추천 문구를 메시지 칸에 입력했습니다.');
+      showToast('추천 문구를 입력했습니다.');
     }
   });
 }
