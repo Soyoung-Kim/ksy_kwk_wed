@@ -1,5 +1,9 @@
 [
   {
+    "src": "./assets/photos/main_logo.png",
+    "alt": "웨딩 사진"
+  },
+  {
     "src": "./assets/photos/01.jpg",
     "alt": "웨딩 사진 1"
   },
@@ -22,5 +26,9 @@
   {
     "src": "./assets/photos/06.jpg",
     "alt": "웨딩 사진 6"
+  },
+    {
+    "src": "./assets/photos/wed_day.png",
+    "alt": "웨딩 day"
   }
 ]

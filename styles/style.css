@@ -1,7 +1,1350 @@
-@import url('./base.css');
-@import url('./intro.css');
-@import url('./hero.css');
-@import url('./slider.css');
-@import url('./sections.css');
-@import url('./guestbook.css');
-@import url('./responsive.css');
+/* =========================================================
+   Reset / Base
+========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #3f3a37;
+  background:
+    linear-gradient(180deg, #f8f1f2 0%, #fbf7f4 38%, #ffffff 100%);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   Utility
+========================================================= */
+[hidden],
+.hidden {
+  display: none !important;
+}
+
+.center {
+  text-align: center;
+}
+
+/* =========================================================
+   Toast
+========================================================= */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 1500;
+  min-width: 180px;
+  max-width: calc(100vw - 32px);
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: rgba(34, 30, 40, 0.88);
+  color: #fff;
+  text-align: center;
+  font-size: 0.94rem;
+  box-shadow: 0 14px 34px rgba(25, 20, 35, 0.24);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* =========================================================
+   Buttons
+========================================================= */
+.button {
+  appearance: none;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #c7a57b 0%, #a88357 100%);
+  box-shadow: 0 12px 24px rgba(168, 131, 87, 0.22);
+}
+
+.button-secondary {
+  color: #5f4f43;
+  background: #fff;
+  border: 1px solid rgba(146, 120, 99, 0.16);
+  box-shadow: 0 10px 20px rgba(89, 66, 48, 0.08);
+}
+
+/* =========================================================
+   Intro
+========================================================= */
+.intro-stage {
+  --intro-bg-color: #f6eef0;
+  --intro-overlay-opacity: 0.16;
+  --intro-stage-height: 140svh;
+  position: relative;
+  min-height: var(--intro-stage-height);
+}
+
+.intro-sticky {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--intro-bg-color);
+}
+
+.intro-media {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f7eef2 0%, #f3edf4 52%, #f2edf5 100%);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.intro-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(40, 26, 18, 0.10) 0%,
+      rgba(34, 22, 18, 0.18) 45%,
+      rgba(22, 15, 14, 0.28) 100%
+    );
+  opacity: var(--intro-overlay-opacity);
+  transition: opacity 0.18s linear;
+  pointer-events: none;
+}
+
+.intro-copy {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 56px;
+  text-align: center;
+  color: #fff;
+  will-change: transform, opacity;
+}
+
+.intro-kicker {
+  margin: 0 0 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+.intro-flower {
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+  opacity: 0.88;
+}
+
+.intro-title {
+  margin: 0;
+  font-size: clamp(2.2rem, 7vw, 4.3rem);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.intro-subtitle {
+  margin: 18px 0 0;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.intro-countdown-wrap {
+  width: min(520px, calc(100% - 12px));
+  margin-top: 26px;
+  padding: 20px 14px 18px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 42px rgba(22, 18, 28, 0.16);
+}
+
+.intro-countdown-caption {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.intro-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.intro-countdown-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.intro-countdown-item strong {
+  display: block;
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.intro-countdown-item span {
+  font-size: 0.84rem;
+  opacity: 0.92;
+}
+
+.intro-dday-text {
+  margin: 14px 0 0;
+  font-size: 0.96rem;
+  font-weight: 600;
+  opacity: 0.96;
+}
+
+.intro-scroll {
+  margin-top: 34px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.intro-scroll span {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
+
+/* =========================================================
+   Page shell / generic sections
+========================================================= */
+.page-shell {
+  width: min(1080px, calc(100% - 24px));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+.section {
+  margin: 32px 0;
+  padding: 28px 22px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
+}
+
+.section-heading,
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-heading .section-kicker,
+.section-header .section-kicker {
+  margin: 0 0 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9a7f6b;
+}
+
+.section-heading h2,
+.section-header h2 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  color: #4b3f37;
+}
+
+.section-description {
+  margin: 10px 0 0;
+  color: #74685e;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   Hero card
+========================================================= */
+.hero-card {
+  margin: -60px auto 24px;
+  padding: 34px 24px 30px;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(180, 151, 129, 0.12);
+  box-shadow: 0 24px 52px rgba(73, 55, 40, 0.12);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.84rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a58872;
+  font-weight: 700;
+}
+
+.hero-flower {
+  margin-bottom: 8px;
+  color: #caa4b3;
+}
+
+.hero-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.3rem, 8vw, 4rem);
+  color: #4b3b34;
+}
+
+.hero-title span {
+  color: #c59cac;
+}
+
+.hero-date,
+.hero-place {
+  margin: 8px 0 0;
+  color: #6d5f55;
+  font-weight: 600;
+}
+
+/* =========================================================
+   Slider
+========================================================= */
+.slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f3ece8;
+  min-height: 300px;
+}
+
+.slides {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #5c4c40;
+  font-size: 1.5rem;
+  font-weight: 700;
+  transform: translateY(-50%);
+  box-shadow: 0 12px 24px rgba(40, 30, 20, 0.14);
+  cursor: pointer;
+}
+
+.slide-nav.prev {
+  left: 14px;
+}
+
+.slide-nav.next {
+  right: 14px;
+}
+
+.slide-nav:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.slide-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 2;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.slide-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.48);
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.slide-dots .dot.active {
+  background: #fff;
+  transform: scale(1.15);
+}
+
+/* =========================================================
+   Gallery
+========================================================= */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.gallery-item,
+.gallery button,
+.gallery a,
+.gallery figure,
+.gallery > div {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  border-radius: 20px;
+  background: #f4eeea;
+  cursor: pointer;
+}
+
+.gallery-item::before,
+.gallery button::before,
+.gallery a::before,
+.gallery figure::before,
+.gallery > div::before {
+  content: '';
+  display: block;
+  padding-top: 100%;
+}
+
+.gallery-item > *,
+.gallery button > *,
+.gallery a > *,
+.gallery figure > *,
+.gallery > div > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.24s ease;
+}
+
+.gallery-item:hover img,
+.gallery button:hover img,
+.gallery a:hover img,
+.gallery figure:hover img,
+.gallery > div:hover img {
+  transform: scale(1.03);
+}
+
+/* =========================================================
+   Details / Location
+========================================================= */
+.detail-list {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-item {
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 12px 26px rgba(79, 61, 48, 0.06);
+}
+
+.detail-label {
+  display: inline-flex;
+  margin-bottom: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a28573;
+}
+
+.detail-item p {
+  margin: 0;
+  color: #50453e;
+  font-weight: 600;
+}
+
+.primary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* =========================================================
+   Navigation quick links
+========================================================= */
+.nav-section {
+  margin-top: 24px;
+}
+
+.nav-section-title {
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: #5b4e45;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.nav-card {
+  min-height: 88px;
+  padding: 16px 12px;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  text-align: center;
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  box-shadow: 0 12px 26px rgba(79, 61, 48, 0.08);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(79, 61, 48, 0.12);
+}
+
+.nav-app {
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.nav-card strong {
+  font-size: 0.98rem;
+}
+
+.nav-google {
+  background: linear-gradient(135deg, #edf5ff 0%, #f5f2ff 100%);
+  color: #35558f;
+}
+
+.nav-naver {
+  background: linear-gradient(135deg, #e9fff2 0%, #f2fff7 100%);
+  color: #23714a;
+}
+
+.nav-kakao {
+  background: linear-gradient(135deg, #fff8db 0%, #fff4b8 100%);
+  color: #6b5600;
+}
+
+.nav-tmap {
+  background: linear-gradient(135deg, #eaf4ff 0%, #eef6ff 100%);
+  color: #285ca8;
+}
+
+/* =========================================================
+   Account section
+========================================================= */
+.wedding-accounts {
+  max-width: 960px;
+  margin: 0 auto 32px;
+  padding: 28px 22px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
+}
+
+.account-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.account-card {
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(120, 120, 160, 0.14);
+  box-shadow: 0 12px 30px rgba(50, 50, 93, 0.08);
+  background: #fff;
+}
+
+.account-card-groom {
+  background: linear-gradient(135deg, #f3f7ff 0%, #f1edff 100%);
+}
+
+.account-card-bride {
+  background: linear-gradient(135deg, #f6f0ff 0%, #fff0f7 100%);
+}
+
+.account-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.account-card-head h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #48405b;
+}
+
+.account-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.72);
+  color: #4b4b75;
+}
+
+.account-meta {
+  margin: 0 0 18px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(90, 90, 120, 0.16);
+}
+
+.account-row:last-child {
+  border-bottom: 0;
+}
+
+.account-row dt {
+  font-weight: 700;
+  color: #60607d;
+}
+
+.account-row dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  color: #2e2e44;
+}
+
+/* =========================================================
+   Guestbook
+========================================================= */
+.guestbook-section {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 22px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
+}
+
+.guestbook-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+}
+
+.guestbook-form-panel {
+  margin-bottom: 24px;
+  padding: 24px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid rgba(120, 120, 160, 0.12);
+  box-shadow: 0 14px 34px rgba(50, 50, 93, 0.08);
+}
+
+.guestbook-form-header {
+  margin-bottom: 18px;
+}
+
+.guestbook-form-header h3 {
+  margin: 0 0 6px;
+  color: #464666;
+}
+
+.guestbook-form-header p {
+  margin: 0;
+  color: #6b6b84;
+}
+
+.guestbook-form {
+  display: grid;
+  gap: 16px;
+}
+
+.guestbook-field {
+  display: grid;
+  gap: 8px;
+}
+
+.guestbook-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #53536d;
+}
+
+.guestbook-input,
+.guestbook-textarea {
+  width: 100%;
+  border: 1px solid rgba(120, 120, 160, 0.16);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: #fff;
+  font: inherit;
+  box-sizing: border-box;
+  color: #3d3d57;
+}
+
+.guestbook-input:focus,
+.guestbook-textarea:focus {
+  outline: none;
+  border-color: #8b86e8;
+  box-shadow: 0 0 0 4px rgba(139, 134, 232, 0.12);
+}
+
+.guestbook-textarea {
+  resize: vertical;
+  min-height: 132px;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.guestbook-side-btn {
+  min-height: 52px;
+  border: 1px solid rgba(130, 130, 170, 0.18);
+  border-radius: 16px;
+  background: #fff;
+  color: #4e4e68;
+  font-weight: 700;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease;
+}
+
+.guestbook-side-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(80, 80, 120, 0.10);
+}
+
+.guestbook-side-btn.is-groom-active {
+  color: #234a8f;
+  border-color: rgba(110, 135, 230, 0.36);
+  background: linear-gradient(135deg, #dceaff 0%, #ebe6ff 100%);
+  box-shadow: 0 10px 22px rgba(119, 142, 236, 0.18);
+}
+
+.guestbook-side-btn.is-bride-active {
+  color: #9a4f8d;
+  border-color: rgba(215, 141, 213, 0.34);
+  background: linear-gradient(135deg, #eee7ff 0%, #ffe4f0 100%);
+  box-shadow: 0 10px 22px rgba(229, 162, 210, 0.18);
+}
+
+.guestbook-ai-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(239, 242, 255, 0.84) 0%, rgba(250, 238, 248, 0.92) 100%);
+  border: 1px solid rgba(149, 143, 224, 0.16);
+}
+
+.guestbook-ai-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.guestbook-ai-copy strong {
+  color: #494971;
+}
+
+.guestbook-ai-copy span {
+  color: #686887;
+  font-size: 0.92rem;
+}
+
+.guestbook-help {
+  margin: 0;
+  color: #7a7a95;
+  font-size: 0.9rem;
+}
+
+.guestbook-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.guestbook-board {
+  position: relative;
+  min-height: 160px;
+}
+
+.guestbook-status {
+  margin-bottom: 14px;
+  color: #666683;
+}
+
+.guestbook-list {
+  display: grid;
+  gap: 14px;
+}
+
+.guestbook-card {
+  padding: 18px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(120, 120, 160, 0.12);
+  box-shadow: 0 12px 30px rgba(50, 50, 93, 0.06);
+}
+
+.guestbook-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.guestbook-card-meta {
+  display: grid;
+  gap: 6px;
+}
+
+.guestbook-card-name {
+  font-weight: 800;
+  color: #353550;
+}
+
+.guestbook-card-date {
+  font-size: 0.86rem;
+  color: #7a7a95;
+}
+
+.guestbook-side-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-right: 8px;
+}
+
+.guestbook-side-badge.groom {
+  color: #2e5ba7;
+  background: linear-gradient(135deg, #e4efff 0%, #ece9ff 100%);
+}
+
+.guestbook-side-badge.bride {
+  color: #a45597;
+  background: linear-gradient(135deg, #efe8ff 0%, #ffe6f1 100%);
+}
+
+.guestbook-card-message {
+  line-height: 1.75;
+  color: #43435f;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.guestbook-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.guestbook-card-actions button[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.guestbook-edit-lock {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: rgba(250, 248, 255, 0.84);
+  backdrop-filter: blur(4px);
+}
+
+.guestbook-edit-lock-card {
+  width: min(420px, calc(100% - 32px));
+  padding: 22px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(134, 134, 182, 0.16);
+  box-shadow: 0 16px 36px rgba(50, 50, 93, 0.14);
+  text-align: center;
+}
+
+.guestbook-edit-lock-card strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.02rem;
+  color: #3f3f61;
+}
+
+.guestbook-edit-lock-card p {
+  margin: 0 0 14px;
+  color: #70708b;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   AI Modal
+========================================================= */
+.guestbook-ai-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+
+.guestbook-ai-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 24, 40, 0.42);
+}
+
+.guestbook-ai-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(760px, calc(100% - 24px));
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  margin: 18px auto;
+  padding: 24px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(20, 20, 44, 0.24);
+}
+
+.guestbook-ai-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.guestbook-ai-kicker {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8a84df;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.guestbook-ai-header h3 {
+  margin: 0;
+  color: #454565;
+}
+
+.guestbook-ai-close {
+  border: 0;
+  background: transparent;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #77779a;
+}
+
+.guestbook-ai-section {
+  margin-top: 18px;
+}
+
+.guestbook-ai-label {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: #585878;
+}
+
+.guestbook-ai-targets,
+.guestbook-ai-versions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.guestbook-ai-target-btn,
+.guestbook-ai-version-btn {
+  border: 1px solid rgba(122, 122, 171, 0.16);
+  background: #fff;
+  color: #4d4d69;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guestbook-ai-target-btn.is-active,
+.guestbook-ai-version-btn.is-active {
+  border-color: rgba(141, 130, 228, 0.34);
+  background: linear-gradient(135deg, #edf1ff 0%, #f8ebf8 100%);
+  color: #5d53b4;
+}
+
+.guestbook-ai-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guestbook-ai-status {
+  margin-bottom: 12px;
+  color: #6e6e8e;
+}
+
+.guestbook-ai-list {
+  display: grid;
+  gap: 12px;
+}
+
+.guestbook-ai-item {
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(126, 126, 174, 0.14);
+  background: #fafaff;
+}
+
+.guestbook-ai-item-text {
+  margin: 0 0 12px;
+  line-height: 1.72;
+  color: #414161;
+  white-space: pre-wrap;
+}
+
+.guestbook-ai-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* =========================================================
+   Footer
+========================================================= */
+.footer {
+  margin-top: 28px;
+  padding: 26px 16px 12px;
+  text-align: center;
+  color: #7a6b60;
+  font-size: 0.94rem;
+}
+
+/* =========================================================
+   Lightbox
+========================================================= */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(16, 14, 18, 0.88);
+}
+
+.lightbox img,
+.lightbox-image,
+#lightbox-image {
+  max-width: min(980px, calc(100vw - 40px));
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* =========================================================
+   Responsive
+========================================================= */
+@media (max-width: 1024px) {
+  .nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    width: min(100%, calc(100% - 16px));
+    padding-top: 16px;
+  }
+
+  .section,
+  .wedding-accounts,
+  .guestbook-section {
+    padding: 22px 16px;
+    border-radius: 24px;
+  }
+
+  .hero-card {
+    margin-top: -34px;
+    padding: 28px 18px 24px;
+    border-radius: 26px;
+  }
+
+  .intro-sticky {
+    background: #f6eef0;
+  }
+
+  .intro-media {
+    background: linear-gradient(180deg, #f7eef2 0%, #f3edf4 52%, #f2edf5 100%);
+  }
+
+  .intro-image {
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .intro-copy {
+    padding: 28px 18px 48px;
+  }
+
+  .intro-title {
+    font-size: clamp(2rem, 9vw, 3rem);
+  }
+
+  .intro-subtitle {
+    font-size: 0.98rem;
+  }
+
+  .intro-countdown-wrap {
+    width: 100%;
+  }
+
+  .intro-countdown-grid {
+    gap: 8px;
+  }
+
+  .intro-countdown-item {
+    padding: 12px 8px;
+  }
+
+  .account-list {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-actions {
+    flex-direction: column;
+  }
+
+  .primary-actions .button {
+    width: 100%;
+  }
+
+  .nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .guestbook-ai-row,
+  .guestbook-ai-results-head,
+  .guestbook-card-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .guestbook-actions {
+    flex-direction: column-reverse;
+  }
+
+  .guestbook-actions .button,
+  .guestbook-ai-row .button,
+  .account-copy-btn {
+    width: 100%;
+  }
+
+  .guestbook-ai-dialog {
+    width: calc(100% - 16px);
+    margin: 8px auto;
+    padding: 18px;
+    border-radius: 22px;
+    max-height: calc(100vh - 16px);
+  }
+
+  .footer {
+    padding-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slides {
+    aspect-ratio: 4 / 5;
+  }
+
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .nav-card {
+    min-height: 80px;
+    border-radius: 20px;
+    padding: 14px 10px;
+  }
+
+  .intro-countdown-item strong {
+    font-size: 1.5rem;
+  }
+
+  .intro-countdown-item span {
+    font-size: 0.78rem;
+  }
+
+  .intro-dday-text {
+    font-size: 0.9rem;
+  }
+}

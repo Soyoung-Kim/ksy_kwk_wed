@@ -33,3 +33,4 @@ npx supabase functions deploy guestbook-create --no-verify-jwt
 npx supabase functions deploy guestbook-update --no-verify-jwt
 npx supabase functions deploy guestbook-delete --no-verify-jwt
 npx supabase functions deploy guestbook-ai --no-verify-jwt
+npx serve . -l 5500

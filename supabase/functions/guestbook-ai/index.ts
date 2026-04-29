@@ -15,6 +15,20 @@ const VERSION_LABELS = {
 type Target = 'groom' | 'bride';
 type VersionKey = keyof typeof VERSION_LABELS;
 
+const RELATION_GUIDE: Record<VersionKey, string> = {
+  friend:
+    '작성자는 축하 대상의 친구다. 동갑 또는 가까운 또래 친구가 자연스럽게 남길 만한 말투로 작성한다.',
+  coworker:
+    '작성자는 축하 대상의 직장동료다. 예의 있고 단정하지만 너무 딱딱하지 않게 작성한다.',
+  family:
+    '작성자는 축하 대상의 가족이다. 가족만이 할 수 있는 따뜻하고 진심 어린 톤으로 작성한다.',
+  olderBrother:
+    '작성자는 축하 대상보다 나이가 많은 형 또는 오빠다. 즉 작성자가 윗사람이고, 축하 대상은 남동생 또는 여동생이다. 절대로 반대로 해석하지 말고, 동생의 결혼을 축하하는 형/오빠의 입장에서 작성한다.',
+  olderSister:
+    '작성자는 축하 대상보다 나이가 많은 누나 또는 언니다. 즉 작성자가 윗사람이고, 축하 대상은 남동생 또는 여동생이다. 절대로 반대로 해석하지 말고, 동생의 결혼을 축하하는 누나/언니의 입장에서 작성한다.'
+};
+
+
 function normalizeName(value: unknown, fallback: string) {
   if (typeof value !== 'string') {
     return fallback;
@@ -127,29 +141,39 @@ async function requestSuggestions(params: {
   const targetName = params.target === 'groom' ? params.groomName : params.brideName;
   const counterpartName = params.target === 'groom' ? params.brideName : params.groomName;
   const versionLabel = VERSION_LABELS[params.version];
+  const relationGuide = RELATION_GUIDE[params.version];
 
   const systemPrompt = [
     '너는 한국어 결혼식 축하 문구 추천 도우미다.',
     '반드시 JSON 객체만 반환해야 한다.',
-    '형식은 {"suggestions":["문구1","문구2","문구3","문구4"]} 이어야 한다.',
+    '응답 형식은 {"suggestions":["문구1","문구2","문구3","문구4"]} 이어야 한다.',
     'suggestions 배열에는 정확히 4개의 문구가 들어가야 한다.',
     '모든 문구는 한국어여야 한다.',
     '각 문구는 150자 이하여야 한다.',
-    '서로 문체와 표현을 다르게 만들어라.',
-    '실제 모바일 청첩장 방명록에 바로 붙여넣을 수 있는 자연스러운 축하 문구로 작성해라.',
-    '번호 목록, 따옴표 장식, 해시태그, 이모지 남발은 금지한다.'
+    '모든 문구는 실제 모바일 청첩장 방명록에 바로 붙여넣을 수 있어야 한다.',
+    '문구마다 표현과 어휘, 문장 길이를 다르게 해서 서로 비슷하지 않게 작성한다.',
+    '번호 매기기, 불릿, 따옴표 장식, 해시태그, 과도한 이모지 사용은 금지한다.',
+    '가장 중요한 규칙: 반드시 "작성자 입장"에서 "축하 대상"에게 쓰는 문장으로 작성한다.',
+    '형/오빠, 누나/언니 버전은 반드시 작성자가 손윗사람이고 축하 대상이 동생인 상황으로 작성한다.',
+    '절대로 축하 대상이 형, 오빠, 누나, 언니인 것처럼 반대로 쓰지 않는다.',
+    '호칭을 굳이 직접 쓰지 않아도 되지만, 문맥상 관계 방향이 틀리지 않도록 작성한다.',
+    '결과는 JSON만 반환한다.'
   ].join(' ');
 
   const userPrompt = [
-    `축하 대상은 ${targetLabel} ${targetName}이다.`,
-    `배우자 이름은 ${counterpartName}이다.`,
-    `작성자 관계 버전은 ${versionLabel}이다.`,
-    '결혼을 진심으로 축하하는 따뜻한 톤으로 작성해라.',
-    '문구마다 표현이 겹치지 않게 해라.',
-    '과장되거나 오글거리는 표현은 줄이고, 실제 지인이 남길 법한 자연스러운 문장으로 작성해라.',
-    '누가봐도 AI의 말투를 사용하지말고, 사람이 작성한 자연스러운 어투로 작성해라.',
-    '반드시 JSON만 반환해라.'
-  ].join(' ');
+    `축하 대상: ${targetLabel} ${targetName}`,
+    `상대 배우자 이름: ${counterpartName}`,
+    `작성자 관계 버전: ${versionLabel}`,
+    `관계 설명: ${relationGuide}`,
+    `반드시 "${targetName}"의 결혼을 축하하는 문장으로 작성한다.`,
+    `작성자는 ${targetName}에게 축하 메시지를 남기는 사람이다.`,
+    `절대로 ${targetName}가 형/오빠/누나/언니인 상황처럼 반대로 쓰지 않는다.`,
+    '과장되거나 오글거리는 표현은 줄이고, 실제 지인이 남길 법한 자연스럽고 따뜻한 톤으로 작성한다.',
+    '문구 4개는 서로 다른 표현으로 작성한다.',
+    '관계 방향이 반대로 해석되면 잘못된 응답이다.',
+    `검증 규칙: 문구를 쓴 사람이 ${targetName}의 손윗형제/자매인지 다시 확인하고 작성한다.`,
+    '반드시 JSON만 반환한다.'
+  ].join('\n');
 
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -159,7 +183,7 @@ async function requestSuggestions(params: {
     },
     body: JSON.stringify({
       model: OPENAI_MODEL,
-      temperature: 1.0,
+      temperature: 0.9,
       response_format: { type: 'json_object' },
       messages: [
         { role: 'system', content: systemPrompt },

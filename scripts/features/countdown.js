@@ -1,4 +1,4 @@
-import { APP_CONFIG } from '../config.js';
+import { APP_CONFIG } from '../../config.js';
 import { qs, pad } from '../utils.js';
 
 export function initCountdown() {

@@ -1,38 +1,57 @@
-import { qs } from '../utils.js';
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
 
 export function initIntroParallax() {
-  const stage = qs('#intro-stage');
-  const media = qs('#intro-media');
-  const copy = qs('#intro-copy');
-  if (!stage || !media || !copy) return;
+  const stage = document.getElementById('intro-stage');
+  const media = document.getElementById('intro-media');
+  const copy = document.getElementById('intro-copy');
+  const overlay = stage?.querySelector('.intro-overlay');
+
+  if (!stage || !media || !copy) {
+    return;
+  }
+
+  function isMobile() {
+    return window.matchMedia('(max-width: 768px)').matches;
+  }
+
+  function applyParallax() {
+    const rect = stage.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+    const scrollable = Math.max(stage.offsetHeight - viewportHeight, 1);
+    const progress = clamp((-rect.top) / scrollable, 0, 1);
+
+    const mobile = isMobile();
+
+    const mediaScale = mobile ? 1 + progress * 0.012 : 1 + progress * 0.06;
+    const mediaShiftY = mobile ? progress * 8 : progress * 24;
+    const copyShiftY = mobile ? progress * 18 : progress * 42;
+    const copyOpacity = 1 - progress * 0.78;
+    const overlayOpacity = mobile ? 0.12 + progress * 0.06 : 0.16 + progress * 0.12;
+
+    media.style.transform = `translate3d(0, ${mediaShiftY}px, 0) scale(${mediaScale})`;
+    copy.style.transform = `translate3d(0, ${copyShiftY}px, 0)`;
+    copy.style.opacity = String(copyOpacity);
+
+    if (overlay) {
+      overlay.style.opacity = String(overlayOpacity);
+    }
+  }
 
   let ticking = false;
 
-  const update = () => {
-    const rect = stage.getBoundingClientRect();
-    const total = stage.offsetHeight - window.innerHeight;
-    const progress = total > 0 ? Math.min(Math.max(-rect.top / total, 0), 1) : 0;
-
-    const mediaTranslate = progress * 18;
-    const mediaScale = 1.06 - progress * 0.04;
-    const copyTranslate = progress * 48;
-    const copyOpacity = 1 - progress * 0.85;
-
-    media.style.transform = `translate3d(0, ${mediaTranslate}px, 0) scale(${mediaScale})`;
-    copy.style.transform = `translate3d(0, ${copyTranslate}px, 0)`;
-    copy.style.opacity = String(Math.max(copyOpacity, 0));
-  };
-
-  const onScroll = () => {
+  function onScroll() {
     if (ticking) return;
+
     ticking = true;
-    requestAnimationFrame(() => {
-      update();
+    window.requestAnimationFrame(() => {
+      applyParallax();
       ticking = false;
     });
-  };
+  }
 
-  update();
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', applyParallax);
+  applyParallax();
 }
