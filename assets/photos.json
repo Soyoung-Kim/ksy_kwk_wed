@@ -1,0 +1,26 @@
+[
+  {
+    "src": "./assets/photos/01.jpg",
+    "alt": "웨딩 사진 1"
+  },
+  {
+    "src": "./assets/photos/02.jpg",
+    "alt": "웨딩 사진 2"
+  },
+  {
+    "src": "./assets/photos/03.jpg",
+    "alt": "웨딩 사진 3"
+  },
+  {
+    "src": "./assets/photos/04.jpg",
+    "alt": "웨딩 사진 4"
+  },
+  {
+    "src": "./assets/photos/05.jpg",
+    "alt": "웨딩 사진 5"
+  },
+  {
+    "src": "./assets/photos/06.jpg",
+    "alt": "웨딩 사진 6"
+  }
+]
