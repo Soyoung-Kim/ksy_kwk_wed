@@ -1,0 +1,36 @@
+/* =========================================================
+   Lightbox
+========================================================= */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(16, 14, 18, 0.88);
+}
+
+.lightbox img,
+.lightbox-image,
+#lightbox-image {
+  max-width: min(980px, calc(100vw - 40px));
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+}

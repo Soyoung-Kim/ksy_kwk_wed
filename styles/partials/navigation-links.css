@@ -1,0 +1,67 @@
+/* =========================================================
+   Navigation quick links
+========================================================= */
+.nav-section {
+  margin-top: 24px;
+}
+
+.nav-section-title {
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: #5b4e45;
+}
+
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.nav-card {
+  min-height: 88px;
+  padding: 16px 12px;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  text-align: center;
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  box-shadow: 0 12px 26px rgba(79, 61, 48, 0.08);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.nav-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(79, 61, 48, 0.12);
+}
+
+.nav-app {
+  font-size: 0.78rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.nav-card strong {
+  font-size: 0.98rem;
+}
+
+.nav-google {
+  background: linear-gradient(135deg, #edf5ff 0%, #f5f2ff 100%);
+  color: #35558f;
+}
+
+.nav-naver {
+  background: linear-gradient(135deg, #e9fff2 0%, #f2fff7 100%);
+  color: #23714a;
+}
+
+.nav-kakao {
+  background: linear-gradient(135deg, #fff8db 0%, #fff4b8 100%);
+  color: #6b5600;
+}
+
+.nav-tmap {
+  background: linear-gradient(135deg, #eaf4ff 0%, #eef6ff 100%);
+  color: #285ca8;
+}

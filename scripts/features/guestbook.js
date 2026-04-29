@@ -608,7 +608,7 @@ async function requestAiSuggestions(forceRefresh = false) {
   state.aiLoading = true;
   state.aiSuggestions = [];
   renderAiSuggestions();
-  setAiStatus(forceRefresh ? '새 추천 문구를 불러오는 중입니다...' : 'AI 추천 문구를 불러오는 중입니다...');
+  setAiStatus(forceRefresh ? '새 추천 문구를 불러오는 중입니다...' : '추천 문구를 불러오는 중입니다...');
   els.aiRequestButton?.setAttribute('disabled', 'disabled');
 
   try {

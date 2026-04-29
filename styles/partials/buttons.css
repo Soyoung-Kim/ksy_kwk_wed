@@ -1,0 +1,46 @@
+/* =========================================================
+   Buttons
+========================================================= */
+.button {
+  appearance: none;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #c7a57b 0%, #a88357 100%);
+  box-shadow: 0 12px 24px rgba(168, 131, 87, 0.22);
+}
+
+.button-secondary {
+  color: #5f4f43;
+  background: #fff;
+  border: 1px solid rgba(146, 120, 99, 0.16);
+  box-shadow: 0 10px 20px rgba(89, 66, 48, 0.08);
+}

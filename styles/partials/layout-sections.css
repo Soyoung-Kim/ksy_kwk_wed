@@ -1,0 +1,46 @@
+/* =========================================================
+   Page shell / generic sections
+========================================================= */
+.page-shell {
+  width: min(1080px, calc(100% - 24px));
+  margin: 0 auto;
+  padding: 28px 0 72px;
+}
+
+.section {
+  margin: 32px 0;
+  padding: 28px 22px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
+}
+
+.section-heading,
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-heading .section-kicker,
+.section-header .section-kicker {
+  margin: 0 0 6px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9a7f6b;
+}
+
+.section-heading h2,
+.section-header h2 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  color: #4b3f37;
+}
+
+.section-description {
+  margin: 10px 0 0;
+  color: #74685e;
+  line-height: 1.7;
+}

@@ -1,96 +1,15 @@
-[hidden] {
-  display: none !important;
-}
-
-/* =========================
-   Account section
-========================= */
-.wedding-accounts {
-  margin: 0 auto 48px;
-  max-width: 960px;
-}
-
-.account-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.account-card {
-  padding: 24px;
-  border-radius: 24px;
-  border: 1px solid rgba(120, 120, 160, 0.14);
-  box-shadow: 0 12px 30px rgba(50, 50, 93, 0.08);
-  background: #fff;
-}
-
-.account-card-groom {
-  background: linear-gradient(135deg, #f3f7ff 0%, #f1edff 100%);
-}
-
-.account-card-bride {
-  background: linear-gradient(135deg, #f6f0ff 0%, #fff0f7 100%);
-}
-
-.account-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.account-card-head h3 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.account-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.72);
-  color: #4b4b75;
-}
-
-.account-meta {
-  margin: 0 0 18px;
-}
-
-.account-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 0;
-  border-bottom: 1px dashed rgba(90, 90, 120, 0.16);
-}
-
-.account-row:last-child {
-  border-bottom: 0;
-}
-
-.account-row dt {
-  font-weight: 700;
-  color: #60607d;
-}
-
-.account-row dd {
-  margin: 0;
-  text-align: right;
-  font-weight: 600;
-  color: #2e2e44;
-}
-
-/* =========================
-   Guestbook base
-========================= */
+/* =========================================================
+   Guestbook
+========================================================= */
 .guestbook-section {
   position: relative;
   max-width: 960px;
   margin: 0 auto;
+  padding: 28px 22px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(181, 153, 132, 0.10);
+  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
 }
 
 .guestbook-toolbar {
@@ -114,6 +33,7 @@
 
 .guestbook-form-header h3 {
   margin: 0 0 6px;
+  color: #464666;
 }
 
 .guestbook-form-header p {
@@ -146,6 +66,7 @@
   background: #fff;
   font: inherit;
   box-sizing: border-box;
+  color: #3d3d57;
 }
 
 .guestbook-input:focus,
@@ -153,6 +74,11 @@
   outline: none;
   border-color: #8b86e8;
   box-shadow: 0 0 0 4px rgba(139, 134, 232, 0.12);
+}
+
+.guestbook-textarea {
+  resize: vertical;
+  min-height: 132px;
 }
 
 .tag-grid {
@@ -163,12 +89,16 @@
 
 .guestbook-side-btn {
   min-height: 52px;
-  border-radius: 16px;
   border: 1px solid rgba(130, 130, 170, 0.18);
+  border-radius: 16px;
   background: #fff;
   color: #4e4e68;
   font-weight: 700;
-  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease;
 }
 
 .guestbook-side-btn:hover {
@@ -280,6 +210,7 @@
   border-radius: 999px;
   font-size: 0.76rem;
   font-weight: 800;
+  margin-right: 8px;
 }
 
 .guestbook-side-badge.groom {
@@ -343,161 +274,4 @@
   margin: 0 0 14px;
   color: #70708b;
   line-height: 1.6;
-}
-
-/* =========================
-   AI modal
-========================= */
-.guestbook-ai-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-}
-
-.guestbook-ai-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(24, 24, 40, 0.42);
-}
-
-.guestbook-ai-dialog {
-  position: relative;
-  z-index: 1;
-  width: min(760px, calc(100% - 24px));
-  max-height: calc(100vh - 36px);
-  overflow: auto;
-  margin: 18px auto;
-  padding: 24px;
-  border-radius: 28px;
-  background: #fff;
-  box-shadow: 0 24px 60px rgba(20, 20, 44, 0.24);
-}
-
-.guestbook-ai-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-.guestbook-ai-kicker {
-  margin: 0 0 6px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #8a84df;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.guestbook-ai-header h3 {
-  margin: 0;
-}
-
-.guestbook-ai-close {
-  border: 0;
-  background: transparent;
-  font-size: 2rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #77779a;
-}
-
-.guestbook-ai-section {
-  margin-top: 18px;
-}
-
-.guestbook-ai-label {
-  margin: 0 0 10px;
-  font-weight: 700;
-  color: #585878;
-}
-
-.guestbook-ai-targets,
-.guestbook-ai-versions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.guestbook-ai-target-btn,
-.guestbook-ai-version-btn {
-  border: 1px solid rgba(122, 122, 171, 0.16);
-  background: #fff;
-  color: #4d4d69;
-  border-radius: 999px;
-  padding: 10px 14px;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.guestbook-ai-target-btn.is-active,
-.guestbook-ai-version-btn.is-active {
-  border-color: rgba(141, 130, 228, 0.34);
-  background: linear-gradient(135deg, #edf1ff 0%, #f8ebf8 100%);
-  color: #5d53b4;
-}
-
-.guestbook-ai-results-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.guestbook-ai-status {
-  margin-bottom: 12px;
-  color: #6e6e8e;
-}
-
-.guestbook-ai-list {
-  display: grid;
-  gap: 12px;
-}
-
-.guestbook-ai-item {
-  padding: 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(126, 126, 174, 0.14);
-  background: #fafaff;
-}
-
-.guestbook-ai-item-text {
-  margin: 0 0 12px;
-  line-height: 1.72;
-  color: #414161;
-  white-space: pre-wrap;
-}
-
-.guestbook-ai-item-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-/* =========================
-   Mobile
-========================= */
-@media (max-width: 768px) {
-  .account-list {
-    grid-template-columns: 1fr;
-  }
-
-  .guestbook-ai-row,
-  .guestbook-ai-results-head,
-  .guestbook-card-head {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .guestbook-actions {
-    flex-direction: column-reverse;
-  }
-
-  .guestbook-actions .button,
-  .guestbook-ai-row .button,
-  .account-copy-btn {
-    width: 100%;
-  }
 }

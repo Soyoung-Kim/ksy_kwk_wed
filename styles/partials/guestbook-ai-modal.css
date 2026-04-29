@@ -1,0 +1,131 @@
+/* =========================================================
+   AI Modal
+========================================================= */
+.guestbook-ai-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+}
+
+.guestbook-ai-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 24, 40, 0.42);
+}
+
+.guestbook-ai-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(760px, calc(100% - 24px));
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  margin: 18px auto;
+  padding: 24px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(20, 20, 44, 0.24);
+}
+
+.guestbook-ai-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.guestbook-ai-kicker {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8a84df;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.guestbook-ai-header h3 {
+  margin: 0;
+  color: #454565;
+}
+
+.guestbook-ai-close {
+  border: 0;
+  background: transparent;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #77779a;
+}
+
+.guestbook-ai-section {
+  margin-top: 18px;
+}
+
+.guestbook-ai-label {
+  margin: 0 0 10px;
+  font-weight: 700;
+  color: #585878;
+}
+
+.guestbook-ai-targets,
+.guestbook-ai-versions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.guestbook-ai-target-btn,
+.guestbook-ai-version-btn {
+  border: 1px solid rgba(122, 122, 171, 0.16);
+  background: #fff;
+  color: #4d4d69;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.guestbook-ai-target-btn.is-active,
+.guestbook-ai-version-btn.is-active {
+  border-color: rgba(141, 130, 228, 0.34);
+  background: linear-gradient(135deg, #edf1ff 0%, #f8ebf8 100%);
+  color: #5d53b4;
+}
+
+.guestbook-ai-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guestbook-ai-status {
+  margin-bottom: 12px;
+  color: #6e6e8e;
+}
+
+.guestbook-ai-list {
+  display: grid;
+  gap: 12px;
+}
+
+.guestbook-ai-item {
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(126, 126, 174, 0.14);
+  background: #fafaff;
+}
+
+.guestbook-ai-item-text {
+  margin: 0 0 12px;
+  line-height: 1.72;
+  color: #414161;
+  white-space: pre-wrap;
+}
+
+.guestbook-ai-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

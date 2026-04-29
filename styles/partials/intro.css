@@ -1,0 +1,167 @@
+/* =========================================================
+   Intro
+========================================================= */
+.intro-stage {
+  --intro-bg-color: #f6eef0;
+  --intro-overlay-opacity: 0.16;
+  --intro-stage-height: 140svh;
+  position: relative;
+  min-height: var(--intro-stage-height);
+}
+
+.intro-sticky {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--intro-bg-color);
+}
+
+.intro-media {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #f7eef2 0%, #f3edf4 52%, #f2edf5 100%);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.intro-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(40, 26, 18, 0.10) 0%,
+      rgba(34, 22, 18, 0.18) 45%,
+      rgba(22, 15, 14, 0.28) 100%
+    );
+  opacity: var(--intro-overlay-opacity);
+  transition: opacity 0.18s linear;
+  pointer-events: none;
+}
+
+.intro-copy {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 56px;
+  text-align: center;
+  color: #494021;
+  will-change: transform, opacity;
+}
+
+.intro-kicker {
+  margin: 0 0 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+.intro-flower {
+  margin-bottom: 14px;
+  font-size: 1.1rem;
+  opacity: 0.88;
+}
+
+.intro-title {
+  margin: 0;
+  font-size: clamp(2.0rem, 7vw, 4.0rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.intro-subtitle {
+  margin: 18px 0 0;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+.intro-countdown-wrap {
+  width: min(520px, calc(100% - 12px));
+  margin-top: 26px;
+  padding: 20px 14px 18px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 42px rgba(22, 18, 28, 0.16);
+}
+
+.intro-countdown-caption {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.intro-countdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.intro-countdown-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.intro-countdown-item strong {
+  display: block;
+  font-size: clamp(1.7rem, 4vw, 2.2rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.intro-countdown-item span {
+  font-size: 0.84rem;
+  opacity: 0.92;
+}
+
+.intro-dday-text {
+  margin: 14px 0 0;
+  font-size: 0.96rem;
+  font-weight: 600;
+  opacity: 0.96;
+}
+
+.intro-scroll {
+  margin-top: 34px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.intro-scroll span {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.1) 100%);
+}
