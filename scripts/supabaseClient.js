@@ -1,4 +1,4 @@
-import { APP_CONFIG } from '../../config.js';
+import { APP_CONFIG } from '../config.js';
 
 function getSupabaseGlobal() {
   return window.supabase;
@@ -14,12 +14,13 @@ export function hasSupabaseConfig() {
   );
 }
 
-export const supabaseClient = hasSupabaseConfig() && getSupabaseGlobal()?.createClient
-  ? getSupabaseGlobal().createClient(
-      APP_CONFIG.supabaseUrl,
-      APP_CONFIG.supabasePublishableKey
-    )
-  : null;
+export const supabaseClient =
+  hasSupabaseConfig() && getSupabaseGlobal()?.createClient
+    ? getSupabaseGlobal().createClient(
+        APP_CONFIG.supabaseUrl,
+        APP_CONFIG.supabasePublishableKey
+      )
+    : null;
 
 export function getFunctionHeaders() {
   if (!hasSupabaseConfig()) {
