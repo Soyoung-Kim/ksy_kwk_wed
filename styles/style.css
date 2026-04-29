@@ -546,6 +546,40 @@ a {
 .gallery > div:hover img {
   transform: scale(1.03);
 }
+.gallery-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f3ecff 0%, #fff1f7 100%);
+  color: #8b6ea8;
+  font-size: 0.82rem;
+  font-weight: 700;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.gallery-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.gallery-more-btn {
+  min-width: 160px;
+}
+
+.gallery-empty {
+  grid-column: 1 / -1;
+  padding: 28px 16px;
+  border-radius: 20px;
+  background: #faf6f3;
+  color: #7f6e63;
+  text-align: center;
+  border: 1px dashed rgba(160, 130, 105, 0.18);
+}
 
 /* =========================================================
    Details / Location
@@ -1215,6 +1249,16 @@ a {
 }
 
 @media (max-width: 768px) {
+  .gallery-count {
+    display: inline-flex;
+    margin-left: 8px;
+    margin-top: 6px;
+    font-size: 0.76rem;
+  }
+
+  .gallery-more-btn {
+    width: 100%;
+  }
   .page-shell {
     width: min(100%, calc(100% - 16px));
     padding-top: 16px;

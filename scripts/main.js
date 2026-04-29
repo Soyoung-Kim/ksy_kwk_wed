@@ -13,6 +13,19 @@ function showToastFallback(message) {
     toast.classList.remove('is-visible');
   }, 2200);
 }
+function initInteractionGuard() {
+  // 전체 우클릭 방지
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+  });
+
+  // 이미지 드래그 방지
+  document.addEventListener('dragstart', (event) => {
+    if (event.target instanceof HTMLImageElement) {
+      event.preventDefault();
+    }
+  });
+}
 
 async function safeImport(label, path) {
   try {
@@ -97,6 +110,7 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initInteractionGuard();
   init().catch((error) => {
     console.error('[main] fatal init error', error);
     showToastFallback('페이지 초기화 중 오류가 발생했습니다.');
