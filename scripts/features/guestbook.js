@@ -1,223 +1,175 @@
-import { APP_CONFIG } from '../config.js';
-import {
-  supabaseClient,
-  hasSupabaseConfig,
-  getFunctionHeaders,
-} from '../supabaseClient.js';
+import { APP_CONFIG } from '../../config.js';
+import { supabaseClient, hasSupabaseConfig, getFunctionHeaders } from '../supabaseClient.js';
+import { qs, qsa, escapeHtml, showToast, formatGuestbookDate } from '../utils.js';
 
-const GUESTBOOK_SELECT_COLUMNS =
-  'id, side, display_name, message, created_at, updated_at';
+const GUESTBOOK_SELECT_COLUMNS = 'id, side, display_name, message, created_at, updated_at';
+const PASSWORD_MIN_LENGTH = 4;
+const PASSWORD_MAX_LENGTH = 20;
 
 const state = {
-  selectedSide: 'groom',
-  editId: null,
+  entries: [],
+  selectedSide: '',
+  editId: '',
   submitting: false,
-  entries: new Map(),
+  aiLoading: false,
+  aiTarget: 'groom',
+  aiVersion: 'friend',
+  aiSuggestions: []
 };
-
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) =>
-  Array.from(root.querySelectorAll(selector));
-
-function escapeHtml(value = '') {
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-function formatGuestbookDate(iso) {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-
-  const yy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  const hh = String(date.getHours()).padStart(2, '0');
-  const mi = String(date.getMinutes()).padStart(2, '0');
-
-  return `${yy}.${mm}.${dd} ${hh}:${mi}`;
-}
-
-function showToast(message) {
-  if (!message) return;
-  window.alert(message);
-}
-
-function getGuestbookConfig() {
-  return {
-    table: APP_CONFIG?.guestbook?.table || 'guestbook_entries',
-    functions: {
-      create: APP_CONFIG?.guestbook?.functions?.create || 'guestbook-create',
-      update: APP_CONFIG?.guestbook?.functions?.update || 'guestbook-update',
-      delete: APP_CONFIG?.guestbook?.functions?.delete || 'guestbook-delete',
-    },
-  };
-}
 
 const els = {};
 
 function cacheElements() {
-  els.root = $('#guestbook');
-  els.status = $('#guestbook-status');
-  els.openButton = $('#guestbook-open-btn');
-  els.formPanel = $('#guestbook-form-panel');
-  els.formTitle = $('#guestbook-form-title');
-  els.formCaption = $('#guestbook-form-caption');
-  els.form = $('#guestbook-form');
-  els.editId = $('#guestbook-edit-id');
-  els.name = $('#guestbook-name');
-  els.message = $('#guestbook-message');
-  els.password = $('#guestbook-password');
-  els.cancelButton = $('#guestbook-cancel-btn');
-  els.submitButton = $('#guestbook-submit-btn');
-  els.list = $('#guestbook-list');
-  els.sideButtons = $$('#guestbook-side-picker [data-side]');
+  els.root = qs('#guestbook');
+  els.status = qs('#guestbook-status');
+  els.list = qs('#guestbook-list');
+  els.openButton = qs('#guestbook-open-btn');
+  els.formPanel = qs('#guestbook-form-panel');
+  els.form = qs('#guestbook-form');
+  els.formTitle = qs('#guestbook-form-title');
+  els.formCaption = qs('#guestbook-form-caption');
+  els.editId = qs('#guestbook-edit-id');
+  els.name = qs('#guestbook-name');
+  els.message = qs('#guestbook-message');
+  els.password = qs('#guestbook-password');
+  els.submitButton = qs('#guestbook-submit-btn');
+  els.cancelButton = qs('#guestbook-cancel-btn');
+  els.sideButtons = qsa('.guestbook-side-btn');
+  els.editLock = qs('#guestbook-edit-lock');
+  els.editCancelOverlayButton = qs('#guestbook-edit-cancel-overlay-btn');
+
+  els.aiOpenButton = qs('#guestbook-ai-open');
+  els.aiModal = qs('#guestbook-ai-modal');
+  els.aiCloseButton = qs('#guestbook-ai-close');
+  els.aiBackdrop = els.aiModal ? els.aiModal.querySelector('[data-ai-close="true"]') : null;
+  els.aiTargetButtons = qsa('.guestbook-ai-target-btn');
+  els.aiVersionButtons = qsa('.guestbook-ai-version-btn');
+  els.aiStatus = qs('#guestbook-ai-status');
+  els.aiList = qs('#guestbook-ai-list');
+  els.aiRefreshButton = qs('#guestbook-ai-refresh');
+
+  els.accountCopyButtons = qsa('.account-copy-btn');
 }
 
-function setStatus(message = '', tone = 'neutral') {
-  if (!els.status) return;
-
-  els.status.textContent = message;
-  els.status.classList.remove(
-    'is-loading',
-    'is-success',
-    'is-error',
-    'is-neutral'
-  );
-
-  if (tone) {
-    els.status.classList.add(`is-${tone}`);
+function setStatus(message = '') {
+  if (els.status) {
+    els.status.textContent = message;
   }
 }
 
-function getSelectedSideLabel(side) {
-  return side === 'bride' ? '신부 지인' : '신랑 지인';
+function pickRandomSide() {
+  return Math.random() < 0.5 ? 'groom' : 'bride';
+}
+
+function getSideLabel(side) {
+  return side === 'groom' ? '신랑 지인' : '신부 지인';
+}
+
+function getBrideName() {
+  return APP_CONFIG?.guestbook?.brideName || '소영';
+}
+
+function getGroomName() {
+  return APP_CONFIG?.guestbook?.groomName || '우경';
 }
 
 function setSelectedSide(side) {
-  state.selectedSide = side === 'bride' ? 'bride' : 'groom';
+  state.selectedSide = side;
 
   els.sideButtons.forEach((button) => {
-    const active = button.dataset.side === state.selectedSide;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    const isActive = button.dataset.side === side;
+    button.classList.toggle('is-groom-active', isActive && side === 'groom');
+    button.classList.toggle('is-bride-active', isActive && side === 'bride');
+    button.setAttribute('aria-pressed', String(isActive));
   });
 }
 
-function openForm(mode = 'create') {
-  if (!els.formPanel) return;
+function resetForm() {
+  state.editId = '';
+  els.editId.value = '';
+  els.name.value = '';
+  els.message.value = '';
+  els.password.value = '';
+  els.formTitle.textContent = '방명록 남기기';
+  els.formCaption.textContent = '따뜻한 축하의 말을 남겨주세요.';
+  setSelectedSide(pickRandomSide());
+  unlockGuestbookBoard();
+}
 
+function openCreateForm() {
+  resetForm();
   els.formPanel.hidden = false;
-
-  if (mode === 'edit') {
-    els.formTitle.textContent = '방명록 수정';
-    els.formCaption.textContent =
-      '등록할 때 입력한 비밀번호를 다시 입력해 주세요.';
-    els.submitButton.textContent = '수정 완료';
-  } else {
-    els.formTitle.textContent = '방명록 남기기';
-    els.formCaption.textContent = '축하 메시지를 남겨 주세요.';
-    els.submitButton.textContent = '작성 완료';
-  }
-
-  requestAnimationFrame(() => {
-    els.name?.focus();
-  });
+  els.name.focus();
 }
 
 function closeForm() {
-  state.editId = null;
-
-  if (els.editId) els.editId.value = '';
-  if (els.form) els.form.reset();
-
-  setSelectedSide('groom');
-
-  if (els.formPanel) {
-    els.formPanel.hidden = true;
-  }
-
-  if (els.formTitle) {
-    els.formTitle.textContent = '방명록 남기기';
-  }
-
-  if (els.formCaption) {
-    els.formCaption.textContent = '축하 메시지를 남겨 주세요.';
-  }
-
-  if (els.submitButton) {
-    els.submitButton.textContent = '작성 완료';
-    els.submitButton.disabled = false;
-  }
-
-  if (els.cancelButton) {
-    els.cancelButton.disabled = false;
-  }
-
-  if (els.openButton) {
-    els.openButton.disabled = false;
-  }
-
-  setStatus('', 'neutral');
+  els.formPanel.hidden = true;
+  resetForm();
 }
 
-function setSubmitting(flag) {
-  state.submitting = flag;
-
-  if (els.submitButton) {
-    els.submitButton.disabled = flag;
-    if (flag) {
-      els.submitButton.textContent = state.editId ? '수정 중...' : '등록 중...';
-    } else {
-      els.submitButton.textContent = state.editId ? '수정 완료' : '작성 완료';
-    }
+function lockGuestbookBoard() {
+  if (els.editLock) {
+    els.editLock.hidden = false;
   }
 
-  if (els.cancelButton) els.cancelButton.disabled = flag;
-  if (els.openButton) els.openButton.disabled = flag;
+  qsa('.guestbook-entry-action').forEach((button) => {
+    button.setAttribute('disabled', 'disabled');
+  });
 }
 
-function buildEntryCard(entry) {
-  const sideClass = entry.side === 'bride' ? 'bride' : 'groom';
-  const sideLabel = getSelectedSideLabel(entry.side);
+function unlockGuestbookBoard() {
+  if (els.editLock) {
+    els.editLock.hidden = true;
+  }
 
+  qsa('.guestbook-entry-action').forEach((button) => {
+    button.removeAttribute('disabled');
+  });
+}
+
+function fillFormForEdit(entry) {
+  state.editId = entry.id;
+  els.editId.value = entry.id;
+  els.name.value = entry.display_name;
+  els.message.value = entry.message;
+  els.password.value = '';
+  els.formTitle.textContent = '방명록 수정';
+  els.formCaption.textContent = '수정 후 비밀번호를 다시 입력해주세요.';
+  setSelectedSide(entry.side);
+  els.formPanel.hidden = false;
+  lockGuestbookBoard();
+  els.name.focus();
+}
+
+function buildCard(entry) {
   return `
-    <article class="guestbook-card" data-id="${entry.id}">
+    <article class="guestbook-card" data-entry-id="${entry.id}">
       <div class="guestbook-card-head">
-        <div class="guestbook-meta">
-          <span class="guestbook-side guestbook-side--${sideClass}">
-            ${escapeHtml(sideLabel)}
-          </span>
-          <strong class="guestbook-name">
+        <div class="guestbook-card-meta">
+          <div class="guestbook-card-name">
+            <span class="guestbook-side-badge ${entry.side}">${getSideLabel(entry.side)}</span>
             ${escapeHtml(entry.display_name)}
-          </strong>
+          </div>
+          <div class="guestbook-card-date">${formatGuestbookDate(entry.created_at)}</div>
         </div>
-        <time class="guestbook-date" datetime="${escapeHtml(entry.created_at)}">
-          ${escapeHtml(formatGuestbookDate(entry.created_at))}
-        </time>
       </div>
 
-      <p class="guestbook-message">
-        ${escapeHtml(entry.message).replace(/\n/g, '<br />')}
-      </p>
+      <div class="guestbook-card-message">${escapeHtml(entry.message)}</div>
 
       <div class="guestbook-card-actions">
         <button
           type="button"
-          class="guestbook-card-btn"
+          class="button button-secondary guestbook-entry-action guestbook-entry-edit"
           data-action="edit"
-          data-id="${entry.id}"
+          data-entry-id="${entry.id}"
         >
           수정
         </button>
         <button
           type="button"
-          class="guestbook-card-btn danger"
+          class="button button-secondary guestbook-entry-action guestbook-entry-delete"
           data-action="delete"
-          data-id="${entry.id}"
+          data-entry-id="${entry.id}"
         >
           삭제
         </button>
@@ -226,224 +178,372 @@ function buildEntryCard(entry) {
   `;
 }
 
-function renderGuestbook(entries = []) {
-  if (!els.list) return;
+function renderGuestbook() {
+  if (!els.list) {
+    return;
+  }
 
-  state.entries.clear();
-  entries.forEach((entry) => {
-    state.entries.set(entry.id, entry);
-  });
-
-  if (!entries.length) {
+  if (!state.entries.length) {
     els.list.innerHTML = `
-      <div class="guestbook-empty-card">
-        아직 등록된 방명록이 없습니다.<br />
-        첫 번째 축하 메시지를 남겨 주세요.
+      <div class="guestbook-card">
+        <div class="guestbook-card-message">첫 번째 축하 메시지를 남겨주세요.</div>
       </div>
     `;
     return;
   }
 
-  els.list.innerHTML = entries.map(buildEntryCard).join('');
+  els.list.innerHTML = state.entries.map(buildCard).join('');
+}
+
+async function loadGuestbook() {
+  if (!hasSupabaseConfig()) {
+    setStatus('Supabase 설정이 비어 있습니다.');
+    return;
+  }
+
+  setStatus('방명록을 불러오는 중입니다.');
+
+  const { data, error } = await supabaseClient
+    .from(APP_CONFIG.guestbook.table)
+    .select(GUESTBOOK_SELECT_COLUMNS)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    setStatus('방명록을 불러오지 못했습니다.');
+    return;
+  }
+
+  state.entries = Array.isArray(data) ? data : [];
+  renderGuestbook();
+  setStatus(state.entries.length ? '' : '아직 등록된 방명록이 없습니다.');
 }
 
 function getFunctionUrl(functionName) {
   return `${APP_CONFIG.supabaseUrl}/functions/v1/${functionName}`;
 }
 
-async function invokeEdgeFunction(functionName, payload) {
+async function invokeFunction(functionName, payload) {
   const response = await fetch(getFunctionUrl(functionName), {
     method: 'POST',
-    headers: getFunctionHeaders(),
-    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+      ...getFunctionHeaders()
+    },
+    body: JSON.stringify(payload)
   });
 
   const result = await response.json().catch(() => ({}));
 
-  if (!response.ok || result?.success === false) {
-    throw new Error(result?.error || '요청 처리에 실패했습니다.');
+  if (!response.ok) {
+    const message = result?.error || result?.message || '요청 처리에 실패했습니다.';
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
   }
 
   return result;
 }
 
-async function loadGuestbook() {
-  if (!hasSupabaseConfig || !supabaseClient) {
-    renderGuestbook([]);
-    setStatus(
-      'Supabase 설정이 아직 완료되지 않았습니다. config.js를 확인해 주세요.',
-      'error'
-    );
-    return;
-  }
-
-  setStatus('방명록을 불러오는 중입니다.', 'loading');
-
-  try {
-    const { table } = getGuestbookConfig();
-
-    const { data, error } = await supabaseClient
-      .from(table)
-      .select(GUESTBOOK_SELECT_COLUMNS)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
-    renderGuestbook(data || []);
-    setStatus('', 'neutral');
-  } catch (error) {
-    console.error('[guestbook] load error:', error);
-    renderGuestbook([]);
-    setStatus(
-      '방명록을 불러오지 못했습니다. SQL / RLS / 키 설정을 확인해 주세요.',
-      'error'
-    );
-  }
-}
-
 function validateForm() {
-  const displayName = (els.name?.value || '').trim();
-  const message = (els.message?.value || '').trim();
-  const password = (els.password?.value || '').trim();
+  const name = els.name.value.trim();
+  const message = els.message.value.trim();
+  const password = els.password.value.trim();
 
-  if (!displayName) throw new Error('이름을 입력해 주세요.');
-  if (displayName.length > 20) throw new Error('이름은 20자 이하로 입력해 주세요.');
+  if (!state.selectedSide) {
+    showToast('신랑 지인 또는 신부 지인을 선택해주세요.');
+    return null;
+  }
 
-  if (!message) throw new Error('축하 메시지를 입력해 주세요.');
-  if (message.length > 300) throw new Error('메시지는 300자 이하로 입력해 주세요.');
+  if (!name || name.length > 20) {
+    showToast('이름은 1자 이상 20자 이하로 입력해주세요.');
+    return null;
+  }
 
-  if (!password) throw new Error('비밀번호를 입력해 주세요.');
-  if (password.length < 4) throw new Error('비밀번호는 4자 이상이어야 합니다.');
+  if (!message || message.length > 300) {
+    showToast('메시지는 1자 이상 300자 이하로 입력해주세요.');
+    return null;
+  }
+
+  if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
+    showToast(`비밀번호는 ${PASSWORD_MIN_LENGTH}자 이상 ${PASSWORD_MAX_LENGTH}자 이하로 입력해주세요.`);
+    return null;
+  }
 
   return {
     side: state.selectedSide,
-    display_name: displayName,
+    display_name: name,
     message,
-    password,
+    password
   };
-}
-
-function fillFormForEdit(entry) {
-  state.editId = entry.id;
-  if (els.editId) els.editId.value = entry.id;
-  if (els.name) els.name.value = entry.display_name || '';
-  if (els.message) els.message.value = entry.message || '';
-  if (els.password) els.password.value = '';
-
-  setSelectedSide(entry.side || 'groom');
-  openForm('edit');
-  setStatus('수정 내용을 입력한 뒤 비밀번호를 다시 입력해 주세요.', 'neutral');
 }
 
 async function handleSubmit(event) {
   event.preventDefault();
-  if (state.submitting) return;
+
+  if (state.submitting) {
+    return;
+  }
+
+  const payload = validateForm();
+  if (!payload) {
+    return;
+  }
+
+  state.submitting = true;
+  els.submitButton.setAttribute('disabled', 'disabled');
 
   try {
-    const payload = validateForm();
-    const { functions } = getGuestbookConfig();
-
-    setSubmitting(true);
-
     if (state.editId) {
-      setStatus('방명록을 수정하는 중입니다.', 'loading');
-      await invokeEdgeFunction(functions.update, {
+      await invokeFunction(APP_CONFIG.guestbook.functions.update, {
         id: state.editId,
-        ...payload,
+        ...payload
       });
       showToast('방명록이 수정되었습니다.');
     } else {
-      setStatus('방명록을 등록하는 중입니다.', 'loading');
-      await invokeEdgeFunction(functions.create, payload);
+      await invokeFunction(APP_CONFIG.guestbook.functions.create, payload);
       showToast('방명록이 등록되었습니다.');
     }
 
-    await loadGuestbook();
     closeForm();
+    await loadGuestbook();
   } catch (error) {
-    console.error('[guestbook] submit error:', error);
-    setStatus(
-      error instanceof Error ? error.message : '방명록 저장에 실패했습니다.',
-      'error'
-    );
+    console.error(error);
+
+    if (error?.status === 404 || error?.status === 409) {
+      showToast('이미 삭제되었거나 수정할 수 없는 글입니다.');
+      closeForm();
+      await loadGuestbook();
+    } else {
+      showToast(error?.message || '저장에 실패했습니다.');
+    }
   } finally {
-    setSubmitting(false);
+    state.submitting = false;
+    els.submitButton.removeAttribute('disabled');
   }
 }
 
-async function handleDelete(id) {
-  const entry = state.entries.get(id);
-  if (!entry) return;
+async function handleDelete(entryId) {
+  if (state.editId) {
+    showToast('수정 중에는 다른 글을 삭제할 수 없습니다.');
+    return;
+  }
 
-  const password = window.prompt(
-    `${entry.display_name}님의 방명록을 삭제하려면 비밀번호를 입력해 주세요.`
-  );
+  const password = window.prompt('삭제에 사용할 비밀번호를 입력해주세요.');
 
-  if (password === null) return;
-  if (!password.trim()) {
-    showToast('비밀번호를 입력해야 삭제할 수 있습니다.');
+  if (!password) {
+    return;
+  }
+
+  if (password.trim().length < PASSWORD_MIN_LENGTH) {
+    showToast(`비밀번호는 ${PASSWORD_MIN_LENGTH}자 이상이어야 합니다.`);
     return;
   }
 
   try {
-    setStatus('방명록을 삭제하는 중입니다.', 'loading');
-
-    const { functions } = getGuestbookConfig();
-
-    await invokeEdgeFunction(functions.delete, {
-      id,
-      password: password.trim(),
+    await invokeFunction(APP_CONFIG.guestbook.functions.delete, {
+      id: entryId,
+      password: password.trim()
     });
 
     showToast('방명록이 삭제되었습니다.');
     await loadGuestbook();
   } catch (error) {
-    console.error('[guestbook] delete error:', error);
-    setStatus(
-      error instanceof Error ? error.message : '방명록 삭제에 실패했습니다.',
-      'error'
-    );
+    console.error(error);
+    showToast(error?.message || '삭제에 실패했습니다.');
   }
 }
 
-function bindSideButtons() {
+function handleListClick(event) {
+  const button = event.target.closest('[data-action]');
+  if (!button) {
+    return;
+  }
+
+  const entryId = button.dataset.entryId;
+  const action = button.dataset.action;
+  const entry = state.entries.find((item) => item.id === entryId);
+
+  if (!entry) {
+    showToast('이미 삭제되었거나 존재하지 않는 글입니다.');
+    loadGuestbook();
+    return;
+  }
+
+  if (action === 'edit') {
+    fillFormForEdit(entry);
+    return;
+  }
+
+  if (action === 'delete') {
+    handleDelete(entryId);
+  }
+}
+
+function setAiStatus(message) {
+  if (els.aiStatus) {
+    els.aiStatus.textContent = message;
+  }
+}
+
+function setAiTarget(target) {
+  state.aiTarget = target;
+
+  els.aiTargetButtons.forEach((button) => {
+    button.classList.toggle('is-active', button.dataset.aiTarget === target);
+  });
+}
+
+function setAiVersion(version) {
+  state.aiVersion = version;
+
+  els.aiVersionButtons.forEach((button) => {
+    button.classList.toggle('is-active', button.dataset.aiVersion === version);
+  });
+}
+
+function renderAiSuggestions() {
+  if (!els.aiList) {
+    return;
+  }
+
+  if (!state.aiSuggestions.length) {
+    els.aiList.innerHTML = '';
+    return;
+  }
+
+  els.aiList.innerHTML = state.aiSuggestions
+    .map(
+      (text, index) => `
+        <article class="guestbook-ai-item">
+          <p class="guestbook-ai-item-text">${escapeHtml(text)}</p>
+          <div class="guestbook-ai-item-actions">
+            <button type="button" class="button button-secondary" data-ai-copy-index="${index}">복사</button>
+            <button type="button" class="button button-primary" data-ai-apply-index="${index}">바로 입력</button>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+async function loadAiSuggestions() {
+  if (state.aiLoading) {
+    return;
+  }
+
+  state.aiLoading = true;
+  state.aiSuggestions = [];
+  renderAiSuggestions();
+  setAiStatus('AI 추천 문구를 불러오는 중입니다...');
+
+  try {
+    const result = await invokeFunction(APP_CONFIG.guestbook.functions.aiSuggest, {
+      target: state.aiTarget,
+      version: state.aiVersion,
+      groomName: getGroomName(),
+      brideName: getBrideName()
+    });
+
+    state.aiSuggestions = Array.isArray(result?.suggestions) ? result.suggestions : [];
+    renderAiSuggestions();
+    setAiStatus(state.aiSuggestions.length ? '추천 문구를 골라 바로 입력하거나 복사할 수 있어요.' : '추천 문구를 불러오지 못했습니다.');
+  } catch (error) {
+    console.error(error);
+    setAiStatus(error?.message || '추천 문구를 불러오지 못했습니다.');
+  } finally {
+    state.aiLoading = false;
+  }
+}
+
+function openAiModal() {
+  if (!state.selectedSide) {
+    setSelectedSide(pickRandomSide());
+  }
+
+  setAiTarget(state.selectedSide || 'groom');
+  setAiVersion('friend');
+  state.aiSuggestions = [];
+  renderAiSuggestions();
+  setAiStatus('대상과 버전을 선택하면 추천 문구를 불러옵니다.');
+  els.aiModal.hidden = false;
+  loadAiSuggestions();
+}
+
+function closeAiModal() {
+  els.aiModal.hidden = true;
+}
+
+async function copyToClipboard(text, successMessage) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(successMessage);
+  } catch (error) {
+    console.error(error);
+    showToast('복사에 실패했습니다.');
+  }
+}
+
+function bindEvents() {
+  els.openButton?.addEventListener('click', openCreateForm);
+  els.cancelButton?.addEventListener('click', closeForm);
+  els.editCancelOverlayButton?.addEventListener('click', closeForm);
+  els.form?.addEventListener('submit', handleSubmit);
+  els.list?.addEventListener('click', handleListClick);
+
   els.sideButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      const side = button.dataset.side;
-      if (side !== 'groom' && side !== 'bride') return;
-      setSelectedSide(side);
+      setSelectedSide(button.dataset.side);
     });
   });
-}
 
-function bindOpenClose() {
-  els.openButton?.addEventListener('click', () => {
-    state.editId = null;
-    openForm('create');
+  els.accountCopyButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      copyToClipboard(button.dataset.copy || '', '계좌정보를 복사했습니다.');
+    });
   });
 
-  els.cancelButton?.addEventListener('click', () => {
-    closeForm();
+  els.aiOpenButton?.addEventListener('click', openAiModal);
+  els.aiCloseButton?.addEventListener('click', closeAiModal);
+  els.aiBackdrop?.addEventListener('click', closeAiModal);
+  els.aiRefreshButton?.addEventListener('click', loadAiSuggestions);
+
+  els.aiTargetButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      setAiTarget(button.dataset.aiTarget);
+      await loadAiSuggestions();
+    });
   });
-}
 
-function bindListActions() {
-  els.list?.addEventListener('click', async (event) => {
-    const button = event.target.closest('[data-action]');
-    if (!button) return;
+  els.aiVersionButtons.forEach((button) => {
+    button.addEventListener('click', async () => {
+      setAiVersion(button.dataset.aiVersion);
+      await loadAiSuggestions();
+    });
+  });
 
-    const { action, id } = button.dataset;
-    if (!id) return;
+  els.aiList?.addEventListener('click', async (event) => {
+    const copyButton = event.target.closest('[data-ai-copy-index]');
+    const applyButton = event.target.closest('[data-ai-apply-index]');
 
-    if (action === 'edit') {
-      const entry = state.entries.get(id);
-      if (!entry) return;
-      fillFormForEdit(entry);
+    if (copyButton) {
+      const text = state.aiSuggestions[Number(copyButton.dataset.aiCopyIndex)];
+      if (text) {
+        await copyToClipboard(text, '추천 문구를 복사했습니다.');
+      }
       return;
     }
 
-    if (action === 'delete') {
-      await handleDelete(id);
+    if (applyButton) {
+      const text = state.aiSuggestions[Number(applyButton.dataset.aiApplyIndex)];
+      if (!text) {
+        return;
+      }
+
+      els.message.value = text;
+      closeAiModal();
+      els.message.focus();
+      showToast('추천 문구를 메시지 칸에 입력했습니다.');
     }
   });
 }
@@ -451,14 +551,11 @@ function bindListActions() {
 export async function initGuestbook() {
   cacheElements();
 
-  if (!els.root) return;
+  if (!els.root) {
+    return;
+  }
 
-  bindSideButtons();
-  bindOpenClose();
-  bindListActions();
-  els.form?.addEventListener('submit', handleSubmit);
-
-  setSelectedSide('groom');
+  bindEvents();
   closeForm();
   await loadGuestbook();
 }

@@ -132,84 +132,195 @@
       </div>
     </section>
 
-    <section id="guestbook" class="section guestbook-section">
-      <div class="section-header">
+    <section class="wedding-accounts" aria-labelledby="wedding-accounts-title">
+      <div class="section-heading">
+        <p class="section-kicker">Account</p>
+        <h2 id="wedding-accounts-title">마음 전하실 곳</h2>
+        <p class="section-description">참석이 어려우셔도 따뜻한 축하의 마음 감사히 받겠습니다.</p>
+      </div>
+
+      <div class="account-list">
+        <article class="account-card account-card-groom">
+          <div class="account-card-head">
+            <span class="account-badge">신랑측</span>
+            <h3>우경</h3>
+          </div>
+          <dl class="account-meta">
+            <div class="account-row">
+              <dt>은행</dt>
+              <dd>국민은행</dd>
+            </div>
+            <div class="account-row">
+              <dt>예금주</dt>
+              <dd>우경</dd>
+            </div>
+            <div class="account-row">
+              <dt>계좌번호</dt>
+              <dd>123456-78-901234</dd>
+            </div>
+          </dl>
+          <button type="button" class="button button-secondary account-copy-btn" data-copy="국민은행 123456-78-901234 우경">
+            계좌 복사
+          </button>
+        </article>
+
+        <article class="account-card account-card-bride">
+          <div class="account-card-head">
+            <span class="account-badge">신부측</span>
+            <h3>소영</h3>
+          </div>
+          <dl class="account-meta">
+            <div class="account-row">
+              <dt>은행</dt>
+              <dd>신한은행</dd>
+            </div>
+            <div class="account-row">
+              <dt>예금주</dt>
+              <dd>소영</dd>
+            </div>
+            <div class="account-row">
+              <dt>계좌번호</dt>
+              <dd>110-123-456789</dd>
+            </div>
+          </dl>
+          <button type="button" class="button button-secondary account-copy-btn" data-copy="신한은행 110-123-456789 소영">
+            계좌 복사
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <section id="guestbook" class="guestbook-section">
+      <div class="section-heading">
         <p class="section-kicker">Guestbook</p>
-        <h2 class="section-title">축하의 마음을 남겨주세요</h2>
+        <h2>축하 메시지</h2>
         <p class="section-description">
-          소중한 한마디를 남겨주시면 오래도록 간직하겠습니다.
+          축하의 마음을 남겨주시면 오래도록 소중히 간직하겠습니다.
         </p>
       </div>
 
-      <div class="guestbook-box">
-        <div class="guestbook-toolbar">
-          <button type="button" id="guestbook-open-btn" class="button button-primary guestbook-open-btn">
-            방명록 작성
-          </button>
-        </div>
+      <div class="guestbook-toolbar">
+        <button class="button button-primary guestbook-toggle" type="button" id="guestbook-open-btn">
+          방명록 작성
+        </button>
+      </div>
 
-        <div id="guestbook-form-panel" class="guestbook-form-panel" hidden>
-          <div class="guestbook-form-card">
-            <h3 id="guestbook-form-title" class="guestbook-form-title">
-              방명록 남기기
-            </h3>
-            <p id="guestbook-form-caption" class="guestbook-form-caption">
-              축하 메시지를 남겨 주세요.
-            </p>
-
-            <form id="guestbook-form" class="guestbook-form">
-              <input type="hidden" id="guestbook-edit-id" value="" />
-
-              <div class="tag-grid" id="guestbook-side-picker">
-                <button type="button" class="tag-button active" data-side="groom">
-                  신랑 지인
-                </button>
-                <button type="button" class="tag-button" data-side="bride">
-                  신부 지인
-                </button>
-              </div>
-
-              <label class="guestbook-field">
-                <span class="guestbook-label">표시할 이름</span>
-                <input id="guestbook-name" class="guestbook-input" type="text" maxlength="20" placeholder="성함을 남겨주세요"
-                  required />
-              </label>
-
-              <label class="guestbook-field">
-                <span class="guestbook-label">축하 메시지</span>
-                <textarea id="guestbook-message" class="guestbook-textarea" rows="5" maxlength="300"
-                  placeholder="저희의 결혼을 축하해주세요" required></textarea>
-              </label>
-
-              <label class="guestbook-field">
-                <span class="guestbook-label">비밀번호</span>
-                <input id="guestbook-password" class="guestbook-input" type="password" minlength="4" maxlength="20"
-                  placeholder="수정/삭제에 사용할 비밀번호" required />
-              </label>
-
-              <p class="guestbook-help">
-                비밀번호는 브라우저에 저장되지 않으며, 수정/삭제 시 다시 입력해야 합니다.
-              </p>
-
-              <div class="guestbook-actions">
-                <button class="button button-secondary" type="button" id="guestbook-cancel-btn">
-                  취소
-                </button>
-                <button class="button button-primary" type="submit" id="guestbook-submit-btn">
-                  작성 완료
-                </button>
-              </div>
-            </form>
+      <div id="guestbook-form-panel" class="guestbook-form-panel" hidden>
+        <div class="guestbook-form-header">
+          <div>
+            <h3 id="guestbook-form-title">방명록 남기기</h3>
+            <p id="guestbook-form-caption">따뜻한 축하의 말을 남겨주세요.</p>
           </div>
         </div>
 
-        <div class="guestbook-status" id="guestbook-status">
-          방명록을 불러오는 중입니다.
+        <form class="guestbook-form" id="guestbook-form">
+          <input type="hidden" id="guestbook-edit-id" value="" />
+
+          <div class="tag-grid" id="guestbook-side-picker">
+            <button type="button" class="tag-button guestbook-side-btn" data-side="groom">
+              신랑 지인
+            </button>
+            <button type="button" class="tag-button guestbook-side-btn" data-side="bride">
+              신부 지인
+            </button>
+          </div>
+
+          <label class="guestbook-field">
+            <span class="guestbook-label">표시할 이름</span>
+            <input id="guestbook-name" class="guestbook-input" type="text" maxlength="20" placeholder="성함을 남겨주세요"
+              required />
+          </label>
+
+          <div class="guestbook-ai-row">
+            <div class="guestbook-ai-copy">
+              <strong>메시지 작성 도움</strong>
+              <span>AI 추천 축하 문구를 바로 받아볼 수 있어요.</span>
+            </div>
+            <button type="button" class="button button-secondary" id="guestbook-ai-open">
+              AI가 축하해주기
+            </button>
+          </div>
+
+          <label class="guestbook-field">
+            <span class="guestbook-label">축하 메시지</span>
+            <textarea id="guestbook-message" class="guestbook-textarea" rows="5" maxlength="300"
+              placeholder="저희의 결혼을 축하해주세요" required></textarea>
+          </label>
+
+          <label class="guestbook-field">
+            <span class="guestbook-label">비밀번호</span>
+            <input id="guestbook-password" class="guestbook-input" type="password" minlength="4" maxlength="20"
+              placeholder="수정/삭제에 사용할 비밀번호" required />
+          </label>
+
+          <p class="guestbook-help">비밀번호는 브라우저에 저장되지 않으며, 다시 입력해야 합니다.</p>
+
+          <div class="guestbook-actions">
+            <button class="button button-secondary" type="button" id="guestbook-cancel-btn">취소</button>
+            <button class="button button-primary" type="submit" id="guestbook-submit-btn">작성 완료</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="guestbook-board">
+        <div id="guestbook-edit-lock" class="guestbook-edit-lock" hidden>
+          <div class="guestbook-edit-lock-card">
+            <strong>수정 중입니다</strong>
+            <p>현재 선택한 글을 수정하는 동안 다른 글의 수정/삭제는 잠시 비활성화됩니다.</p>
+            <button type="button" class="button button-secondary" id="guestbook-edit-cancel-overlay-btn">
+              수정 취소
+            </button>
+          </div>
         </div>
 
+        <div class="guestbook-status" id="guestbook-status">방명록을 불러오는 중입니다.</div>
         <div class="guestbook-list" id="guestbook-list"></div>
       </div>
+
+      <div id="guestbook-ai-modal" class="guestbook-ai-modal" hidden>
+        <div class="guestbook-ai-backdrop" data-ai-close="true"></div>
+        <div class="guestbook-ai-dialog" role="dialog" aria-modal="true" aria-labelledby="guestbook-ai-title">
+          <div class="guestbook-ai-header">
+            <div>
+              <p class="guestbook-ai-kicker">AI Message</p>
+              <h3 id="guestbook-ai-title">AI 추천 축하 문구</h3>
+            </div>
+            <button type="button" class="guestbook-ai-close" id="guestbook-ai-close" aria-label="닫기">×</button>
+          </div>
+
+          <div class="guestbook-ai-section">
+            <p class="guestbook-ai-label">대상 선택</p>
+            <div class="guestbook-ai-targets">
+              <button type="button" class="guestbook-ai-target-btn" data-ai-target="groom">신랑 우경</button>
+              <button type="button" class="guestbook-ai-target-btn" data-ai-target="bride">신부 소영</button>
+            </div>
+          </div>
+
+          <div class="guestbook-ai-section">
+            <p class="guestbook-ai-label">버전 선택</p>
+            <div class="guestbook-ai-versions">
+              <button type="button" class="guestbook-ai-version-btn" data-ai-version="friend">친구</button>
+              <button type="button" class="guestbook-ai-version-btn" data-ai-version="coworker">직장동료</button>
+              <button type="button" class="guestbook-ai-version-btn" data-ai-version="family">가족</button>
+              <button type="button" class="guestbook-ai-version-btn" data-ai-version="olderBrother">형/오빠</button>
+              <button type="button" class="guestbook-ai-version-btn" data-ai-version="olderSister">누나/언니</button>
+            </div>
+          </div>
+
+          <div class="guestbook-ai-section">
+            <div class="guestbook-ai-results-head">
+              <p class="guestbook-ai-label">추천 문구 4개</p>
+              <button type="button" class="button button-secondary guestbook-ai-refresh" id="guestbook-ai-refresh">
+                다시 추천
+              </button>
+            </div>
+            <div id="guestbook-ai-status" class="guestbook-ai-status">대상과 버전을 선택하면 추천 문구를 불러옵니다.</div>
+            <div id="guestbook-ai-list" class="guestbook-ai-list"></div>
+          </div>
+        </div>
+      </div>
     </section>
+
 
 
     <footer class="footer">소영 ❤ 우경의 결혼식에 함께해 주셔서 감사합니다.</footer>

@@ -32,3 +32,4 @@ Supabase는 이런 비밀값을 Edge Functions 환경변수(Deno.env.get(...))�
 npx supabase functions deploy guestbook-create --no-verify-jwt
 npx supabase functions deploy guestbook-update --no-verify-jwt
 npx supabase functions deploy guestbook-delete --no-verify-jwt
+npx supabase functions deploy guestbook-ai --no-verify-jwt

@@ -12,12 +12,15 @@ export const APP_CONFIG = {
     lng: 126.9187584
   },
 
-  guestbook: {
+    guestbook: {
     table: 'guestbook_entries',
     functions: {
       create: 'guestbook-create',
       update: 'guestbook-update',
-      delete: 'guestbook-delete'
-    }
+      delete: 'guestbook-delete',
+      aiSuggest: 'guestbook-ai'
+    },
+    brideName: '소영',
+    groomName: '우경'
   }
 };
