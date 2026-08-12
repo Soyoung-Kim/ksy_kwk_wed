@@ -34,3 +34,7 @@ npx supabase functions deploy guestbook-update --no-verify-jwt
 npx supabase functions deploy guestbook-delete --no-verify-jwt
 npx supabase functions deploy guestbook-ai --no-verify-jwt
 npx serve . -l 5500
+
+## 연락처·계좌 관리
+
+Supabase SQL Editor에서 `supabase/sql/wedding_directory.sql`을 한 번 실행하세요. 이후 `wedding_contacts`, `wedding_accounts` 테이블의 행을 추가·수정하면 GitHub Pages를 다시 배포하지 않아도 연락처와 계좌 정보가 바뀝니다. `display_order`는 표시 순서이며, `is_visible`을 끄면 데이터를 보존한 채 화면에서 숨길 수 있습니다. 공개 사이트는 읽기만 가능하고, 내용 수정은 Supabase Dashboard에서만 할 수 있습니다.

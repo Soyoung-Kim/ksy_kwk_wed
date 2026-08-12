@@ -1,9 +1,9 @@
-import { qsa, copyText } from '../utils.js';
+import { copyText } from '../utils.js';
 
 export function initClipboard() {
-  qsa('[data-copy]').forEach((button) => {
-    button.addEventListener('click', async () => {
-      await copyText(button.getAttribute('data-copy') || '');
-    });
+  document.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-copy]');
+    if (!button) return;
+    await copyText(button.getAttribute('data-copy') || '');
   });
 }

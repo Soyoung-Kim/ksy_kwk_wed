@@ -51,6 +51,7 @@ async function init() {
     introModule,
     countdownModule,
     clipboardModule,
+    directoryModule,
     mapsModule,
     guestbookModule,
     sliderModule,
@@ -59,6 +60,7 @@ async function init() {
     safeImport('intro', './features/intro.js'),
     safeImport('countdown', './features/countdown.js'),
     safeImport('clipboard', './features/clipboard.js'),
+    safeImport('directory', './features/directory.js'),
     safeImport('maps', './features/maps.js'),
     safeImport('guestbook', './features/guestbook.js'),
     safeImport('slider', './features/slider.js'),
@@ -80,6 +82,12 @@ async function init() {
   if (clipboardModule?.initClipboard) {
     await safeRun('clipboard', async () => {
       clipboardModule.initClipboard();
+    });
+  }
+
+  if (directoryModule?.initDirectory) {
+    await safeRun('directory', async () => {
+      await directoryModule.initDirectory();
     });
   }
 
