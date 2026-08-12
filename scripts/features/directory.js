@@ -84,18 +84,16 @@ function createAccountCard(account) {
     createElement('h3', null, account.account_holder)
   );
 
-  const meta = createElement('dl', 'account-meta');
-  [['은행', account.bank_name], ['예금주', account.account_holder], ['계좌번호', account.account_number]]
-    .forEach(([label, value]) => {
-      const row = createElement('div', 'account-row');
-      row.append(createElement('dt', null, label), createElement('dd', null, value));
-      meta.append(row);
-    });
+  const accountInfo = createElement(
+    'p',
+    'account-bank-number',
+    `${account.bank_name}  ${account.account_number}`
+  );
 
   const copyButton = createElement('button', 'button button-secondary account-copy-btn', '계좌 복사');
   copyButton.type = 'button';
   copyButton.dataset.copy = `${account.bank_name} ${account.account_number} ${account.account_holder}`;
-  card.append(head, meta, copyButton);
+  card.append(head, accountInfo, copyButton);
   return card;
 }
 
@@ -139,7 +137,7 @@ function renderContacts(contacts) {
 }
 
 function renderAccounts(accounts) {
-  renderGrouped(document.getElementById('account-list'), accounts, '계좌', createAccountCard);
+  renderGrouped(document.getElementById('account-list'), accounts, '계좌번호', createAccountCard);
 }
 
 async function loadDirectory() {
