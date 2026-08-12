@@ -10,7 +10,8 @@ export const APP_CONFIG = {
     kakaoJavaScriptKey: '8b93eba907a57c775af83d0da7a5bbaa',
     title: '소영 ❤ 우경 결혼합니다',
     description: '2026.11.08 SUN AM 11:30',
-    imagePath: './assets/photos/main_logo.png'
+    imagePath: './assets/photos/main_logo.png',
+    copyLink: 'https://bit.ly/wksy_wed'
   },
 
   guestbook: {

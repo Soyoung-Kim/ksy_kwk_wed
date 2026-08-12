@@ -50,7 +50,9 @@ function initKakaoShare() {
 function initLinkCopy() {
   const button = document.getElementById('share-copy-link-btn');
   if (!button) return;
-  button.addEventListener('click', () => copyText(getShareUrl()));
+  button.addEventListener('click', () => {
+    copyText(APP_CONFIG.share?.copyLink || getShareUrl(), '링크가 복사되었습니다.');
+  });
 }
 
 export function initShare() {
