@@ -56,6 +56,34 @@
   flex-wrap: wrap;
 }
 
+.contact-action {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(146, 120, 99, 0.18);
+  border-radius: 50%;
+  background: #fff;
+  color: #7a685c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.16rem;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 5px 12px rgba(89, 66, 48, 0.08);
+  transition: transform 0.16s ease, background 0.16s ease;
+}
+
+.contact-action:hover {
+  transform: translateY(-1px);
+  background: #fbf6f1;
+}
+
+.contact-copy-action {
+  font-size: 1.3rem;
+}
+
 .button-small {
   min-height: 40px;
   padding: 0 14px;
@@ -67,11 +95,4 @@
     grid-template-columns: 1fr;
   }
 
-  .contact-actions {
-    flex-direction: column;
-  }
-
-  .contact-actions .button {
-    width: 100%;
-  }
 }

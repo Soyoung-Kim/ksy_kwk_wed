@@ -28,10 +28,10 @@ export function showToast(message) {
   showToast._timer = setTimeout(() => toast.classList.remove('show'), 1800);
 }
 
-export async function copyText(text) {
+export async function copyText(text, successMessage = '복사되었습니다.') {
   try {
     await navigator.clipboard.writeText(text);
-    showToast('복사되었습니다.');
+    showToast(successMessage);
   } catch {
     window.prompt('아래 내용을 복사해 주세요.', text);
   }

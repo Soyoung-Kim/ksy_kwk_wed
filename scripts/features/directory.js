@@ -60,14 +60,18 @@ function createContactCard(contact) {
 
   const phone = normalizePhone(contact.phone);
   const actions = createElement('div', 'contact-actions');
-  const call = createElement('a', 'button button-primary button-small', '전화');
-  call.href = `tel:${phone}`;
-  const message = createElement('a', 'button button-secondary button-small', '문자');
-  message.href = `sms:${phone}`;
-  const copyButton = createElement('button', 'button button-secondary button-small', '복사');
+  const copyButton = createElement('button', 'contact-action contact-copy-action', '⧉');
   copyButton.type = 'button';
+  copyButton.setAttribute('aria-label', '연락처 복사');
   copyButton.dataset.copy = phone;
-  actions.append(call, message, copyButton);
+  copyButton.dataset.copyMessage = '연락처가 복사되었습니다.';
+  const call = createElement('a', 'contact-action', '☎');
+  call.setAttribute('aria-label', '전화하기');
+  call.href = `tel:${phone}`;
+  const message = createElement('a', 'contact-action', '✉');
+  message.setAttribute('aria-label', '문자 보내기');
+  message.href = `sms:${phone}`;
+  actions.append(copyButton, call, message);
   card.append(top, actions);
   return card;
 }
