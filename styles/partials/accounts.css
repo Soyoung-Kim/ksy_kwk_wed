@@ -13,8 +13,71 @@
 
 .account-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
+}
+
+.directory-group {
+  overflow: hidden;
+  border: 1px solid rgba(120, 120, 160, 0.18);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.directory-group-groom {
+  border-color: rgba(108, 132, 178, 0.28);
+}
+
+.directory-group-bride {
+  border-color: rgba(181, 124, 151, 0.28);
+}
+
+.directory-toggle {
+  width: 100%;
+  min-height: 62px;
+  padding: 0 20px;
+  border: 0;
+  background: transparent;
+  color: #4b3f37;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.directory-toggle-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.directory-group-groom .directory-toggle-title { color: #667fae; }
+.directory-group-bride .directory-toggle-title { color: #b47b94; }
+
+.directory-toggle-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.directory-toggle[aria-expanded='true'] .directory-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.directory-panel {
+  padding: 0 14px 14px;
+  border-top: 1px solid rgba(120, 120, 160, 0.14);
+}
+
+.directory-card-list {
+  display: grid;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.directory-panel .contact-card,
+.directory-panel .account-card {
+  box-shadow: none;
 }
 
 .account-card {

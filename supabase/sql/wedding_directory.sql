@@ -3,6 +3,7 @@
 
 create table if not exists public.wedding_contacts (
   id bigint generated always as identity primary key,
+  side text not null default 'groom' check (side in ('groom', 'bride')),
   role_label text not null check (char_length(btrim(role_label)) between 1 and 30),
   name text not null check (char_length(btrim(name)) between 1 and 50),
   phone text not null check (char_length(btrim(phone)) between 8 and 30),
@@ -11,6 +12,17 @@ create table if not exists public.wedding_contacts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Existing installations created before contact grouping need this migration too.
+alter table public.wedding_contacts add column if not exists side text;
+update public.wedding_contacts
+set side = case when role_label like '%신부%' then 'bride' else 'groom' end
+where side is null;
+alter table public.wedding_contacts alter column side set default 'groom';
+alter table public.wedding_contacts alter column side set not null;
+alter table public.wedding_contacts drop constraint if exists wedding_contacts_side_check;
+alter table public.wedding_contacts
+  add constraint wedding_contacts_side_check check (side in ('groom', 'bride'));
 
 create table if not exists public.wedding_accounts (
   id bigint generated always as identity primary key,
@@ -54,17 +66,17 @@ for select to anon, authenticated using (is_visible = true);
 
 grant usage on schema public to anon, authenticated;
 revoke all on public.wedding_contacts, public.wedding_accounts from anon, authenticated;
-grant select (id, role_label, name, phone, display_order, is_visible)
+grant select (id, side, role_label, name, phone, display_order, is_visible)
   on public.wedding_contacts to anon, authenticated;
 grant select (id, side, side_label, bank_name, account_holder, account_number, display_order, is_visible)
   on public.wedding_accounts to anon, authenticated;
 
 -- Replace sample values with real information. Add parent accounts as additional rows.
-insert into public.wedding_contacts (role_label, name, phone, display_order)
-select '신랑', '김우경', '010-3202-8328', 10
+insert into public.wedding_contacts (side, role_label, name, phone, display_order)
+select 'groom', '신랑', '김우경', '010-3202-8328', 10
 where not exists (select 1 from public.wedding_contacts);
-insert into public.wedding_contacts (role_label, name, phone, display_order)
-select '신부', '김소영', '010-4112-6269', 20
+insert into public.wedding_contacts (side, role_label, name, phone, display_order)
+select 'bride', '신부', '김소영', '010-4112-6269', 20
 where not exists (select 1 from public.wedding_contacts where display_order = 20);
 insert into public.wedding_accounts (side, side_label, bank_name, account_holder, account_number, display_order)
 select 'groom', '신랑측', '국민은행', '김우경', '123456-78-901234', 10
