@@ -61,13 +61,13 @@ grant select (id, side, side_label, bank_name, account_holder, account_number, d
 
 -- Replace sample values with real information. Add parent accounts as additional rows.
 insert into public.wedding_contacts (role_label, name, phone, display_order)
-select '신랑', '김강경', '010-3202-8328', 10
+select '신랑', '김우경', '010-3202-8328', 10
 where not exists (select 1 from public.wedding_contacts);
 insert into public.wedding_contacts (role_label, name, phone, display_order)
 select '신부', '김소영', '010-4112-6269', 20
 where not exists (select 1 from public.wedding_contacts where display_order = 20);
 insert into public.wedding_accounts (side, side_label, bank_name, account_holder, account_number, display_order)
-select 'groom', '신랑측', '국민은행', '김강경', '123456-78-901234', 10
+select 'groom', '신랑측', '국민은행', '김우경', '123456-78-901234', 10
 where not exists (select 1 from public.wedding_accounts);
 insert into public.wedding_accounts (side, side_label, bank_name, account_holder, account_number, display_order)
 select 'bride', '신부측', '우리은행', '김소영', '1002-283-110119', 20
