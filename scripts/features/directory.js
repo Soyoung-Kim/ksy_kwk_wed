@@ -107,8 +107,31 @@ function renderGrouped(list, items, titleSuffix, createCard) {
   });
 }
 
+function isCoupleContact(contact) {
+  return contact.contact_type === 'couple' || contact.role_label === '신랑' || contact.role_label === '신부';
+}
+
 function renderContacts(contacts) {
-  renderGrouped(document.getElementById('contact-list'), contacts, '연락처', createContactCard);
+  const list = document.getElementById('contact-list');
+  if (!list || !contacts.length) return;
+
+  const coupleContacts = contacts.filter(isCoupleContact);
+  const guardians = contacts.filter((contact) => !isCoupleContact(contact));
+  list.replaceChildren();
+
+  if (coupleContacts.length) {
+    const coupleList = createElement('div', 'couple-contact-list');
+    coupleContacts.forEach((contact) => coupleList.append(createContactCard(contact)));
+    list.append(coupleList);
+  }
+
+  const guardianGroups = groupBySide(guardians);
+  [['groom', '신랑측 혼주'], ['bride', '신부측 혼주']].forEach(([side, label]) => {
+    if (!guardianGroups[side].length) return;
+    const cards = createElement('div', 'directory-card-list');
+    guardianGroups[side].forEach((contact) => cards.append(createContactCard(contact)));
+    list.append(createAccordion(side, label, cards));
+  });
 }
 
 function renderAccounts(accounts) {
