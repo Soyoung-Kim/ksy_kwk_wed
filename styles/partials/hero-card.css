@@ -4,10 +4,10 @@
 .hero-card {
   margin: -60px auto 24px;
   padding: 34px 24px 30px;
-  border-radius: 32px;
-  background: rgba(255, 255, 255, 0.84);
-  border: 1px solid rgba(180, 151, 129, 0.12);
-  box-shadow: 0 24px 52px rgba(73, 55, 40, 0.12);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(180, 151, 129, 0.14);
+  box-shadow: 0 16px 42px rgba(73, 55, 40, 0.10);
   text-align: center;
   backdrop-filter: blur(10px);
   position: relative;

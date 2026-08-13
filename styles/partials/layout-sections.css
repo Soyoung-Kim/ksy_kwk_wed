@@ -10,10 +10,10 @@
 .section {
   margin: 32px 0;
   padding: 28px 22px;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(181, 153, 132, 0.10);
-  box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid rgba(181, 153, 132, 0.12);
+  box-shadow: 0 14px 38px rgba(73, 55, 40, 0.06);
 }
 
 .section-heading,

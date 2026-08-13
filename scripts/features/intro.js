@@ -28,7 +28,7 @@ export function initIntroParallax() {
     const mediaShiftY = mobile ? progress * 8 : progress * 24;
     const copyShiftY = mobile ? progress * 18 : progress * 42;
     const copyOpacity = 1 - progress * 0.78;
-    const overlayOpacity = mobile ? 0.12 + progress * 0.06 : 0.16 + progress * 0.12;
+    const overlayOpacity = mobile ? 0.05 + progress * 0.04 : 0.08 + progress * 0.07;
 
     media.style.transform = `translate3d(0, ${mediaShiftY}px, 0) scale(${mediaScale})`;
     copy.style.transform = `translate3d(0, ${copyShiftY}px, 0)`;
