@@ -4,7 +4,7 @@ const INITIAL_VISIBLE_COUNT = 6;
 
 const galleryState = {
   photos: [],
-  expanded: false,
+  visibleCount: INITIAL_VISIBLE_COUNT,
   bound: false,
   lightboxIndex: 0,
   lightboxTouchStartX: 0
@@ -67,11 +67,7 @@ function ensureGalleryUi() {
 }
 
 function getVisiblePhotos() {
-  if (galleryState.expanded) {
-    return galleryState.photos;
-  }
-
-  return galleryState.photos.slice(0, INITIAL_VISIBLE_COUNT);
+  return galleryState.photos.slice(0, galleryState.visibleCount);
 }
 
 function updateGalleryCount(countEl) {
@@ -82,18 +78,15 @@ function updateGalleryCount(countEl) {
 function updateMoreButton(moreWrapEl, moreButtonEl) {
   if (!moreWrapEl || !moreButtonEl) return;
 
-  const hasMore = galleryState.photos.length > INITIAL_VISIBLE_COUNT;
+  const hasMore = galleryState.visibleCount < galleryState.photos.length;
   moreWrapEl.hidden = !hasMore;
 
   if (!hasMore) {
     return;
   }
 
-  moreButtonEl.textContent = galleryState.expanded
-    ? '접기 ▲'
-    : '더 불러오기 ▼';
-
-  moreButtonEl.setAttribute('aria-expanded', String(galleryState.expanded));
+  moreButtonEl.textContent = '사진 더 보기';
+  moreButtonEl.setAttribute('aria-expanded', 'false');
 }
 
 function renderEmpty(galleryEl, countEl, moreWrapEl) {
@@ -206,7 +199,10 @@ function closeLightbox() {
 }
 
 function toggleGalleryExpanded() {
-  galleryState.expanded = !galleryState.expanded;
+  galleryState.visibleCount = Math.min(
+    galleryState.visibleCount + INITIAL_VISIBLE_COUNT,
+    galleryState.photos.length
+  );
   renderGallery();
 }
 
@@ -271,7 +267,7 @@ function bindGalleryEvents() {
 
 export function initGallery(photos) {
   galleryState.photos = normalizePhotos(photos);
-  galleryState.expanded = false;
+  galleryState.visibleCount = INITIAL_VISIBLE_COUNT;
 
   bindGalleryEvents();
   renderGallery();

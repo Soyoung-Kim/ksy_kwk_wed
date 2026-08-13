@@ -4,9 +4,11 @@ import { supabaseClient, hasSupabaseConfig, getFunctionHeaders } from '../supaba
 const GUESTBOOK_SELECT_COLUMNS = 'id, side, display_name, message, created_at, updated_at';
 const PASSWORD_MIN_LENGTH = 4;
 const PASSWORD_MAX_LENGTH = 20;
+const GUESTBOOK_PAGE_SIZE = 4;
 
 const state = {
   entries: [],
+  currentPage: 1,
   selectedSide: '',
   editId: '',
   submitting: false,
@@ -72,6 +74,7 @@ function cacheElements() {
   els.root = document.getElementById('guestbook');
   els.status = document.getElementById('guestbook-status');
   els.list = document.getElementById('guestbook-list');
+  els.pagination = document.getElementById('guestbook-pagination');
 
   els.openButton = document.getElementById('guestbook-open-btn');
   els.formPanel = document.getElementById('guestbook-form-panel');
@@ -236,13 +239,10 @@ function fillFormForEdit(entry) {
 
 function buildCard(entry) {
   return `
-    <article class="guestbook-card" data-entry-id="${escapeHtml(entry.id)}">
+    <article class="guestbook-card guestbook-card-${escapeHtml(entry.side)}" data-entry-id="${escapeHtml(entry.id)}">
       <div class="guestbook-card-head">
         <div class="guestbook-card-meta">
-          <div class="guestbook-card-name">
-            <span class="guestbook-side-badge ${escapeHtml(entry.side)}">${escapeHtml(getSideLabel(entry.side))}</span>
-            ${escapeHtml(entry.display_name)}
-          </div>
+          <div class="guestbook-card-name">${escapeHtml(entry.display_name)}</div>
           <div class="guestbook-card-date">${escapeHtml(formatGuestbookDate(entry.created_at))}</div>
         </div>
       </div>
@@ -279,6 +279,41 @@ function renderEmptyState() {
       <div class="guestbook-card-message">첫 번째 축하 메시지를 남겨주세요.</div>
     </article>
   `;
+  if (els.pagination) els.pagination.replaceChildren();
+}
+
+function renderPagination() {
+  if (!els.pagination) return;
+  const totalPages = Math.ceil(state.entries.length / GUESTBOOK_PAGE_SIZE);
+  if (totalPages <= 1) {
+    els.pagination.replaceChildren();
+    return;
+  }
+
+  const previous = document.createElement('button');
+  previous.type = 'button';
+  previous.className = 'guestbook-page-button';
+  previous.textContent = '이전';
+  previous.disabled = state.currentPage === 1;
+  previous.addEventListener('click', () => {
+    state.currentPage -= 1;
+    renderGuestbook();
+  });
+
+  const indicator = document.createElement('span');
+  indicator.className = 'guestbook-page-indicator';
+  indicator.textContent = `${state.currentPage} / ${totalPages}`;
+
+  const next = document.createElement('button');
+  next.type = 'button';
+  next.className = 'guestbook-page-button';
+  next.textContent = '다음';
+  next.disabled = state.currentPage === totalPages;
+  next.addEventListener('click', () => {
+    state.currentPage += 1;
+    renderGuestbook();
+  });
+  els.pagination.replaceChildren(previous, indicator, next);
 }
 
 function renderGuestbook() {
@@ -289,7 +324,11 @@ function renderGuestbook() {
     return;
   }
 
-  els.list.innerHTML = state.entries.map(buildCard).join('');
+  const totalPages = Math.ceil(state.entries.length / GUESTBOOK_PAGE_SIZE);
+  state.currentPage = Math.min(Math.max(state.currentPage, 1), totalPages);
+  const start = (state.currentPage - 1) * GUESTBOOK_PAGE_SIZE;
+  els.list.innerHTML = state.entries.slice(start, start + GUESTBOOK_PAGE_SIZE).map(buildCard).join('');
+  renderPagination();
 }
 
 export async function loadGuestbook() {
@@ -316,6 +355,7 @@ export async function loadGuestbook() {
   }
 
   state.entries = Array.isArray(data) ? data : [];
+  state.currentPage = 1;
   renderGuestbook();
   setStatus(state.entries.length ? '' : '아직 등록된 방명록이 없습니다.');
 }
