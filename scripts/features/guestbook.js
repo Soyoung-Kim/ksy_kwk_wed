@@ -137,6 +137,13 @@ function setStatus(message = '') {
 
 function setSelectedTheme(theme) {
   state.selectedTheme = theme;
+
+  if (els.formPanel) {
+    for (const themeName of ['pink', 'blue', 'purple', 'green', 'yellow']) {
+      els.formPanel.classList.toggle(`guestbook-form-theme-${themeName}`, themeName === theme);
+    }
+  }
+
   for (const button of els.themeButtons) {
     const isActive = button.dataset.theme === theme;
     button.setAttribute('aria-pressed', String(isActive));

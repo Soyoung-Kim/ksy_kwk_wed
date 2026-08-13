@@ -19,13 +19,23 @@
 }
 
 .guestbook-form-panel {
+  --guestbook-accent: #d9849e;
+  --guestbook-accent-soft: rgba(217, 132, 158, 0.15);
+  --guestbook-accent-wash: #fff4f7;
   margin-bottom: 24px;
   padding: 24px;
   border-radius: 24px;
   background: #fff;
-  border: 1px solid rgba(120, 120, 160, 0.12);
-  box-shadow: 0 14px 34px rgba(50, 50, 93, 0.08);
+  border: 1px solid var(--guestbook-accent-soft);
+  box-shadow: 0 14px 34px rgba(50, 50, 93, 0.08), inset 0 3px 0 var(--guestbook-accent);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
 }
+
+.guestbook-form-theme-pink { --guestbook-accent: #d9849e; --guestbook-accent-soft: rgba(217, 132, 158, 0.22); --guestbook-accent-wash: #fff4f7; }
+.guestbook-form-theme-blue { --guestbook-accent: #6f9ed5; --guestbook-accent-soft: rgba(111, 158, 213, 0.22); --guestbook-accent-wash: #f2f7ff; }
+.guestbook-form-theme-purple { --guestbook-accent: #9d7ac5; --guestbook-accent-soft: rgba(157, 122, 197, 0.22); --guestbook-accent-wash: #f8f3ff; }
+.guestbook-form-theme-green { --guestbook-accent: #6ea888; --guestbook-accent-soft: rgba(110, 168, 136, 0.22); --guestbook-accent-wash: #f1faf4; }
+.guestbook-form-theme-yellow { --guestbook-accent: #bd963a; --guestbook-accent-soft: rgba(189, 150, 58, 0.24); --guestbook-accent-wash: #fff9e8; }
 
 .guestbook-form-header {
   margin-bottom: 18px;
@@ -72,8 +82,8 @@
 .guestbook-input:focus,
 .guestbook-textarea:focus {
   outline: none;
-  border-color: #8b86e8;
-  box-shadow: 0 0 0 4px rgba(139, 134, 232, 0.12);
+  border-color: var(--guestbook-accent);
+  box-shadow: 0 0 0 4px var(--guestbook-accent-soft);
 }
 
 .guestbook-textarea {
@@ -86,8 +96,9 @@
   gap: 14px;
   padding: 16px;
   border-radius: 18px;
-  background: #faf8f7;
-  border: 1px solid rgba(181, 153, 132, 0.12);
+  background: var(--guestbook-accent-wash);
+  border: 1px solid var(--guestbook-accent-soft);
+  transition: background 0.22s ease, border-color 0.22s ease;
 }
 
 .guestbook-picker-row {
@@ -175,6 +186,11 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.guestbook-form-panel #guestbook-submit-btn {
+  background: var(--guestbook-accent);
+  box-shadow: 0 8px 18px var(--guestbook-accent-soft);
 }
 
 .guestbook-board {
