@@ -47,17 +47,24 @@
 .contact-number {
   width: fit-content;
   margin: -8px 0 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  padding: 5px 8px;
+  border: 1px solid rgba(146, 120, 99, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
   font-weight: 600;
   color: #6d5f55;
   font: inherit;
   font-size: 0.92rem;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 4px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.contact-copy-icon {
+  color: #8a7568;
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .contact-actions {

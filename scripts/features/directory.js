@@ -58,9 +58,14 @@ function createContactCard(contact) {
   top.append(copy);
 
   const phone = normalizePhone(contact.phone);
-  const copyButton = createElement('button', 'contact-number', `${contact.phone}  복사`);
+  const copyButton = createElement('button', 'contact-number');
   copyButton.type = 'button';
   copyButton.setAttribute('aria-label', `${contact.phone} 연락처 복사`);
+  copyButton.title = '연락처 복사';
+  copyButton.append(
+    createElement('span', 'contact-number-value', contact.phone),
+    createElement('span', 'contact-copy-icon', '⧉')
+  );
   copyButton.dataset.copy = phone;
   copyButton.dataset.copyMessage = '연락처가 복사되었습니다.';
   const actions = createElement('div', 'contact-actions');
