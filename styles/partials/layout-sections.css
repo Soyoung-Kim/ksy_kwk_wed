@@ -44,3 +44,24 @@
   color: #74685e;
   line-height: 1.7;
 }
+
+/* Invitation information blocks: visually separate lower-page sections. */
+.contact-section,
+.wedding-accounts,
+.invitation-panel {
+  position: relative;
+}
+
+.contact-section::before,
+.wedding-accounts::before,
+.invitation-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 46px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d5b595, #b99371);
+  transform: translateX(-50%);
+}
