@@ -167,14 +167,22 @@
       <div class="nav-section">
         <p class="nav-section-title">내비게이션 바로가기</p>
         <div class="nav-grid">
-          <button class="nav-card nav-google" id="nav-google" type="button"><span
-              class="nav-app">Google</span><strong>구글 지도</strong></button>
-          <button class="nav-card nav-naver" id="nav-naver" type="button"><span class="nav-app">Naver</span><strong>네이버
-              지도</strong></button>
-          <button class="nav-card nav-kakao" id="nav-kakao" type="button"><span
-              class="nav-app">Kakao</span><strong>카카오맵</strong></button>
-          <button class="nav-card nav-tmap" id="nav-tmap" type="button"><span class="nav-app">T map</span><strong>티맵
-              길안내</strong></button>
+          <button class="nav-card nav-google" id="nav-google" type="button" aria-label="구글 지도로 길안내">
+            <span class="nav-logo nav-logo-google" aria-hidden="true">G</span>
+            <span class="nav-app">Google Maps</span><strong>길안내</strong>
+          </button>
+          <button class="nav-card nav-naver" id="nav-naver" type="button" aria-label="네이버 지도로 길안내">
+            <span class="nav-logo nav-logo-naver" aria-hidden="true">N</span>
+            <span class="nav-app">NAVER Map</span><strong>길안내</strong>
+          </button>
+          <button class="nav-card nav-kakao" id="nav-kakao" type="button" aria-label="카카오맵으로 길안내">
+            <span class="nav-logo nav-logo-kakao" aria-hidden="true">K</span>
+            <span class="nav-app">kakao map</span><strong>길안내</strong>
+          </button>
+          <button class="nav-card nav-tmap" id="nav-tmap" type="button" aria-label="티맵으로 길안내">
+            <span class="nav-logo nav-logo-tmap" aria-hidden="true">T</span>
+            <span class="nav-app">T map</span><strong>길안내</strong>
+          </button>
         </div>
       </div>
     </section>
