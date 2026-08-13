@@ -44,6 +44,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
 }
 
 .slide-image.is-loading { opacity: 0; }
