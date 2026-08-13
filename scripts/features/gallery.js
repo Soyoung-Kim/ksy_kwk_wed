@@ -177,9 +177,13 @@ function openLightbox(index) {
 function setLightboxPhoto() {
   const photo = galleryState.photos[galleryState.lightboxIndex];
   const lightboxImageEl = qs('#lightbox-image');
+  const lightboxCountEl = qs('#lightbox-count');
   if (!photo || !lightboxImageEl) return;
   lightboxImageEl.src = photo.src;
   lightboxImageEl.alt = photo.alt;
+  if (lightboxCountEl) {
+    lightboxCountEl.textContent = `${galleryState.lightboxIndex + 1} / ${galleryState.photos.length}`;
+  }
 }
 
 function moveLightbox(direction) {
