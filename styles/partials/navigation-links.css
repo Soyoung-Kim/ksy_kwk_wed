@@ -49,17 +49,22 @@
 }
 
 .nav-logo {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   margin-bottom: 3px;
-  border-radius: 11px;
-  display: inline-grid;
-  place-items: center;
-  font-family: Arial, sans-serif;
-  font-size: 1.22rem;
-  font-weight: 800;
-  line-height: 1;
-  box-shadow: 0 4px 9px rgba(40, 40, 40, 0.10);
+  overflow: hidden;
+  border-radius: 13px;
+  display: block;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(40, 40, 40, 0.10);
+}
+
+.nav-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .nav-google {
@@ -68,7 +73,7 @@
   color: #3c5485;
 }
 
-.nav-logo-google { background: #fff; color: #4285f4; border: 1px solid #edf0f4; }
+.nav-logo-google img { transform: scale(1.05); }
 
 .nav-naver {
   background: #fff;
@@ -76,7 +81,7 @@
   color: #18754a;
 }
 
-.nav-logo-naver { background: #03c75a; color: #fff; }
+.nav-logo-naver img { transform: scale(1.47); transform-origin: 50% 28%; }
 
 .nav-kakao {
   background: #fff;
@@ -84,7 +89,7 @@
   color: #675400;
 }
 
-.nav-logo-kakao { background: #fee500; color: #3c3100; border-radius: 50%; }
+.nav-logo-kakao img { transform: scale(1.48); transform-origin: 50% 26%; }
 
 .nav-tmap {
   background: #fff;
@@ -92,4 +97,4 @@
   color: #2666a9;
 }
 
-.nav-logo-tmap { background: #3188e8; color: #fff; border-radius: 50%; }
+.nav-logo-tmap img { transform: scale(1.42); transform-origin: 50% 25%; }
