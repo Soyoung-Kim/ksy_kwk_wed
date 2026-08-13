@@ -45,9 +45,19 @@
 }
 
 .contact-number {
-  margin: 6px 0 0;
+  width: fit-content;
+  margin: -8px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   font-weight: 600;
   color: #6d5f55;
+  font: inherit;
+  font-size: 0.92rem;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 4px;
+  cursor: pointer;
 }
 
 .contact-actions {
@@ -57,17 +67,18 @@
 }
 
 .contact-action {
-  width: 42px;
-  height: 42px;
-  padding: 0;
+  min-width: 68px;
+  height: 38px;
+  padding: 0 14px;
   border: 1px solid rgba(146, 120, 99, 0.18);
-  border-radius: 50%;
+  border-radius: 10px;
   background: #fff;
   color: #7a685c;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.16rem;
+  font-size: 0.84rem;
+  font-weight: 700;
   line-height: 1;
   text-decoration: none;
   cursor: pointer;
@@ -78,10 +89,6 @@
 .contact-action:hover {
   transform: translateY(-1px);
   background: #fbf6f1;
-}
-
-.contact-copy-action {
-  font-size: 1.3rem;
 }
 
 .button-small {

@@ -320,7 +320,7 @@ function bindWeddingCountdown() {
       hoursEl.textContent = "00";
       minutesEl.textContent = "00";
       secondsEl.textContent = "00";
-      ddayEl.textContent = "소영 ❤ 우경의 결혼식이 오늘입니다.";
+      ddayEl.textContent = "우경 ❤ 소영의 결혼식이 오늘입니다.";
       return;
     }
 
@@ -334,7 +334,7 @@ function bindWeddingCountdown() {
     minutesEl.textContent = String(minutes).padStart(2, "0");
     secondsEl.textContent = String(seconds).padStart(2, "0");
 
-    ddayEl.textContent = `소영 ❤ 우경의 결혼식이 D-${days}일 남았습니다.`;
+    ddayEl.textContent = `우경 ❤ 소영의 결혼식이 D-${days}일 남았습니다.`;
   }
 
   updateCountdown();
