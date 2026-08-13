@@ -36,3 +36,56 @@
   gap: 12px;
   margin-top: 20px;
 }
+
+.rough-map {
+  margin: 26px 0 0;
+  overflow: hidden;
+  border: 1px solid rgba(181, 153, 132, 0.14);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(79, 61, 48, 0.06);
+}
+
+.rough-map img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rough-map figcaption {
+  padding: 10px 14px;
+  color: #806e62;
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.transit-info {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.transit-card {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 15px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(181, 153, 132, 0.12);
+}
+
+.transit-label {
+  color: #9b7b65;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.transit-card p {
+  margin: 0;
+  color: #554941;
+  font-size: 0.88rem;
+  line-height: 1.72;
+}
