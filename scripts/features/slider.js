@@ -16,7 +16,7 @@ export async function initSlider() {
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
 
   sliderState.allPhotos = data;
-  sliderState.photos = data.slice(0, 3);
+  sliderState.photos = data;
   renderSlider(sliderState.photos);
   bindSliderControls();
   startSliderTimer();
@@ -139,5 +139,5 @@ function bindSliderControls() {
 }
 
 export function getGalleryPhotos() {
-  return sliderState.allPhotos?.slice(3) || [];
+  return sliderState.allPhotos || [];
 }

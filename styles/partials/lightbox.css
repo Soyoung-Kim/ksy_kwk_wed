@@ -67,3 +67,9 @@
   letter-spacing: 0.08em;
   transform: translateX(-50%);
 }
+
+/* Keep lightbox controls limited to horizontal navigation; no lower navigation buttons. */
+.lightbox .lightbox-nav {
+  top: 50% !important;
+  bottom: auto !important;
+}
