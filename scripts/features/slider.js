@@ -124,9 +124,5 @@ export function getSliderPhotos() {
 }
 
 export function getGalleryPhotos() {
-  return sliderState.allPhotos.slice(3);
-}
-
-export function getGalleryPhotos() {
   return sliderState.allPhotos?.slice(3) || [];
 }
