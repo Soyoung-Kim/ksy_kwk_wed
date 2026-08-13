@@ -5,7 +5,9 @@ const INITIAL_VISIBLE_COUNT = 6;
 const galleryState = {
   photos: [],
   expanded: false,
-  bound: false
+  bound: false,
+  lightboxIndex: 0,
+  lightboxTouchStartX: 0
 };
 
 function normalizePhotos(photos) {
@@ -158,7 +160,7 @@ function renderGallery() {
 }
 
 function openLightbox(index) {
-  const photo = getVisiblePhotos()[index];
+  const photo = galleryState.photos[index];
   if (!photo) return;
 
   const lightboxEl = qs('#lightbox');
@@ -166,10 +168,25 @@ function openLightbox(index) {
 
   if (!lightboxEl || !lightboxImageEl) return;
 
-  lightboxImageEl.src = photo.src;
-  lightboxImageEl.alt = photo.alt;
+  galleryState.lightboxIndex = index;
+  setLightboxPhoto();
   lightboxEl.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+}
+
+function setLightboxPhoto() {
+  const photo = galleryState.photos[galleryState.lightboxIndex];
+  const lightboxImageEl = qs('#lightbox-image');
+  if (!photo || !lightboxImageEl) return;
+  lightboxImageEl.src = photo.src;
+  lightboxImageEl.alt = photo.alt;
+}
+
+function moveLightbox(direction) {
+  const total = galleryState.photos.length;
+  if (!total) return;
+  galleryState.lightboxIndex = (galleryState.lightboxIndex + direction + total) % total;
+  setLightboxPhoto();
 }
 
 function closeLightbox() {
@@ -187,13 +204,6 @@ function closeLightbox() {
 function toggleGalleryExpanded() {
   galleryState.expanded = !galleryState.expanded;
   renderGallery();
-
-  if (!galleryState.expanded) {
-    qs('#gallery')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
 }
 
 function bindGalleryEvents() {
@@ -220,6 +230,16 @@ function bindGalleryEvents() {
       return;
     }
 
+    if (event.target.closest('#lightbox-prev')) {
+      moveLightbox(-1);
+      return;
+    }
+
+    if (event.target.closest('#lightbox-next')) {
+      moveLightbox(1);
+      return;
+    }
+
     const lightboxEl = qs('#lightbox');
     if (lightboxEl && event.target === lightboxEl) {
       closeLightbox();
@@ -230,7 +250,19 @@ function bindGalleryEvents() {
     if (event.key === 'Escape') {
       closeLightbox();
     }
+    if (event.key === 'ArrowLeft') moveLightbox(-1);
+    if (event.key === 'ArrowRight') moveLightbox(1);
   });
+
+  const lightboxEl = qs('#lightbox');
+  lightboxEl?.addEventListener('touchstart', (event) => {
+    galleryState.lightboxTouchStartX = event.changedTouches[0].clientX;
+  }, { passive: true });
+  lightboxEl?.addEventListener('touchend', (event) => {
+    const diff = event.changedTouches[0].clientX - galleryState.lightboxTouchStartX;
+    if (Math.abs(diff) < 36) return;
+    moveLightbox(diff < 0 ? 1 : -1);
+  }, { passive: true });
 }
 
 export function initGallery(photos) {
