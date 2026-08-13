@@ -1,0 +1,110 @@
+/* =========================================================
+   Opening invitation cover
+========================================================= */
+.invitation-cover {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 34px 22px 28px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(229, 192, 196, 0.28), transparent 26%),
+    radial-gradient(circle at 88% 78%, rgba(206, 189, 156, 0.24), transparent 29%),
+    #fbf8f3;
+}
+
+.invitation-cover::before,
+.invitation-cover::after {
+  content: '';
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border: 1px solid rgba(179, 148, 119, 0.18);
+  border-radius: 48% 52% 50% 50%;
+  pointer-events: none;
+}
+
+.invitation-cover::before { top: -96px; left: -106px; transform: rotate(30deg); }
+.invitation-cover::after { right: -112px; bottom: -92px; transform: rotate(-26deg); }
+
+.invitation-cover-inner {
+  position: relative;
+  z-index: 1;
+  width: min(430px, 100%);
+  text-align: center;
+}
+
+.cover-kicker {
+  margin: 0 0 7px;
+  color: #9c7b63;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.cover-title {
+  margin: 0 0 18px;
+  color: #473b34;
+  font-family: Pretendard, sans-serif;
+  font-size: 1.34rem;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+}
+
+.cover-illustration-frame {
+  overflow: hidden;
+  border: 1px solid rgba(176, 145, 116, 0.18);
+  border-radius: 28px;
+  background: #fffdfb;
+  box-shadow: 0 18px 40px rgba(100, 76, 58, 0.11);
+}
+
+.cover-illustration-frame img {
+  width: 100%;
+  max-height: 62svh;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cover-venue {
+  display: grid;
+  gap: 5px;
+  margin-top: 18px;
+  color: #856d5c;
+}
+
+.cover-venue span {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.cover-venue strong {
+  color: #4d4038;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cover-scroll-hint {
+  margin: 24px 0 0;
+  color: #9d8775;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.cover-ornament {
+  position: absolute;
+  z-index: 1;
+  color: rgba(186, 139, 152, 0.35);
+  font-family: 'Cormorant Garamond', serif;
+  pointer-events: none;
+}
+
+.cover-ornament-left { top: 15%; left: 7%; font-size: 2.2rem; }
+.cover-ornament-right { right: 8%; bottom: 18%; font-size: 2.5rem; }
+
+@media (max-width: 480px) {
+  .invitation-cover { padding: 26px 18px 22px; }
+  .cover-illustration-frame img { max-height: 60svh; }
+}
