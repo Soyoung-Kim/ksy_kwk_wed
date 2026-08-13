@@ -129,9 +129,10 @@ function hasAiFunction() {
   return Boolean(getFunctionsConfig().aiSuggest);
 }
 
-function setStatus(message = '') {
+function setStatus(message = '', isLoading = false) {
   if (els.status) {
     els.status.textContent = message;
+    els.status.classList.toggle('is-loading', Boolean(message) && isLoading);
   }
 }
 
@@ -348,6 +349,35 @@ function renderGuestbook() {
   renderPagination();
 }
 
+function applySavedEntry(entry, isNewEntry) {
+  if (!entry?.id) return;
+
+  if (isNewEntry) {
+    state.entries = [entry, ...state.entries.filter((item) => item.id !== entry.id)];
+    state.currentPage = 1;
+  } else {
+    state.entries = state.entries.map((item) => item.id === entry.id ? entry : item);
+  }
+
+  renderGuestbook();
+}
+
+function setSubmitLoading(isLoading) {
+  if (!els.submitButton) return;
+
+  if (isLoading) {
+    els.submitButton.setAttribute('disabled', 'disabled');
+    els.submitButton.setAttribute('aria-busy', 'true');
+    els.submitButton.dataset.label = els.submitButton.textContent || '작성 완료';
+    els.submitButton.textContent = '저장 중…';
+    return;
+  }
+
+  els.submitButton.removeAttribute('disabled');
+  els.submitButton.removeAttribute('aria-busy');
+  els.submitButton.textContent = els.submitButton.dataset.label || '작성 완료';
+}
+
 export async function loadGuestbook() {
   if (!hasSupabaseConfig() || !supabaseClient) {
     setStatus('Supabase 설정이 비어 있습니다.');
@@ -355,7 +385,7 @@ export async function loadGuestbook() {
     return;
   }
 
-  setStatus('방명록을 불러오는 중입니다.');
+  setStatus('방명록을 불러오는 중입니다.', true);
 
   const tableName = getGuestbookConfig().table || 'guestbook_entries';
 
@@ -452,22 +482,27 @@ async function handleSubmit(event) {
   const functions = getFunctionsConfig();
 
   state.submitting = true;
-  els.submitButton?.setAttribute('disabled', 'disabled');
+  setSubmitLoading(true);
+  setStatus('방명록을 저장하는 중입니다.', true);
 
   try {
+    const isEditing = Boolean(state.editId);
+    let result;
+
     if (state.editId) {
-      await invokeFunction(functions.update, {
+      result = await invokeFunction(functions.update, {
         id: state.editId,
         ...payload
       });
       showToast('방명록이 수정되었습니다.');
     } else {
-      await invokeFunction(functions.create, payload);
+      result = await invokeFunction(functions.create, payload);
       showToast('방명록이 등록되었습니다.');
     }
 
+    applySavedEntry(result?.entry, !isEditing);
     closeForm();
-    await loadGuestbook();
+    setStatus(isEditing ? '방명록을 수정했습니다.' : '방명록을 등록했습니다.');
   } catch (error) {
     console.error('[guestbook] submit error', error);
 
@@ -481,7 +516,7 @@ async function handleSubmit(event) {
     showToast(error?.message || '저장에 실패했습니다.');
   } finally {
     state.submitting = false;
-    els.submitButton?.removeAttribute('disabled');
+    setSubmitLoading(false);
   }
 }
 

@@ -199,14 +199,42 @@
   box-shadow: 0 8px 18px var(--guestbook-accent-soft);
 }
 
+.guestbook-form-panel #guestbook-submit-btn[aria-busy="true"]::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.46);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: guestbook-spin 0.7s linear infinite;
+}
+
 .guestbook-board {
   position: relative;
   min-height: 160px;
 }
 
 .guestbook-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 14px;
   color: #666683;
+}
+
+.guestbook-status.is-loading::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(118, 112, 160, 0.22);
+  border-top-color: #8278b0;
+  border-radius: 50%;
+  animation: guestbook-spin 0.7s linear infinite;
+}
+
+@keyframes guestbook-spin {
+  to { transform: rotate(360deg); }
 }
 
 .guestbook-list {
