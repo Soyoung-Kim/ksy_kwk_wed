@@ -117,9 +117,9 @@ async function init() {
     });
   }
 
-  if (sliderModule?.getSliderPhotos && galleryModule?.initGallery) {
+  if (sliderModule?.getGalleryPhotos && galleryModule?.initGallery) {
     await safeRun('gallery', async () => {
-      const photos = sliderModule.getSliderPhotos();
+      const photos = sliderModule.getGalleryPhotos();
       galleryModule.initGallery(Array.isArray(photos) ? photos : []);
     });
   }

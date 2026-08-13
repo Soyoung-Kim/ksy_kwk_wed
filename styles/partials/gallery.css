@@ -44,10 +44,22 @@
 }
 
 .gallery img {
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.24s ease;
+  transition: transform 0.24s ease, opacity 0.28s ease;
+}
+
+.gallery img.is-loading { opacity: 0; }
+
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, #eee6df 25%, #f8f4f0 45%, #eee6df 65%);
+  background-size: 220% 100%;
+  animation: image-loading 1.5s ease-in-out infinite;
 }
 
 .gallery-item:hover img,

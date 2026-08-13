@@ -139,6 +139,7 @@ function renderGallery() {
           <img
             src="${escapeHtml(photo.src)}"
             alt="${escapeHtml(photo.alt)}"
+            class="is-loading"
             loading="lazy"
           />
         </button>
@@ -147,6 +148,13 @@ function renderGallery() {
     .join('');
 
   updateMoreButton(moreWrapEl, moreButtonEl);
+
+  qsa('#gallery img').forEach((image) => {
+    const finishLoading = () => image.classList.remove('is-loading');
+    if (image.complete) finishLoading();
+    image.addEventListener('load', finishLoading, { once: true });
+    image.addEventListener('error', finishLoading, { once: true });
+  });
 }
 
 function openLightbox(index) {

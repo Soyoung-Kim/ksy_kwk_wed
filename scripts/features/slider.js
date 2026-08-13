@@ -2,6 +2,7 @@ import { qs, qsa, escapeHtml } from '../utils.js';
 
 const sliderState = {
   photos: [],
+  allPhotos: [],
   currentSlide: 0,
   slideTimer: null,
   touchStartX: 0
@@ -14,8 +15,9 @@ export async function initSlider() {
   const data = await response.json();
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
 
-  sliderState.photos = data;
-  renderSlider(data);
+  sliderState.allPhotos = data;
+  sliderState.photos = data.slice(0, 3);
+  renderSlider(sliderState.photos);
   bindSliderControls();
   startSliderTimer();
 }
@@ -27,7 +29,7 @@ function renderSlider(photos) {
 
   slidesEl.innerHTML = photos.map((photo, index) => `
     <div class="slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-      <img class="slide-image" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${index === 0 ? 'eager' : 'lazy'}" />
+      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${index === 0 ? 'eager' : 'lazy'}" />
     </div>
   `).join('');
 
@@ -40,6 +42,13 @@ function renderSlider(photos) {
       goToSlide(Number(dot.dataset.index || 0));
       restartSliderTimer();
     });
+  });
+
+  qsa('#slides .slide-image').forEach((image) => {
+    const finishLoading = () => image.classList.remove('is-loading');
+    if (image.complete) finishLoading();
+    image.addEventListener('load', finishLoading, { once: true });
+    image.addEventListener('error', finishLoading, { once: true });
   });
 }
 
@@ -112,4 +121,12 @@ function bindSliderControls() {
 
 export function getSliderPhotos() {
   return sliderState.photos;
+}
+
+export function getGalleryPhotos() {
+  return sliderState.allPhotos.slice(3);
+}
+
+export function getGalleryPhotos() {
+  return sliderState.allPhotos?.slice(3) || [];
 }

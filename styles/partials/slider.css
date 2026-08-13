@@ -24,15 +24,32 @@
   transition: opacity 0.35s ease;
 }
 
+.slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, #eee6df 25%, #f8f4f0 45%, #eee6df 65%);
+  background-size: 220% 100%;
+  animation: image-loading 1.5s ease-in-out infinite;
+}
+
 .slide.active {
   opacity: 1;
   pointer-events: auto;
 }
 
 .slide-image {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.slide-image.is-loading { opacity: 0; }
+
+@keyframes image-loading {
+  to { background-position: -220% 0; }
 }
 
 .slide-nav {
