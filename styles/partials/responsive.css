@@ -41,11 +41,11 @@
   }
 
   .intro-sticky {
-    background: #f6eef0;
+    background: #1e1916;
   }
 
   .intro-media {
-    background: linear-gradient(180deg, #f7eef2 0%, #f3edf4 52%, #f2edf5 100%);
+    background: #28201b;
   }
 
   .intro-image {
@@ -54,11 +54,11 @@
   }
 
   .intro-copy {
-    padding: 28px 18px 48px;
+    padding: 42px 18px 66px;
   }
 
   .intro-title {
-    font-size: clamp(2rem, 9vw, 3rem);
+    font-size: clamp(2rem, 8.7vw, 2.8rem);
   }
 
   .intro-subtitle {
@@ -66,7 +66,7 @@
   }
 
   .intro-countdown-wrap {
-    width: 100%;
+    width: min(100%, 380px);
   }
 
   .intro-countdown-grid {
@@ -74,7 +74,7 @@
   }
 
   .intro-countdown-item {
-    padding: 12px 8px;
+    padding: 2px 6px;
   }
 
   .account-list {
@@ -144,14 +144,14 @@
   }
 
   .intro-countdown-item strong {
-    font-size: 1.5rem;
+    font-size: 1.85rem;
   }
 
   .intro-countdown-item span {
-    font-size: 0.78rem;
+    font-size: 0.68rem;
   }
 
   .intro-dday-text {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
   }
 }
