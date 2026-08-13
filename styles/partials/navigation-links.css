@@ -55,6 +55,7 @@
   overflow: hidden;
   border-radius: 13px;
   display: block;
+  padding: 3px;
   background: #fff;
   box-shadow: 0 4px 10px rgba(40, 40, 40, 0.10);
 }
@@ -63,7 +64,7 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -73,15 +74,11 @@
   color: #3c5485;
 }
 
-.nav-logo-google img { transform: scale(1.05); }
-
 .nav-naver {
   background: #fff;
   border-color: rgba(3, 199, 90, 0.18);
   color: #18754a;
 }
-
-.nav-logo-naver img { transform: scale(1.47); transform-origin: 50% 28%; }
 
 .nav-kakao {
   background: #fff;
@@ -89,12 +86,8 @@
   color: #675400;
 }
 
-.nav-logo-kakao img { transform: scale(1.48); transform-origin: 50% 26%; }
-
 .nav-tmap {
   background: #fff;
   border-color: rgba(55, 139, 232, 0.18);
   color: #2666a9;
 }
-
-.nav-logo-tmap img { transform: scale(1.42); transform-origin: 50% 25%; }
