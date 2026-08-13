@@ -2,7 +2,8 @@ import {
   assertAllowedClientRequest,
   getGuestbookTableName,
   getSupabaseAdmin,
-  normalizeSide,
+  normalizeGuestbookIcon,
+  normalizeGuestbookTheme,
   readJson,
   requireText,
   requireUuid,
@@ -24,7 +25,8 @@ Deno.serve(async (req) => {
 
     const body = await readJson(req);
     const id = requireUuid(body.id);
-    const side = normalizeSide(body.side);
+    const theme = normalizeGuestbookTheme(body.theme);
+    const icon = normalizeGuestbookIcon(body.icon);
     const displayName = requireText(body.display_name, '이름', 20);
     const message = requireText(body.message, '메시지', 300);
     const password = body.password;
@@ -61,13 +63,14 @@ Deno.serve(async (req) => {
     const { data, error } = await supabase
       .from(getGuestbookTableName())
       .update({
-        side,
+        theme,
+        icon,
         display_name: displayName,
         message,
       })
       .eq('id', id)
       .eq('del_yn', false)
-      .select('id, side, display_name, message, created_at, updated_at')
+      .select('id, theme, icon, display_name, message, created_at, updated_at')
       .single();
 
     if (error) {

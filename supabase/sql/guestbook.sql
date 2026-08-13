@@ -14,8 +14,12 @@ drop table if exists public.guestbook_entries cascade;
 create table public.guestbook_entries (
   id uuid primary key default gen_random_uuid(),
 
-  side text not null
-    check (side in ('groom', 'bride')),
+  -- Visual identity selected by each guest. No groom/bride-side classification.
+  theme text not null default 'pink'
+    check (theme in ('pink', 'blue', 'purple', 'green', 'yellow')),
+
+  icon text not null default 'heart'
+    check (icon in ('heart', 'flower', 'ribbon', 'sparkle', 'smile', 'leaf')),
 
   display_name text not null
     check (char_length(btrim(display_name)) between 1 and 20),
@@ -74,7 +78,8 @@ revoke all on public.guestbook_entries from anon, authenticated;
 
 grant select (
   id,
-  side,
+  theme,
+  icon,
   display_name,
   message,
   created_at,

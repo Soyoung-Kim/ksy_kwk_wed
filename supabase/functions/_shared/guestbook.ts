@@ -44,14 +44,20 @@ export async function readJson(req: Request): Promise<Record<string, unknown>> {
   }
 }
 
-export function normalizeSide(value: unknown): 'groom' | 'bride' {
-  const side = String(value ?? '').trim().toLowerCase();
-
-  if (side !== 'groom' && side !== 'bride') {
-    throw new Error('side 값은 groom 또는 bride 여야 합니다.');
+export function normalizeGuestbookTheme(value: unknown) {
+  const theme = String(value ?? 'pink').trim().toLowerCase();
+  if (!['pink', 'blue', 'purple', 'green', 'yellow'].includes(theme)) {
+    throw new Error('지원하지 않는 프레임 색상입니다.');
   }
+  return theme;
+}
 
-  return side as 'groom' | 'bride';
+export function normalizeGuestbookIcon(value: unknown) {
+  const icon = String(value ?? 'heart').trim().toLowerCase();
+  if (!['heart', 'flower', 'ribbon', 'sparkle', 'smile', 'leaf'].includes(icon)) {
+    throw new Error('지원하지 않는 아이콘입니다.');
+  }
+  return icon;
 }
 
 export function requireText(

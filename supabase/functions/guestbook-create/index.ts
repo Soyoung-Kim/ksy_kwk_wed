@@ -3,7 +3,8 @@ import {
   getGuestbookTableName,
   getSupabaseAdmin,
   hashPassword,
-  normalizeSide,
+  normalizeGuestbookIcon,
+  normalizeGuestbookTheme,
   readJson,
   requireText,
 } from '../_shared/guestbook.ts';
@@ -22,7 +23,8 @@ Deno.serve(async (req) => {
     assertAllowedClientRequest(req);
 
     const body = await readJson(req);
-    const side = normalizeSide(body.side);
+    const theme = normalizeGuestbookTheme(body.theme);
+    const icon = normalizeGuestbookIcon(body.icon);
     const displayName = requireText(body.display_name, '이름', 20);
     const message = requireText(body.message, '메시지', 300);
     const passwordHash = await hashPassword(body.password);
@@ -32,13 +34,14 @@ Deno.serve(async (req) => {
     const { data, error } = await supabase
       .from(getGuestbookTableName())
       .insert({
-        side,
+        theme,
+        icon,
         display_name: displayName,
         message,
         password_hash: passwordHash,
         del_yn: false,
       })
-      .select('id, side, display_name, message, created_at, updated_at')
+      .select('id, theme, icon, display_name, message, created_at, updated_at')
       .single();
 
     if (error) {

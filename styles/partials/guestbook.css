@@ -81,43 +81,63 @@
   min-height: 132px;
 }
 
-.tag-grid {
+.guestbook-identity-picker {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #faf8f7;
+  border: 1px solid rgba(181, 153, 132, 0.12);
+}
+
+.guestbook-picker-row {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  align-items: center;
   gap: 12px;
 }
 
-.guestbook-side-btn {
-  min-height: 52px;
-  border: 1px solid rgba(130, 130, 170, 0.18);
-  border-radius: 16px;
+.guestbook-theme-options,
+.guestbook-icon-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.guestbook-theme-btn,
+.guestbook-icon-btn {
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.guestbook-theme-btn {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+}
+
+.guestbook-theme-btn.is-active,
+.guestbook-icon-btn.is-active {
+  border-color: #584b43;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(157, 124, 102, 0.30);
+  transform: scale(1.06);
+}
+
+.theme-pink { background: #eaa6ba; }
+.theme-blue { background: #8eb4e5; }
+.theme-purple { background: #b6a0d7; }
+.theme-green { background: #98c6a7; }
+.theme-yellow { background: #ebca7c; }
+
+.guestbook-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
   background: #fff;
-  color: #4e4e68;
-  font-weight: 700;
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease,
-    border-color 0.16s ease,
-    background 0.16s ease;
-}
-
-.guestbook-side-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(80, 80, 120, 0.10);
-}
-
-.guestbook-side-btn.is-groom-active {
-  color: #234a8f;
-  border-color: rgba(110, 135, 230, 0.36);
-  background: linear-gradient(135deg, #dceaff 0%, #ebe6ff 100%);
-  box-shadow: 0 10px 22px rgba(119, 142, 236, 0.18);
-}
-
-.guestbook-side-btn.is-bride-active {
-  color: #9a4f8d;
-  border-color: rgba(215, 141, 213, 0.34);
-  background: linear-gradient(135deg, #eee7ff 0%, #ffe4f0 100%);
-  box-shadow: 0 10px 22px rgba(229, 162, 210, 0.18);
+  color: #765f50;
+  font-size: 1.05rem;
+  line-height: 1;
 }
 
 .guestbook-ai-row {
@@ -180,15 +200,11 @@
   box-shadow: 0 12px 30px rgba(50, 50, 93, 0.06);
 }
 
-.guestbook-card-groom {
-  border-color: rgba(95, 137, 194, 0.30);
-  background: linear-gradient(135deg, #fbfdff 0%, #f4f8ff 100%);
-}
-
-.guestbook-card-bride {
-  border-color: rgba(205, 126, 158, 0.30);
-  background: linear-gradient(135deg, #fffdfd 0%, #fff5f8 100%);
-}
+.guestbook-card-pink { border-color: rgba(224, 145, 174, 0.32); background: linear-gradient(135deg, #fffdfd, #fff3f7); }
+.guestbook-card-blue { border-color: rgba(116, 163, 218, 0.34); background: linear-gradient(135deg, #fcfdff, #f1f7ff); }
+.guestbook-card-purple { border-color: rgba(166, 141, 207, 0.34); background: linear-gradient(135deg, #fff, #f7f3ff); }
+.guestbook-card-green { border-color: rgba(116, 178, 137, 0.34); background: linear-gradient(135deg, #fdfffd, #f1faf3); }
+.guestbook-card-yellow { border-color: rgba(219, 183, 92, 0.38); background: linear-gradient(135deg, #fffefa, #fff8e7); }
 
 .guestbook-card-head {
   display: flex;
@@ -208,19 +224,27 @@
   color: #353550;
 }
 
+.guestbook-card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  margin-right: 7px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.74);
+  color: #b17489;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.guestbook-card-blue .guestbook-card-icon { color: #5e8ec6; }
+.guestbook-card-purple .guestbook-card-icon { color: #8f73bd; }
+.guestbook-card-green .guestbook-card-icon { color: #5f9e73; }
+.guestbook-card-yellow .guestbook-card-icon { color: #b08a30; }
+
 .guestbook-card-date {
   font-size: 0.86rem;
   color: #7a7a95;
-}
-
-.guestbook-side-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 0.76rem;
-  font-weight: 800;
-  margin-right: 8px;
 }
 
 .guestbook-pagination {
@@ -250,16 +274,6 @@
   color: #73758b;
   font-size: 0.82rem;
   text-align: center;
-}
-
-.guestbook-side-badge.groom {
-  color: #2e5ba7;
-  background: linear-gradient(135deg, #e4efff 0%, #ece9ff 100%);
-}
-
-.guestbook-side-badge.bride {
-  color: #a45597;
-  background: linear-gradient(135deg, #efe8ff 0%, #ffe6f1 100%);
 }
 
 .guestbook-card-message {
@@ -313,4 +327,11 @@
   margin: 0 0 14px;
   color: #70708b;
   line-height: 1.6;
+}
+
+@media (max-width: 420px) {
+  .guestbook-picker-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
 }

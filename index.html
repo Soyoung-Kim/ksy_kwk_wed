@@ -264,13 +264,28 @@
         <form class="guestbook-form" id="guestbook-form">
           <input type="hidden" id="guestbook-edit-id" value="" />
 
-          <div class="tag-grid" id="guestbook-side-picker">
-            <button type="button" class="tag-button guestbook-side-btn" data-side="groom">
-              신랑 지인
-            </button>
-            <button type="button" class="tag-button guestbook-side-btn" data-side="bride">
-              신부 지인
-            </button>
+          <div class="guestbook-identity-picker" aria-label="방명록 꾸미기">
+            <div class="guestbook-picker-row">
+              <span class="guestbook-label">프레임 색상</span>
+              <div class="guestbook-theme-options" id="guestbook-theme-picker">
+                <button type="button" class="guestbook-theme-btn theme-pink" data-theme="pink" aria-label="핑크 프레임"></button>
+                <button type="button" class="guestbook-theme-btn theme-blue" data-theme="blue" aria-label="블루 프레임"></button>
+                <button type="button" class="guestbook-theme-btn theme-purple" data-theme="purple" aria-label="퍼플 프레임"></button>
+                <button type="button" class="guestbook-theme-btn theme-green" data-theme="green" aria-label="그린 프레임"></button>
+                <button type="button" class="guestbook-theme-btn theme-yellow" data-theme="yellow" aria-label="옐로우 프레임"></button>
+              </div>
+            </div>
+            <div class="guestbook-picker-row">
+              <span class="guestbook-label">아이콘</span>
+              <div class="guestbook-icon-options" id="guestbook-icon-picker">
+                <button type="button" class="guestbook-icon-btn" data-icon="heart" aria-label="하트 아이콘">♥</button>
+                <button type="button" class="guestbook-icon-btn" data-icon="flower" aria-label="꽃 아이콘">✿</button>
+                <button type="button" class="guestbook-icon-btn" data-icon="ribbon" aria-label="리본 아이콘">🎀</button>
+                <button type="button" class="guestbook-icon-btn" data-icon="sparkle" aria-label="반짝임 아이콘">✦</button>
+                <button type="button" class="guestbook-icon-btn" data-icon="smile" aria-label="웃는 얼굴 아이콘">☺</button>
+                <button type="button" class="guestbook-icon-btn" data-icon="leaf" aria-label="잎사귀 아이콘">❋</button>
+              </div>
+            </div>
           </div>
 
           <label class="guestbook-field">

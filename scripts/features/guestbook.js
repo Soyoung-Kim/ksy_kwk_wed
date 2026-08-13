@@ -1,15 +1,19 @@
 import { APP_CONFIG } from '../../config.js';
 import { supabaseClient, hasSupabaseConfig, getFunctionHeaders } from '../supabaseClient.js';
 
-const GUESTBOOK_SELECT_COLUMNS = 'id, side, display_name, message, created_at, updated_at';
+const GUESTBOOK_SELECT_COLUMNS = 'id, theme, icon, display_name, message, created_at, updated_at';
 const PASSWORD_MIN_LENGTH = 4;
 const PASSWORD_MAX_LENGTH = 20;
 const GUESTBOOK_PAGE_SIZE = 4;
+const ICON_SYMBOLS = {
+  heart: '♥', flower: '✿', ribbon: '🎀', sparkle: '✦', smile: '☺', leaf: '❋'
+};
 
 const state = {
   entries: [],
   currentPage: 1,
-  selectedSide: '',
+  selectedTheme: 'pink',
+  selectedIcon: 'heart',
   editId: '',
   submitting: false,
 
@@ -88,7 +92,8 @@ function cacheElements() {
   els.submitButton = document.getElementById('guestbook-submit-btn');
   els.cancelButton = document.getElementById('guestbook-cancel-btn');
 
-  els.sideButtons = qsa('.guestbook-side-btn', els.root || document);
+  els.themeButtons = qsa('.guestbook-theme-btn', els.root || document);
+  els.iconButtons = qsa('.guestbook-icon-btn', els.root || document);
 
   els.editLock = document.getElementById('guestbook-edit-lock');
   els.editCancelOverlayButton = document.getElementById('guestbook-edit-cancel-overlay-btn');
@@ -130,22 +135,25 @@ function setStatus(message = '') {
   }
 }
 
-function pickRandomSide() {
-  return Math.random() < 0.5 ? 'groom' : 'bride';
-}
-
-function getSideLabel(side) {
-  return side === 'groom' ? '신랑 지인' : '신부 지인';
-}
-
-function setSelectedSide(side) {
-  state.selectedSide = side;
-
-  for (const button of els.sideButtons) {
-    const isActive = button.dataset.side === side;
+function setSelectedTheme(theme) {
+  state.selectedTheme = theme;
+  for (const button of els.themeButtons) {
+    const isActive = button.dataset.theme === theme;
     button.setAttribute('aria-pressed', String(isActive));
-    button.classList.toggle('is-groom-active', isActive && side === 'groom');
-    button.classList.toggle('is-bride-active', isActive && side === 'bride');
+    button.classList.toggle('is-active', isActive);
+  }
+}
+
+function getIconSymbol(icon) {
+  return ICON_SYMBOLS[icon] || ICON_SYMBOLS.heart;
+}
+
+function setSelectedIcon(icon) {
+  state.selectedIcon = icon;
+  for (const button of els.iconButtons) {
+    const isActive = button.dataset.icon === icon;
+    button.setAttribute('aria-pressed', String(isActive));
+    button.classList.toggle('is-active', isActive);
   }
 }
 
@@ -168,7 +176,8 @@ function resetFormState() {
     els.formCaption.textContent = '따뜻한 축하의 말을 남겨주세요.';
   }
 
-  setSelectedSide(pickRandomSide());
+  setSelectedTheme('pink');
+  setSelectedIcon('heart');
   unlockGuestbookBoard();
 }
 
@@ -227,7 +236,8 @@ function fillFormForEdit(entry) {
     els.formCaption.textContent = '수정 후 비밀번호를 다시 입력해주세요.';
   }
 
-  setSelectedSide(entry.side);
+  setSelectedTheme(entry.theme || 'pink');
+  setSelectedIcon(entry.icon || 'heart');
 
   if (els.formPanel) {
     els.formPanel.hidden = false;
@@ -239,10 +249,10 @@ function fillFormForEdit(entry) {
 
 function buildCard(entry) {
   return `
-    <article class="guestbook-card guestbook-card-${escapeHtml(entry.side)}" data-entry-id="${escapeHtml(entry.id)}">
+    <article class="guestbook-card guestbook-card-${escapeHtml(entry.theme || 'pink')}" data-entry-id="${escapeHtml(entry.id)}">
       <div class="guestbook-card-head">
         <div class="guestbook-card-meta">
-          <div class="guestbook-card-name">${escapeHtml(entry.display_name)}</div>
+          <div class="guestbook-card-name"><span class="guestbook-card-icon" aria-hidden="true">${escapeHtml(getIconSymbol(entry.icon))}</span>${escapeHtml(entry.display_name)}</div>
           <div class="guestbook-card-date">${escapeHtml(formatGuestbookDate(entry.created_at))}</div>
         </div>
       </div>
@@ -396,11 +406,6 @@ function validateForm() {
   const message = (els.messageInput?.value || '').trim();
   const password = (els.passwordInput?.value || '').trim();
 
-  if (!state.selectedSide) {
-    showToast('신랑 지인 또는 신부 지인을 선택해주세요.');
-    return null;
-  }
-
   if (!displayName || displayName.length > 20) {
     showToast('이름은 1자 이상 20자 이하로 입력해주세요.');
     return null;
@@ -417,7 +422,8 @@ function validateForm() {
   }
 
   return {
-    side: state.selectedSide,
+    theme: state.selectedTheme,
+    icon: state.selectedIcon,
     display_name: displayName,
     message,
     password
@@ -691,11 +697,7 @@ async function requestAiSuggestions(forceRefresh = false) {
 function openAiModal() {
   if (!els.aiModal) return;
 
-  if (!state.selectedSide) {
-    setSelectedSide(pickRandomSide());
-  }
-
-  setAiTarget(state.selectedSide || 'groom');
+  setAiTarget('groom');
   setAiVersion('friend');
 
   els.aiModal.hidden = false;
@@ -715,9 +717,15 @@ function bindEvents() {
   els.form?.addEventListener('submit', handleSubmit);
   els.list?.addEventListener('click', handleListClick);
 
-  for (const button of els.sideButtons) {
+  for (const button of els.themeButtons) {
     button.addEventListener('click', () => {
-      setSelectedSide(button.dataset.side || '');
+      setSelectedTheme(button.dataset.theme || 'pink');
+    });
+  }
+
+  for (const button of els.iconButtons) {
+    button.addEventListener('click', () => {
+      setSelectedIcon(button.dataset.icon || 'heart');
     });
   }
 
@@ -768,7 +776,6 @@ function bindEvents() {
         els.messageInput.value = text;
       }
 
-      setSelectedSide(state.aiTarget);
       closeAiModal();
       els.messageInput?.focus();
       showToast('추천 문구를 입력했습니다.');
