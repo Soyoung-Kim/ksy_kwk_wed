@@ -25,10 +25,10 @@
   margin-bottom: 24px;
   padding: 24px;
   border-radius: 24px;
-  background: #fff;
+  background: linear-gradient(145deg, #fff 18%, var(--guestbook-accent-wash) 100%);
   border: 1px solid var(--guestbook-accent-soft);
-  box-shadow: 0 14px 34px rgba(50, 50, 93, 0.08), inset 0 3px 0 var(--guestbook-accent);
-  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: 0 14px 34px rgba(50, 50, 93, 0.08), inset 0 4px 0 var(--guestbook-accent);
+  transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 .guestbook-form-theme-pink { --guestbook-accent: #d9849e; --guestbook-accent-soft: rgba(217, 132, 158, 0.22); --guestbook-accent-wash: #fff4f7; }
@@ -43,12 +43,18 @@
 
 .guestbook-form-header h3 {
   margin: 0 0 6px;
-  color: #464666;
+  color: var(--guestbook-accent);
+  transition: color 0.22s ease;
 }
 
 .guestbook-form-header p {
   margin: 0;
   color: #6b6b84;
+}
+
+.guestbook-form-panel .guestbook-label {
+  color: color-mix(in srgb, var(--guestbook-accent) 72%, #353550);
+  transition: color 0.22s ease;
 }
 
 .guestbook-form {
