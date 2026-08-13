@@ -6,7 +6,6 @@ export const APP_CONFIG = {
   coupleLabel: '우경 ❤ 소영',
 
   share: {
-    // Kakao Developers > App settings > Platform > Web에 GitHub Pages 주소를 등록한 뒤 입력하세요.
     kakaoJavaScriptKey: '8b93eba907a57c775af83d0da7a5bbaa',
     title: '우경 ❤ 소영 결혼합니다',
     description: '2026.11.08 SUN AM 11:30',
