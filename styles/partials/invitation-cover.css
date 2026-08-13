@@ -2,12 +2,10 @@
    Opening invitation cover
 ========================================================= */
 .invitation-cover {
+  --cover-stage-height: 135svh;
   position: relative;
-  min-height: 100svh;
+  min-height: var(--cover-stage-height);
   overflow: hidden;
-  display: grid;
-  place-items: center;
-  padding: 34px 22px 28px;
   background:
     radial-gradient(circle at 12% 18%, rgba(229, 192, 196, 0.28), transparent 26%),
     radial-gradient(circle at 88% 78%, rgba(206, 189, 156, 0.24), transparent 29%),
@@ -31,8 +29,17 @@
 .invitation-cover-inner {
   position: relative;
   z-index: 1;
+  position: sticky;
+  top: 0;
   width: min(430px, 100%);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 34px 22px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
+  will-change: transform, opacity;
 }
 
 .cover-kicker {
@@ -62,8 +69,9 @@
 
 .cover-illustration-frame img {
   width: 100%;
-  max-height: 62svh;
-  object-fit: cover;
+  height: auto;
+  max-height: 66svh;
+  object-fit: contain;
   object-position: center;
 }
 
@@ -105,6 +113,6 @@
 .cover-ornament-right { right: 8%; bottom: 18%; font-size: 2.5rem; }
 
 @media (max-width: 480px) {
-  .invitation-cover { padding: 26px 18px 22px; }
-  .cover-illustration-frame img { max-height: 60svh; }
+  .invitation-cover-inner { padding: 26px 18px 22px; }
+  .cover-illustration-frame img { max-height: 64svh; }
 }

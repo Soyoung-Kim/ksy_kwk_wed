@@ -7,9 +7,21 @@ export function initIntroParallax() {
   const media = document.getElementById('intro-media');
   const copy = document.getElementById('intro-copy');
   const overlay = stage?.querySelector('.intro-overlay');
+  const coverStage = document.getElementById('invitation-cover');
+  const coverInner = coverStage?.querySelector('.invitation-cover-inner');
 
   if (!stage || !media || !copy) {
     return;
+  }
+
+  function applyCoverTransition() {
+    if (!coverStage || !coverInner) return;
+    const rect = coverStage.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+    const scrollable = Math.max(coverStage.offsetHeight - viewportHeight, 1);
+    const progress = clamp((-rect.top) / scrollable, 0, 1);
+    coverInner.style.transform = `translate3d(0, ${progress * -24}px, 0) scale(${1 - progress * 0.025})`;
+    coverInner.style.opacity = String(1 - progress * 0.72);
   }
 
   function isMobile() {
@@ -37,6 +49,8 @@ export function initIntroParallax() {
     if (overlay) {
       overlay.style.opacity = String(overlayOpacity);
     }
+
+    applyCoverTransition();
   }
 
   let ticking = false;
