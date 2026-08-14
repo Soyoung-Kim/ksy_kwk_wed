@@ -177,7 +177,7 @@ function resetFormState() {
   clearFormFields();
 
   if (els.formTitle) {
-    els.formTitle.textContent = '방명록 남기기';
+    els.formTitle.textContent = '축하 메시지 남기기';
   }
 
   if (els.formCaption) {
@@ -237,7 +237,7 @@ function fillFormForEdit(entry) {
   if (els.passwordInput) els.passwordInput.value = '';
 
   if (els.formTitle) {
-    els.formTitle.textContent = '방명록 수정';
+    els.formTitle.textContent = '축하 메시지 수정';
   }
 
   if (els.formCaption) {
@@ -385,7 +385,7 @@ export async function loadGuestbook() {
     return;
   }
 
-  setStatus('방명록을 불러오는 중입니다.', true);
+  setStatus('축하 메시지를 불러오는 중입니다.', true);
 
   const tableName = getGuestbookConfig().table || 'guestbook_entries';
 
@@ -396,7 +396,7 @@ export async function loadGuestbook() {
 
   if (error) {
     console.error('[guestbook] load error', error);
-    setStatus('방명록을 불러오지 못했습니다.');
+    setStatus('축하 메시지를 불러오지 못했습니다.');
     renderEmptyState();
     return;
   }
@@ -404,7 +404,7 @@ export async function loadGuestbook() {
   state.entries = Array.isArray(data) ? data : [];
   state.currentPage = 1;
   renderGuestbook();
-  setStatus(state.entries.length ? '' : '아직 등록된 방명록이 없습니다.');
+  setStatus(state.entries.length ? '' : '아직 등록된 축하 메시지가 없습니다.');
 }
 
 function getFunctionUrl(functionName) {
@@ -483,7 +483,7 @@ async function handleSubmit(event) {
 
   state.submitting = true;
   setSubmitLoading(true);
-  setStatus('방명록을 저장하는 중입니다.', true);
+  setStatus('축하 메시지를 저장하는 중입니다.', true);
 
   try {
     const isEditing = Boolean(state.editId);
@@ -494,15 +494,15 @@ async function handleSubmit(event) {
         id: state.editId,
         ...payload
       });
-      showToast('방명록이 수정되었습니다.');
+      showToast('축하 메시지가 수정되었습니다.');
     } else {
       result = await invokeFunction(functions.create, payload);
-      showToast('방명록이 등록되었습니다.');
+      showToast('축하 메시지가 등록되었습니다.');
     }
 
     applySavedEntry(result?.entry, !isEditing);
     closeForm();
-    setStatus(isEditing ? '방명록을 수정했습니다.' : '방명록을 등록했습니다.');
+    setStatus('');
   } catch (error) {
     console.error('[guestbook] submit error', error);
 
@@ -542,7 +542,7 @@ async function handleDelete(entryId) {
       password: normalized
     });
 
-    showToast('방명록이 삭제되었습니다.');
+    showToast('축하 메시지가 삭제되었습니다.');
     await loadGuestbook();
   } catch (error) {
     console.error('[guestbook] delete error', error);
