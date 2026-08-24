@@ -66,6 +66,19 @@ function initTextSizeControl() {
   });
 }
 
+function initFloatingNavigation() {
+  const topButton = document.getElementById('scroll-top-button');
+  const bottomButton = document.getElementById('scroll-bottom-button');
+
+  topButton?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  bottomButton?.addEventListener('click', () => {
+    window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+  });
+}
+
 async function safeImport(label, path) {
   try {
   return await import(path);
@@ -167,6 +180,7 @@ async function init() {
 document.addEventListener('DOMContentLoaded', () => {
   initInteractionGuard();
   initTextSizeControl();
+  initFloatingNavigation();
   init().catch((error) => {
     console.error('[main] fatal init error', error);
     showToastFallback('페이지 초기화 중 오류가 발생했습니다.');
