@@ -1,4 +1,5 @@
 import { qs, qsa, escapeHtml } from '../utils.js';
+import { supabaseClient } from '../supabaseClient.js';
 
 const sliderState = {
   photos: [],
@@ -9,6 +10,16 @@ const sliderState = {
 };
 
 export async function initSlider() {
+  const managedPhotos = await loadManagedPhotos();
+  if (managedPhotos) {
+    sliderState.allPhotos = managedPhotos;
+    sliderState.photos = managedPhotos;
+    renderSlider(sliderState.photos);
+    bindSliderControls();
+    startSliderTimer();
+    return;
+  }
+
   const response = await fetch('./assets/photos.json', { cache: 'no-store' });
   if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
 
@@ -20,6 +31,19 @@ export async function initSlider() {
   renderSlider(sliderState.photos);
   bindSliderControls();
   startSliderTimer();
+}
+
+async function loadManagedPhotos() {
+  if (!supabaseClient) return null;
+
+  const { data, error } = await supabaseClient
+    .from('wedding_gallery')
+    .select('image_url, alt')
+    .eq('is_visible', true)
+    .order('display_order');
+
+  if (error) return null;
+  return Array.isArray(data) ? data.map((photo) => ({ src: photo.image_url, alt: photo.alt })) : [];
 }
 
 function createSlide(photo, index) {
