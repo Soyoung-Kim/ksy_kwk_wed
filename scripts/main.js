@@ -44,7 +44,8 @@ function initTextSizeControl() {
   const apply = (enabled) => {
     document.documentElement.classList.toggle('is-large-text', enabled);
     toggle.setAttribute('aria-pressed', String(enabled));
-    toggle.lastElementChild.textContent = enabled ? '기본 글자' : '글자 크게';
+    toggle.setAttribute('aria-label', enabled ? '기본 글자 크기로 보기' : '글자 크게 보기');
+    toggle.firstElementChild.textContent = enabled ? '가−' : '가+';
   };
 
   try {
@@ -56,6 +57,7 @@ function initTextSizeControl() {
   toggle.addEventListener('click', () => {
     const enabled = !document.documentElement.classList.contains('is-large-text');
     apply(enabled);
+    showToastFallback(enabled ? '글자를 크게 표시합니다.' : '기본 글자 크기로 표시합니다.');
     try {
       window.localStorage.setItem(storageKey, String(enabled));
     } catch {
