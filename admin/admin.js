@@ -1,6 +1,7 @@
 import { supabaseClient } from '../scripts/supabaseClient.js';
 
 const GALLERY_BUCKET = 'wedding-gallery';
+const SUPPORTED_IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp']);
 const state = { contacts: [], accounts: [], gallery: [] };
 const els = {
   loginView: document.getElementById('login-view'), adminView: document.getElementById('admin-view'),
@@ -32,6 +33,17 @@ function previewUrl(imageUrl) { return imageUrl.startsWith('./assets/') ? `../${
 function resolveLoginEmail(value) {
   const normalized = value.trim().toLowerCase();
   return normalized.includes('@') ? normalized : '';
+}
+function getFileExtension(file) { return file.name.split('.').pop()?.trim().toLowerCase() || ''; }
+function isMovFile(file) { return getFileExtension(file) === 'mov' || file.type === 'video/quicktime'; }
+function isSupportedImage(file) {
+  return SUPPORTED_IMAGE_EXTENSIONS.has(getFileExtension(file))
+    && ['image/jpeg', 'image/png', 'image/webp', ''].includes(file.type);
+}
+function notify(message) {
+  setStatus(message);
+  window.clearTimeout(notify.timer);
+  notify.timer = window.setTimeout(() => setStatus(''), 4800);
 }
 
 function renderContacts() {
@@ -140,17 +152,67 @@ els.loginForm.addEventListener('submit', async (event) => {
 });
 els.logout.addEventListener('click', () => supabaseClient.auth.signOut());
 els.uploadForm.addEventListener('submit', async (event) => {
-  event.preventDefault(); const file = els.uploadFile.files?.[0]; if (!file) return;
-  const extension = file.name.split('.').pop()?.replace(/[^a-z0-9]/gi, '') || 'jpg';
-  const storagePath = `gallery/${Date.now()}-${crypto.randomUUID()}.${extension}`;
-  setStatus('사진을 업로드하는 중입니다.');
-  const { error: uploadError } = await supabaseClient.storage.from(GALLERY_BUCKET).upload(storagePath, file, { contentType: file.type, upsert: false });
-  if (uploadError) return setStatus(uploadError.message);
-  const { data: urlData } = supabaseClient.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath);
-  const nextOrder = Math.max(0, ...state.gallery.map((item) => item.display_order || 0)) + 10;
-  const { error } = await supabaseClient.from('wedding_gallery').insert({ image_url: urlData.publicUrl, storage_path: storagePath, alt: els.uploadAlt.value.trim() || '웨딩 사진', display_order: nextOrder });
-  if (error) return setStatus(error.message);
-  els.uploadForm.reset(); els.uploadAlt.value = '웨딩 사진'; setStatus('사진을 추가했습니다.'); await loadData();
+  event.preventDefault();
+  const selectedFiles = Array.from(els.uploadFile.files || []);
+  if (!selectedFiles.length) return;
+
+  const movFiles = selectedFiles.filter(isMovFile);
+  const imageFiles = selectedFiles.filter(isSupportedImage);
+  const unsupportedFiles = selectedFiles.filter((file) => !isMovFile(file) && !isSupportedImage(file));
+
+  if (!imageFiles.length) {
+    return notify(movFiles.length
+      ? 'MOV 동영상은 갤러리 사진으로 표시할 수 없습니다. JPG·PNG·WebP로 변환 후 업로드해주세요.'
+      : 'JPG·PNG·WebP 사진 파일만 업로드할 수 있습니다.');
+  }
+
+  const uploadedRows = [];
+  const failedFiles = [];
+  const baseOrder = Math.max(0, ...state.gallery.map((item) => item.display_order || 0));
+  const alt = els.uploadAlt.value.trim() || '웨딩 사진';
+
+  for (const [index, file] of imageFiles.entries()) {
+    const extension = getFileExtension(file);
+    const storagePath = `gallery/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+    setStatus(`사진 업로드 중… ${index + 1} / ${imageFiles.length}`);
+    const { error: uploadError } = await supabaseClient.storage
+      .from(GALLERY_BUCKET)
+      .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+    if (uploadError) {
+      failedFiles.push(file.name);
+      continue;
+    }
+
+    const { data: urlData } = supabaseClient.storage.from(GALLERY_BUCKET).getPublicUrl(storagePath);
+    uploadedRows.push({
+      image_url: urlData.publicUrl,
+      storage_path: storagePath,
+      alt: imageFiles.length > 1 ? `${alt} ${index + 1}` : alt,
+      display_order: baseOrder + (index + 1) * 10
+    });
+  }
+
+  if (uploadedRows.length) {
+    const { error } = await supabaseClient.from('wedding_gallery').insert(uploadedRows);
+    if (error) {
+      await supabaseClient.storage.from(GALLERY_BUCKET).remove(uploadedRows.map((row) => row.storage_path));
+      return setStatus(`사진 목록 저장에 실패했습니다: ${error.message}`);
+    }
+  }
+
+  els.uploadForm.reset();
+  els.uploadAlt.value = '웨딩 사진';
+  await loadData();
+
+  const skipped = [
+    movFiles.length ? `MOV ${movFiles.length}개` : '',
+    unsupportedFiles.length ? `지원하지 않는 파일 ${unsupportedFiles.length}개` : '',
+    failedFiles.length ? `업로드 실패 ${failedFiles.length}개` : ''
+  ].filter(Boolean);
+  notify(uploadedRows.length
+    ? `${uploadedRows.length}장 업로드를 완료했습니다.${skipped.length ? ` (${skipped.join(', ')} 제외)` : ''}`
+    : `업로드된 사진이 없습니다. ${skipped.join(', ')}`);
 });
 
 if (!supabaseClient) setStatus('Supabase 설정을 찾을 수 없습니다.', true);
