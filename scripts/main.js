@@ -25,6 +25,15 @@ function initInteractionGuard() {
       event.preventDefault();
     }
   });
+
+  // 모바일 브라우저의 두 손가락 핀치 확대를 제한합니다.
+  document.addEventListener('touchmove', (event) => {
+    if (event.touches.length > 1) event.preventDefault();
+  }, { passive: false });
+
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((eventName) => {
+    document.addEventListener(eventName, (event) => event.preventDefault(), { passive: false });
+  });
 }
 
 async function safeImport(label, path) {
