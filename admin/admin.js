@@ -22,11 +22,6 @@ function field(label, name, value, type = 'text', wide = false) {
   input.name = name; input.type = type; input.value = value ?? '';
   wrap.append(input); return wrap;
 }
-function visibility(checked) {
-  const label = document.createElement('label'); label.className = 'visibility';
-  const input = document.createElement('input'); input.type = 'checkbox'; input.name = 'is_visible'; input.checked = checked;
-  label.append(input, document.createTextNode('청첩장에 표시')); return label;
-}
 function button(text, className = '') { const el = document.createElement('button'); el.type = 'submit'; el.textContent = text; el.className = className; return el; }
 function formValue(form, name) { return new FormData(form).get(name)?.toString().trim() || ''; }
 function previewUrl(imageUrl) { return imageUrl.startsWith('./assets/') ? `../${imageUrl.slice(2)}` : imageUrl; }
@@ -55,12 +50,12 @@ function renderContacts() {
     const hint = document.createElement('span'); hint.textContent = `순서 ${row.display_order}`; head.append(title, hint);
     const fields = document.createElement('div'); fields.className = 'editor-fields';
     fields.append(field('이름', 'name', row.name), field('휴대전화', 'phone', row.phone));
-    form.append(head, fields, visibility(row.is_visible));
+    form.append(head, fields);
     const actions = document.createElement('div'); actions.className = 'editor-actions'; actions.append(button('저장'));
     form.append(actions);
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('연락처를 저장하는 중입니다.');
-      const { error } = await supabaseClient.from('wedding_contacts').update({ name: formValue(form, 'name'), phone: formValue(form, 'phone'), is_visible: form.elements.is_visible.checked }).eq('id', row.id);
+      const { error } = await supabaseClient.from('wedding_contacts').update({ name: formValue(form, 'name'), phone: formValue(form, 'phone') }).eq('id', row.id);
       if (error) return setStatus(error.message);
       setStatus('연락처를 저장했습니다.'); await loadData();
     });
@@ -77,13 +72,13 @@ function renderAccounts() {
     const hint = document.createElement('span'); hint.textContent = `순서 ${row.display_order}`; head.append(title, hint);
     const fields = document.createElement('div'); fields.className = 'editor-fields';
     fields.append(field('은행명', 'bank_name', row.bank_name), field('예금주', 'account_holder', row.account_holder), field('계좌번호', 'account_number', row.account_number, 'text', true));
-    form.append(head, fields, visibility(row.is_visible));
+    form.append(head, fields);
     const actions = document.createElement('div'); actions.className = 'editor-actions'; actions.append(button('저장'));
     form.append(actions);
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('계좌 정보를 저장하는 중입니다.');
       const bankName = formValue(form, 'bank_name');
-      const { error } = await supabaseClient.from('wedding_accounts').update({ bank_name: bankName || null, account_holder: formValue(form, 'account_holder'), account_number: formValue(form, 'account_number'), is_visible: form.elements.is_visible.checked }).eq('id', row.id);
+      const { error } = await supabaseClient.from('wedding_accounts').update({ bank_name: bankName || null, account_holder: formValue(form, 'account_holder'), account_number: formValue(form, 'account_number') }).eq('id', row.id);
       if (error) return setStatus(error.message);
       setStatus('계좌 정보를 저장했습니다.'); await loadData();
     });
@@ -97,7 +92,7 @@ function renderGallery() {
     const form = document.createElement('form'); form.className = 'gallery-editor-card';
     const image = document.createElement('img'); image.src = previewUrl(row.image_url); image.alt = row.alt;
     const fields = document.createElement('div'); fields.className = 'editor-fields';
-    fields.append(field('설명', 'alt', row.alt), field('순서', 'display_order', row.display_order, 'number'), visibility(row.is_visible));
+    fields.append(field('설명', 'alt', row.alt), field('순서', 'display_order', row.display_order, 'number'));
     const remove = button('삭제', 'danger'); remove.type = 'button';
     remove.addEventListener('click', async () => {
       if (!window.confirm('이 사진을 갤러리에서 삭제할까요?')) return;
@@ -110,7 +105,7 @@ function renderGallery() {
     form.append(image, fields, remove);
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('사진 정보를 저장하는 중입니다.');
-      const { error } = await supabaseClient.from('wedding_gallery').update({ alt: formValue(form, 'alt'), display_order: Number(formValue(form, 'display_order')) || 0, is_visible: form.elements.is_visible.checked }).eq('id', row.id);
+      const { error } = await supabaseClient.from('wedding_gallery').update({ alt: formValue(form, 'alt'), display_order: Number(formValue(form, 'display_order')) || 0 }).eq('id', row.id);
       if (error) return setStatus(error.message);
       setStatus('사진 정보를 저장했습니다.'); await loadData();
     });
