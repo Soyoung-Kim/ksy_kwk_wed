@@ -1,6 +1,26 @@
 -- Run this once in the Supabase SQL Editor.
 -- It creates the administrator role, editable gallery data, and RLS policies.
 
+-- Support existing invitation installations created before contact grouping.
+alter table public.wedding_contacts add column if not exists side text;
+alter table public.wedding_contacts add column if not exists contact_type text;
+update public.wedding_contacts
+set side = case when role_label like '%신부%' then 'bride' else 'groom' end
+where side is null;
+update public.wedding_contacts
+set contact_type = case when role_label in ('신랑', '신부') then 'couple' else 'guardian' end
+where contact_type is null;
+alter table public.wedding_contacts alter column side set default 'groom';
+alter table public.wedding_contacts alter column side set not null;
+alter table public.wedding_contacts alter column contact_type set default 'guardian';
+alter table public.wedding_contacts alter column contact_type set not null;
+alter table public.wedding_contacts drop constraint if exists wedding_contacts_side_check;
+alter table public.wedding_contacts
+  add constraint wedding_contacts_side_check check (side in ('groom', 'bride'));
+alter table public.wedding_contacts drop constraint if exists wedding_contacts_contact_type_check;
+alter table public.wedding_contacts
+  add constraint wedding_contacts_contact_type_check check (contact_type in ('couple', 'guardian'));
+
 create table if not exists public.wedding_admins (
   user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
