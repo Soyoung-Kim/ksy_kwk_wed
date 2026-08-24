@@ -109,8 +109,8 @@ function renderGallery() {
 async function loadData() {
   setStatus('관리 정보를 불러오는 중입니다.');
   const [contacts, accounts, gallery] = await Promise.all([
-    supabaseClient.from('wedding_contacts').select('*').order('display_order'),
-    supabaseClient.from('wedding_accounts').select('*').order('display_order'),
+    supabaseClient.from('wedding_contacts').select('id, side, contact_type, role_label, name, phone, display_order, is_visible').order('display_order'),
+    supabaseClient.from('wedding_accounts').select('id, side, side_label, bank_name, account_holder, account_number, display_order, is_visible').order('display_order'),
     supabaseClient.from('wedding_gallery').select('*').order('display_order')
   ]);
   const error = contacts.error || accounts.error || gallery.error;

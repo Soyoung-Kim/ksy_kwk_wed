@@ -51,6 +51,10 @@ grant execute on function public.is_wedding_admin() to authenticated;
 
 grant usage on schema public to authenticated;
 grant select on public.wedding_admins to authenticated;
+grant select (id, side, contact_type, role_label, name, phone, display_order, is_visible)
+  on public.wedding_contacts to authenticated;
+grant select (id, side, side_label, bank_name, account_holder, account_number, display_order, is_visible)
+  on public.wedding_accounts to authenticated;
 
 drop policy if exists "wedding contacts admin update" on public.wedding_contacts;
 create policy "wedding contacts admin update"
