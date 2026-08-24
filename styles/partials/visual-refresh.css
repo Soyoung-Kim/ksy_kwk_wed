@@ -1,0 +1,135 @@
+/* =========================================================
+   Visual refresh: warm ivory, charcoal and rose-wine accents
+========================================================= */
+:root {
+  --ink: #352e2d;
+  --ink-soft: #625754;
+  --wine: #a83f5c;
+  --wine-deep: #862d49;
+  --wine-soft: #f9e8ed;
+  --line: rgba(123, 65, 79, 0.16);
+  --paper: #fffdfb;
+}
+
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 5% 20%, rgba(220, 121, 151, 0.10), transparent 24%),
+    radial-gradient(circle at 94% 56%, rgba(184, 140, 91, 0.10), transparent 27%),
+    linear-gradient(180deg, #fffaf7 0%, #fcf7f4 44%, #fffdfc 100%);
+}
+
+.page-shell { padding-top: 34px; }
+
+.section {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.91);
+  box-shadow: 0 18px 42px rgba(73, 38, 47, 0.08);
+}
+
+.section:nth-of-type(even) {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 249, 0.89));
+}
+
+.section-heading .section-kicker,
+.section-header .section-kicker {
+  color: var(--wine);
+}
+
+.section-heading h2,
+.section-header h2,
+.share-section h2 {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.section-description { color: var(--ink-soft); }
+
+.contact-section::before,
+.wedding-accounts::before,
+.invitation-panel::before {
+  width: 54px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--wine), #db8ba1);
+}
+
+.button-primary {
+  background: linear-gradient(135deg, #c15372 0%, var(--wine-deep) 100%);
+  box-shadow: 0 12px 24px rgba(168, 63, 92, 0.26);
+}
+
+.button-secondary {
+  color: var(--wine-deep);
+  border-color: rgba(168, 63, 92, 0.22);
+  background: #fffafb;
+  box-shadow: 0 9px 18px rgba(100, 46, 61, 0.08);
+}
+
+.floating-utilities { gap: 9px; }
+.text-size-toggle,
+.utility-scroll-button {
+  border-color: rgba(168, 63, 92, 0.26);
+  background: rgba(255, 250, 251, 0.95);
+  color: var(--wine-deep);
+  box-shadow: 0 10px 22px rgba(116, 43, 63, 0.14);
+}
+.text-size-toggle[aria-pressed='true'] { border-color: var(--wine); background: var(--wine); }
+
+.cover-kicker { color: var(--wine); }
+.cover-title { color: var(--ink); }
+.cover-illustration-frame { border-color: rgba(168, 63, 92, 0.20); box-shadow: 0 22px 48px rgba(104, 40, 56, 0.14); }
+.cover-countdown { border: 1px solid rgba(168, 63, 92, 0.15); }
+
+.slider { box-shadow: 0 16px 34px rgba(77, 37, 48, 0.11); }
+.slide-nav { color: var(--wine-deep); background: rgba(255, 250, 251, 0.92); }
+.slide-dots .dot.active { background: var(--wine); }
+.gallery-item, .gallery button, .gallery a, .gallery figure, .gallery > div { border: 1px solid rgba(168, 63, 92, 0.12); }
+.gallery-count { background: var(--wine-soft); color: var(--wine-deep); }
+
+.detail-item,
+.contact-card,
+.account-card {
+  border-color: rgba(168, 63, 92, 0.14);
+  box-shadow: 0 13px 28px rgba(74, 37, 47, 0.08);
+}
+.detail-label,
+.contact-role { color: var(--wine); }
+.detail-item p,
+.contact-name,
+.account-card-head h3 { color: var(--ink); }
+.address-copy-button {
+  border-color: rgba(168, 63, 92, 0.28);
+  background: #fff7f9;
+  color: var(--wine-deep);
+}
+
+.rough-map { border-color: rgba(168, 63, 92, 0.18); box-shadow: 0 15px 30px rgba(75, 38, 48, 0.10); }
+.rough-map figcaption { color: var(--wine-deep); background: #fff9fa; }
+.transit-card { border-color: rgba(168, 63, 92, 0.14); background: rgba(255, 250, 251, 0.76); }
+.transit-label { color: var(--wine-deep); }
+.flower-notice { border-color: rgba(168, 63, 92, 0.22); background: linear-gradient(135deg, #fffafb, #fbecef); }
+.flower-notice-icon, .flower-notice-title { color: var(--wine); }
+
+.nav-section-title { color: var(--ink); }
+.contact-number { border-color: rgba(168, 63, 92, 0.16); background: #fff8fa; color: #514542; }
+.contact-copy-icon { color: var(--wine); }
+.contact-action { border-color: rgba(168, 63, 92, 0.22); color: var(--wine-deep); background: #fffafb; }
+.contact-action:hover { background: var(--wine-soft); }
+
+.wedding-accounts,
+.guestbook-section,
+.share-section { border-color: var(--line); box-shadow: 0 22px 48px rgba(73, 38, 47, 0.09); }
+.directory-group { border-color: rgba(168, 63, 92, 0.20); }
+.directory-group-groom { border-color: rgba(65, 101, 157, 0.38); }
+.directory-group-bride { border-color: rgba(184, 78, 112, 0.38); }
+.directory-toggle { color: var(--ink); }
+.directory-group-groom .directory-toggle-title { color: #315b9b; }
+.directory-group-bride .directory-toggle-title { color: var(--wine); }
+.account-bank-number { color: var(--ink-soft); }
+
+.share-section p:not(.section-kicker),
+.footer { color: var(--ink-soft); }
+.share-kakao-button { box-shadow: 0 11px 22px rgba(118, 103, 0, 0.20); }
+
+.guestbook-section .section-kicker { color: var(--wine); }
+.guestbook-toolbar .button { background: linear-gradient(135deg, #c15372, var(--wine-deep); box-shadow: 0 12px 24px rgba(168, 63, 92, 0.24); }
