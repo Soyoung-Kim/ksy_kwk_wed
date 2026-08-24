@@ -18,6 +18,9 @@ button:hover, .header-actions a:hover { filter: brightness(.96); }
 button.secondary, .header-actions button { color: #604d40; background: #fff; border: 1px solid rgba(143,113,92,.2); }
 button.danger { color: #a04f58; background: #fff3f4; border: 1px solid rgba(180,93,103,.22); }
 .status { min-height: 1.5em; margin: 14px 0 0; color: #8a6653; font-size: .9rem; }
+.admin-toast { position: fixed; z-index: 2000; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); width: min(420px, calc(100% - 32px)); padding: 14px 16px; border-radius: 14px; background: rgba(64,56,50,.94); color: #fff; font-size: .92rem; line-height: 1.45; text-align: center; box-shadow: 0 14px 34px rgba(48,35,26,.22); opacity: 0; pointer-events: none; transform: translate(-50%, 12px); transition: opacity .2s ease, transform .2s ease; }
+.admin-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+.admin-toast[data-type="error"] { background: rgba(144,64,66,.96); }
 .admin-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 28px; }
 .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .admin-section { margin-top: 20px; padding: 26px; }

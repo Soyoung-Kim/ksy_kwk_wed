@@ -10,7 +10,8 @@ const els = {
   adminStatus: document.getElementById('admin-status'), contacts: document.getElementById('contacts-list'),
   accounts: document.getElementById('accounts-list'), gallery: document.getElementById('gallery-list'),
   uploadForm: document.getElementById('gallery-upload-form'), uploadFile: document.getElementById('gallery-file'),
-  uploadAlt: document.getElementById('gallery-alt'), logout: document.getElementById('logout-button')
+  uploadAlt: document.getElementById('gallery-alt'), logout: document.getElementById('logout-button'),
+  toast: document.getElementById('admin-toast')
 };
 
 function setStatus(message = '', login = false) { (login ? els.loginStatus : els.adminStatus).textContent = message; }
@@ -35,10 +36,18 @@ function isSupportedImage(file) {
   return SUPPORTED_IMAGE_EXTENSIONS.has(getFileExtension(file))
     && ['image/jpeg', 'image/png', 'image/webp', ''].includes(file.type);
 }
-function notify(message) {
+function notify(message, type = 'success') {
   setStatus(message);
+  if (els.toast) {
+    els.toast.textContent = message;
+    els.toast.dataset.type = type;
+    els.toast.classList.add('is-visible');
+  }
   window.clearTimeout(notify.timer);
-  notify.timer = window.setTimeout(() => setStatus(''), 4800);
+  notify.timer = window.setTimeout(() => {
+    setStatus('');
+    els.toast?.classList.remove('is-visible');
+  }, 4200);
 }
 
 function renderContacts() {
@@ -56,8 +65,9 @@ function renderContacts() {
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('연락처를 저장하는 중입니다.');
       const { error } = await supabaseClient.from('wedding_contacts').update({ name: formValue(form, 'name'), phone: formValue(form, 'phone') }).eq('id', row.id);
-      if (error) return setStatus(error.message);
-      setStatus('연락처를 저장했습니다.'); await loadData();
+      if (error) return notify(`연락처 저장에 실패했습니다: ${error.message}`, 'error');
+      await loadData();
+      notify('연락처를 저장했습니다.');
     });
     els.contacts.append(form);
   });
@@ -78,9 +88,10 @@ function renderAccounts() {
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('계좌 정보를 저장하는 중입니다.');
       const bankName = formValue(form, 'bank_name');
-      const { error } = await supabaseClient.from('wedding_accounts').update({ bank_name: bankName || null, account_holder: formValue(form, 'account_holder'), account_number: formValue(form, 'account_number') }).eq('id', row.id);
-      if (error) return setStatus(error.message);
-      setStatus('계좌 정보를 저장했습니다.'); await loadData();
+      const { error } = await supabaseClient.from('wedding_accounts').update({ bank_name: bankName, account_holder: formValue(form, 'account_holder'), account_number: formValue(form, 'account_number') }).eq('id', row.id);
+      if (error) return notify(`계좌 정보 저장에 실패했습니다: ${error.message}`, 'error');
+      await loadData();
+      notify(bankName ? '계좌 정보를 저장했습니다.' : '은행명을 비워 저장했습니다. 청첩장에서는 이 계좌가 숨겨집니다.');
     });
     els.accounts.append(form);
   });
@@ -99,15 +110,17 @@ function renderGallery() {
       setStatus('사진을 삭제하는 중입니다.');
       if (row.storage_path) await supabaseClient.storage.from(GALLERY_BUCKET).remove([row.storage_path]);
       const { error } = await supabaseClient.from('wedding_gallery').delete().eq('id', row.id);
-      if (error) return setStatus(error.message);
-      setStatus('사진을 삭제했습니다.'); await loadData();
+      if (error) return notify(`사진 삭제에 실패했습니다: ${error.message}`, 'error');
+      await loadData();
+      notify('사진을 삭제했습니다.');
     });
     form.append(image, fields, remove);
     form.addEventListener('submit', async (event) => {
       event.preventDefault(); setStatus('사진 정보를 저장하는 중입니다.');
       const { error } = await supabaseClient.from('wedding_gallery').update({ alt: formValue(form, 'alt'), display_order: Number(formValue(form, 'display_order')) || 0 }).eq('id', row.id);
-      if (error) return setStatus(error.message);
-      setStatus('사진 정보를 저장했습니다.'); await loadData();
+      if (error) return notify(`사진 정보 저장에 실패했습니다: ${error.message}`, 'error');
+      await loadData();
+      notify('사진 정보를 저장했습니다.');
     });
     els.gallery.append(form);
   });
