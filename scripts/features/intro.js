@@ -15,8 +15,8 @@ export function initIntroParallax() {
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
     const scrollable = Math.max(coverStage.offsetHeight - viewportHeight, 1);
     const progress = clamp((-rect.top) / scrollable, 0, 1);
-    coverInner.style.transform = `translate3d(0, ${progress * -24}px, 0) scale(${1 - progress * 0.025})`;
-    coverInner.style.opacity = String(1 - progress * 0.72);
+    coverInner.style.transform = `translate3d(0, ${progress * -12}px, 0) scale(${1 - progress * 0.01})`;
+    coverInner.style.opacity = String(1 - progress * 0.48);
   }
 
   let ticking = false;

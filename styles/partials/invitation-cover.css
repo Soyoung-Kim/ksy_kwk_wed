@@ -2,7 +2,7 @@
    Opening invitation cover
 ========================================================= */
 .invitation-cover {
-  --cover-stage-height: 138svh;
+  --cover-stage-height: 118svh;
   position: relative;
   min-height: var(--cover-stage-height);
   overflow: hidden;
@@ -29,8 +29,6 @@
 .invitation-cover-inner {
   position: relative;
   z-index: 1;
-  position: sticky;
-  top: 0;
   width: min(430px, 100%);
   min-height: 100svh;
   margin: 0 auto;
