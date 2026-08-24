@@ -1,6 +1,5 @@
 import { supabaseClient } from '../scripts/supabaseClient.js';
 
-const ADMIN_EMAIL_SUFFIX = '@wedding-admin.local';
 const GALLERY_BUCKET = 'wedding-gallery';
 const state = { contacts: [], accounts: [], gallery: [] };
 const els = {
@@ -30,6 +29,10 @@ function visibility(checked) {
 function button(text, className = '') { const el = document.createElement('button'); el.type = 'submit'; el.textContent = text; el.className = className; return el; }
 function formValue(form, name) { return new FormData(form).get(name)?.toString().trim() || ''; }
 function previewUrl(imageUrl) { return imageUrl.startsWith('./assets/') ? `../${imageUrl.slice(2)}` : imageUrl; }
+function resolveLoginEmail(value) {
+  const normalized = value.trim().toLowerCase();
+  return normalized.includes('@') ? normalized : '';
+}
 
 function renderContacts() {
   els.contacts.replaceChildren();
@@ -129,9 +132,10 @@ async function showForSession(session) {
 
 els.loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const username = els.loginId.value.trim().toLowerCase();
+  const email = resolveLoginEmail(els.loginId.value);
+  if (!email) return setStatus('Supabase에 등록한 이메일을 입력해주세요.', true);
   setStatus('로그인하는 중입니다.', true);
-  const { error } = await supabaseClient.auth.signInWithPassword({ email: `${username}${ADMIN_EMAIL_SUFFIX}`, password: els.loginPassword.value });
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password: els.loginPassword.value });
   if (error) setStatus('아이디 또는 비밀번호를 확인해주세요.', true);
 });
 els.logout.addEventListener('click', () => supabaseClient.auth.signOut());
