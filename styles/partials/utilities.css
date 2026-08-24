@@ -21,3 +21,7 @@
   white-space: nowrap;
   border: 0;
 }
+
+html.is-large-text {
+  font-size: 150%;
+}

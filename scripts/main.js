@@ -36,6 +36,34 @@ function initInteractionGuard() {
   });
 }
 
+function initTextSizeControl() {
+  const toggle = document.getElementById('text-size-toggle');
+  if (!toggle) return;
+
+  const storageKey = 'wedding-large-text';
+  const apply = (enabled) => {
+    document.documentElement.classList.toggle('is-large-text', enabled);
+    toggle.setAttribute('aria-pressed', String(enabled));
+    toggle.lastElementChild.textContent = enabled ? '기본 글자' : '글자 크게';
+  };
+
+  try {
+    apply(window.localStorage.getItem(storageKey) === 'true');
+  } catch {
+    apply(false);
+  }
+
+  toggle.addEventListener('click', () => {
+    const enabled = !document.documentElement.classList.contains('is-large-text');
+    apply(enabled);
+    try {
+      window.localStorage.setItem(storageKey, String(enabled));
+    } catch {
+      // Private browsing can disable local storage; the current-page setting still works.
+    }
+  });
+}
+
 async function safeImport(label, path) {
   try {
   return await import(path);
@@ -136,6 +164,7 @@ async function init() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initInteractionGuard();
+  initTextSizeControl();
   init().catch((error) => {
     console.error('[main] fatal init error', error);
     showToastFallback('페이지 초기화 중 오류가 발생했습니다.');
