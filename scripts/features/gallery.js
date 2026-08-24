@@ -263,6 +263,14 @@ function bindGalleryEvents() {
     if (Math.abs(diff) < 36) return;
     moveLightbox(diff < 0 ? 1 : -1);
   }, { passive: true });
+
+  lightboxEl?.addEventListener('touchmove', (event) => {
+    if (event.touches.length > 1) event.preventDefault();
+  }, { passive: false });
+
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((eventName) => {
+    lightboxEl?.addEventListener(eventName, (event) => event.preventDefault(), { passive: false });
+  });
 }
 
 export function initGallery(photos) {
