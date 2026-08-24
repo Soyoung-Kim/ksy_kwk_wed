@@ -38,7 +38,8 @@ create table if not exists public.wedding_accounts (
   id bigint generated always as identity primary key,
   side text not null check (side in ('groom', 'bride')),
   side_label text not null check (char_length(btrim(side_label)) between 1 and 30),
-  bank_name text not null check (char_length(btrim(bank_name)) between 1 and 50),
+  -- Set bank_name to NULL to keep the row but hide it from the invitation.
+  bank_name text check (char_length(btrim(bank_name)) between 1 and 50),
   account_holder text not null check (char_length(btrim(account_holder)) between 1 and 50),
   account_number text not null check (char_length(btrim(account_number)) between 4 and 50),
   display_order integer not null default 0,

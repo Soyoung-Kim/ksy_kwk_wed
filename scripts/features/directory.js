@@ -141,7 +141,18 @@ function renderContacts(contacts) {
 }
 
 function renderAccounts(accounts) {
-  renderGrouped(document.getElementById('account-list'), accounts, '계좌번호', createAccountCard);
+  const list = document.getElementById('account-list');
+  const section = document.querySelector('.wedding-accounts');
+  const displayableAccounts = accounts.filter((account) => String(account.bank_name || '').trim());
+
+  if (!displayableAccounts.length) {
+    list?.replaceChildren();
+    if (section) section.hidden = true;
+    return;
+  }
+
+  if (section) section.hidden = false;
+  renderGrouped(list, displayableAccounts, '계좌번호', createAccountCard);
 }
 
 async function loadDirectory() {
