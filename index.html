@@ -99,9 +99,9 @@
         </div>
       </div>
 
-      <figure class="rough-map">
+      <figure class="rough-map" id="rough-map" role="button" tabindex="0" aria-label="농심컨벤션웨딩홀 약도 크게 보기">
         <img src="./assets/roughMap.png" alt="농심컨벤션웨딩홀 약도" loading="lazy" />
-        <figcaption>농심컨벤션웨딩홀 약도</figcaption>
+        <figcaption>농심컨벤션웨딩홀 약도 · 눌러서 크게 보기</figcaption>
       </figure>
 
       <div class="nav-section">
@@ -374,6 +374,14 @@
     <img id="lightbox-image" src="" alt="확대 이미지" />
     <button class="lightbox-nav lightbox-next" id="lightbox-next" type="button" aria-label="다음 사진">›</button>
     <p class="lightbox-count" id="lightbox-count" aria-live="polite">1 / 1</p>
+  </div>
+
+  <div class="map-lightbox hidden" id="rough-map-lightbox" role="dialog" aria-modal="true" aria-label="약도 크게 보기">
+    <button class="map-lightbox-close" id="rough-map-lightbox-close" type="button" aria-label="약도 닫기">×</button>
+    <div class="map-lightbox-viewport" id="rough-map-lightbox-viewport">
+      <img id="rough-map-lightbox-image" src="./assets/roughMap.png" alt="농심컨벤션웨딩홀 약도 확대 이미지" />
+    </div>
+    <p class="map-lightbox-hint">두 손가락으로 확대하고, 한 손가락으로 이동할 수 있습니다.</p>
   </div>
 
   <div class="toast" id="toast">복사되었습니다.</div>

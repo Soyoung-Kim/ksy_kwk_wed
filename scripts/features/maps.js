@@ -150,9 +150,71 @@ function bindTmapButton() {
   });
 }
 
+function bindRoughMapLightbox() {
+  const trigger = document.getElementById('rough-map');
+  const modal = document.getElementById('rough-map-lightbox');
+  const closeButton = document.getElementById('rough-map-lightbox-close');
+  const viewport = document.getElementById('rough-map-lightbox-viewport');
+  const image = document.getElementById('rough-map-lightbox-image');
+  if (!trigger || !modal || !closeButton || !viewport || !image) return;
+
+  const state = { scale: 1, x: 0, y: 0, pointers: new Map(), startX: 0, startY: 0, baseX: 0, baseY: 0, pinchDistance: 0, baseScale: 1 };
+  const render = () => { image.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`; };
+  const reset = () => { state.scale = 1; state.x = 0; state.y = 0; state.pointers.clear(); render(); };
+  const distance = () => {
+    const [first, second] = [...state.pointers.values()];
+    return Math.hypot(first.x - second.x, first.y - second.y);
+  };
+  const open = () => { reset(); modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; closeButton.focus(); };
+  const close = () => { modal.classList.add('hidden'); document.body.style.overflow = ''; trigger.focus(); };
+
+  trigger.addEventListener('click', open);
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); }
+  });
+  closeButton.addEventListener('click', close);
+  modal.addEventListener('click', (event) => { if (event.target === modal) close(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.classList.contains('hidden')) close(); });
+
+  viewport.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    viewport.setPointerCapture(event.pointerId);
+    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (state.pointers.size === 1) {
+      state.startX = event.clientX; state.startY = event.clientY; state.baseX = state.x; state.baseY = state.y;
+    } else if (state.pointers.size === 2) {
+      state.pinchDistance = distance(); state.baseScale = state.scale;
+    }
+  });
+
+  viewport.addEventListener('pointermove', (event) => {
+    if (!state.pointers.has(event.pointerId)) return;
+    event.preventDefault();
+    state.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (state.pointers.size >= 2 && state.pinchDistance) {
+      state.scale = Math.min(4, Math.max(1, state.baseScale * (distance() / state.pinchDistance)));
+    } else if (state.pointers.size === 1 && state.scale > 1) {
+      state.x = state.baseX + event.clientX - state.startX;
+      state.y = state.baseY + event.clientY - state.startY;
+    }
+    render();
+  });
+
+  const finishPointer = (event) => {
+    state.pointers.delete(event.pointerId);
+    if (state.pointers.size === 1) {
+      const remaining = [...state.pointers.values()][0];
+      state.startX = remaining.x; state.startY = remaining.y; state.baseX = state.x; state.baseY = state.y;
+    }
+  };
+  viewport.addEventListener('pointerup', finishPointer);
+  viewport.addEventListener('pointercancel', finishPointer);
+}
+
 export function initMaps() {
   bindGoogleButton();
   bindNaverButton();
   bindKakaoButton();
   bindTmapButton();
+  bindRoughMapLightbox();
 }

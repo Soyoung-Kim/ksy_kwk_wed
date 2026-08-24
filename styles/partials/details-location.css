@@ -50,6 +50,7 @@
   border-radius: 18px;
   background: #fff;
   box-shadow: 0 10px 24px rgba(79, 61, 48, 0.06);
+  cursor: zoom-in;
 }
 
 .rough-map img {
@@ -62,6 +63,56 @@
   padding: 10px 14px;
   color: #806e62;
   font-size: 0.76rem;
+  text-align: center;
+}
+
+.map-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1600;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 70px 18px 24px;
+  background: rgba(20, 16, 19, 0.92);
+}
+
+.map-lightbox-viewport {
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+}
+
+.map-lightbox-viewport img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform-origin: center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.map-lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.map-lightbox-hint {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
   text-align: center;
 }
 
