@@ -30,11 +30,17 @@
   font-weight: 600;
 }
 
-.primary-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 20px;
+.address-copy-button {
+  margin-top: 12px;
+  padding: 7px 10px;
+  border: 1px solid rgba(162, 133, 115, 0.26);
+  border-radius: 999px;
+  background: #fffdfb;
+  color: #806957;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .rough-map {
