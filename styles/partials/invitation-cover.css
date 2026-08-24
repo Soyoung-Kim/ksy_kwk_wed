@@ -2,7 +2,7 @@
    Opening invitation cover
 ========================================================= */
 .invitation-cover {
-  --cover-stage-height: 135svh;
+  --cover-stage-height: 138svh;
   position: relative;
   min-height: var(--cover-stage-height);
   overflow: hidden;
@@ -34,7 +34,7 @@
   width: min(430px, 100%);
   min-height: 100svh;
   margin: 0 auto;
-  padding: 34px 22px 28px;
+  padding: 28px 22px 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -62,7 +62,7 @@
 .cover-illustration-frame {
   overflow: hidden;
   border: 1px solid rgba(176, 145, 116, 0.18);
-  border-radius: 28px;
+  border-radius: 24px;
   background: #fffdfb;
   box-shadow: 0 18px 40px rgba(100, 76, 58, 0.11);
 }
@@ -70,31 +70,18 @@
 .cover-illustration-frame img {
   width: 100%;
   height: auto;
-  max-height: 66svh;
+  max-height: 52svh;
   object-fit: contain;
   object-position: center;
 }
 
-.cover-venue {
-  display: grid;
-  gap: 5px;
-  margin-top: 18px;
-  color: #856d5c;
-}
-
-.cover-venue span {
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-}
-
-.cover-venue strong {
-  color: #4d4038;
-  font-size: 1rem;
-  font-weight: 600;
+.cover-countdown {
+  margin-top: 16px;
+  background: rgba(255, 253, 250, 0.94);
 }
 
 .cover-scroll-hint {
-  margin: 24px 0 0;
+  margin: 17px 0 0;
   color: #9d8775;
   font-size: 0.58rem;
   font-weight: 700;
@@ -114,5 +101,5 @@
 
 @media (max-width: 480px) {
   .invitation-cover-inner { padding: 26px 18px 22px; }
-  .cover-illustration-frame img { max-height: 64svh; }
+  .cover-illustration-frame img { max-height: 49svh; }
 }

@@ -3,54 +3,20 @@ function clamp(value, min, max) {
 }
 
 export function initIntroParallax() {
-  const stage = document.getElementById('intro-stage');
-  const media = document.getElementById('intro-media');
-  const copy = document.getElementById('intro-copy');
-  const overlay = stage?.querySelector('.intro-overlay');
   const coverStage = document.getElementById('invitation-cover');
   const coverInner = coverStage?.querySelector('.invitation-cover-inner');
 
-  if (!stage || !media || !copy) {
+  if (!coverStage || !coverInner) {
     return;
   }
 
   function applyCoverTransition() {
-    if (!coverStage || !coverInner) return;
     const rect = coverStage.getBoundingClientRect();
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
     const scrollable = Math.max(coverStage.offsetHeight - viewportHeight, 1);
     const progress = clamp((-rect.top) / scrollable, 0, 1);
     coverInner.style.transform = `translate3d(0, ${progress * -24}px, 0) scale(${1 - progress * 0.025})`;
     coverInner.style.opacity = String(1 - progress * 0.72);
-  }
-
-  function isMobile() {
-    return window.matchMedia('(max-width: 768px)').matches;
-  }
-
-  function applyParallax() {
-    const rect = stage.getBoundingClientRect();
-    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
-    const scrollable = Math.max(stage.offsetHeight - viewportHeight, 1);
-    const progress = clamp((-rect.top) / scrollable, 0, 1);
-
-    const mobile = isMobile();
-
-    const mediaScale = mobile ? 1 + progress * 0.012 : 1 + progress * 0.06;
-    const mediaShiftY = mobile ? progress * 8 : progress * 24;
-    const copyShiftY = mobile ? progress * 18 : progress * 42;
-    const copyOpacity = 1 - progress * 0.78;
-    const overlayOpacity = mobile ? 0.05 + progress * 0.04 : 0.08 + progress * 0.07;
-
-    media.style.transform = `translate3d(0, ${mediaShiftY}px, 0) scale(${mediaScale})`;
-    copy.style.transform = `translate3d(0, ${copyShiftY}px, 0)`;
-    copy.style.opacity = String(copyOpacity);
-
-    if (overlay) {
-      overlay.style.opacity = String(overlayOpacity);
-    }
-
-    applyCoverTransition();
   }
 
   let ticking = false;
@@ -60,12 +26,12 @@ export function initIntroParallax() {
 
     ticking = true;
     window.requestAnimationFrame(() => {
-      applyParallax();
+      applyCoverTransition();
       ticking = false;
     });
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', applyParallax);
-  applyParallax();
+  window.addEventListener('resize', applyCoverTransition);
+  applyCoverTransition();
 }
