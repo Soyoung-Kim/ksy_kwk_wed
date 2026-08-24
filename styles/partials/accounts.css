@@ -11,11 +11,11 @@
   box-shadow: 0 20px 48px rgba(73, 55, 40, 0.08);
 }
 
-.wedding-accounts .section-heading { text-align: center; }
+.wedding-accounts .section-heading { text-align: left; }
 
 .wedding-accounts .section-description {
   max-width: 300px;
-  margin: 10px auto 24px;
+  margin: 10px 0 24px;
   line-height: 1.7;
 }
 
