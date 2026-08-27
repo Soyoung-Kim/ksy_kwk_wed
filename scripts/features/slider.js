@@ -6,31 +6,38 @@ const sliderState = {
   allPhotos: [],
   currentSlide: 0,
   slideTimer: null,
-  touchStartX: 0
+  touchStartX: 0,
+  usesManagedPhotos: false
 };
+let galleryPhotosUpdatedListener = null;
 
 export async function initSlider() {
-  const managedPhotos = await loadManagedPhotos();
-  if (managedPhotos) {
-    sliderState.allPhotos = managedPhotos;
-    sliderState.photos = managedPhotos;
-    renderSlider(sliderState.photos);
-    bindSliderControls();
-    startSliderTimer();
-    return;
-  }
-
-  const response = await fetch('./assets/photos.json', { cache: 'no-store' });
-  if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
-
-  const data = await response.json();
-  if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
-
+  const data = await loadLocalPhotos();
   sliderState.allPhotos = data;
   sliderState.photos = data;
   renderSlider(sliderState.photos);
   bindSliderControls();
   startSliderTimer();
+
+  // Supabase 목록은 첫 화면을 막지 않고 뒤에서 받아 교체합니다.
+  loadManagedPhotos().then((managedPhotos) => {
+    if (!managedPhotos?.length) return;
+    sliderState.allPhotos = managedPhotos;
+    sliderState.photos = managedPhotos;
+    sliderState.currentSlide = 0;
+    sliderState.usesManagedPhotos = true;
+    renderSlider(sliderState.photos);
+    restartSliderTimer();
+    galleryPhotosUpdatedListener?.(sliderState.allPhotos);
+  }).catch(() => { /* Local photos remain available as a safe fallback. */ });
+}
+
+async function loadLocalPhotos() {
+  const response = await fetch('./assets/photos.json', { cache: 'force-cache' });
+  if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
+  return data;
 }
 
 async function loadManagedPhotos() {
@@ -164,4 +171,9 @@ function bindSliderControls() {
 
 export function getGalleryPhotos() {
   return sliderState.allPhotos || [];
+}
+
+export function onGalleryPhotosUpdated(listener) {
+  galleryPhotosUpdatedListener = listener;
+  if (sliderState.usesManagedPhotos) galleryPhotosUpdatedListener(sliderState.allPhotos);
 }
