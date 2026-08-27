@@ -1,6 +1,7 @@
 import { supabaseClient } from '../supabaseClient.js';
 
 const TOKEN_KEY = 'wedding-rsvp-client-token';
+const DISMISS_KEY = 'wedding-rsvp-dismissed-date';
 
 function showToast(message) {
   const toast = document.getElementById('toast');
@@ -31,7 +32,11 @@ export function initRsvp() {
   const status = document.getElementById('rsvp-status');
   const submitButton = document.getElementById('rsvp-submit-button');
   const countField = document.getElementById('rsvp-guest-count-field');
-  if (!modal || !openButton || !form || !status || !submitButton || !countField) return;
+  const promptView = document.getElementById('rsvp-prompt-view');
+  const formView = document.getElementById('rsvp-form-view');
+  const promptYes = document.getElementById('rsvp-prompt-yes');
+  const promptLater = document.getElementById('rsvp-prompt-later');
+  if (!modal || !openButton || !form || !status || !submitButton || !countField || !promptView || !formView || !promptYes || !promptLater) return;
 
   const token = getClientToken();
   const setAttendanceUi = () => {
@@ -39,14 +44,32 @@ export function initRsvp() {
     countField.hidden = !attending;
     countField.querySelector('select').disabled = !attending;
   };
-  const close = () => { modal.hidden = true; document.body.style.overflow = ''; openButton.focus(); };
-  const open = () => { modal.hidden = false; document.body.style.overflow = 'hidden'; setAttendanceUi(); form.querySelector('input[name="attendance"]')?.focus(); };
+  const today = () => new Date().toLocaleDateString('en-CA');
+  const hasSubmitted = () => {
+    try { return window.localStorage.getItem(`${TOKEN_KEY}-submitted`) === 'true'; } catch { return false; }
+  };
+  const dismissedToday = () => {
+    try { return window.localStorage.getItem(DISMISS_KEY) === today(); } catch { return false; }
+  };
+  const close = (restoreFocus = true) => { modal.hidden = true; document.body.style.overflow = ''; if (restoreFocus) openButton.focus(); };
+  const showForm = () => {
+    promptView.hidden = true; formView.hidden = false; modal.hidden = false; document.body.style.overflow = 'hidden';
+    setAttendanceUi(); form.querySelector('input[name="attendance"]')?.focus();
+  };
+  const showPrompt = () => {
+    formView.hidden = true; promptView.hidden = false; modal.hidden = false; document.body.style.overflow = 'hidden'; promptYes.focus();
+  };
 
   try {
-    if (window.localStorage.getItem(`${TOKEN_KEY}-submitted`) === 'true') openButton.textContent = '참석 여부 수정하기';
+    if (hasSubmitted()) openButton.textContent = '참석 여부 수정하기';
   } catch { /* local storage can be unavailable in private browsing */ }
 
-  openButton.addEventListener('click', open);
+  openButton.addEventListener('click', showForm);
+  promptYes.addEventListener('click', showForm);
+  promptLater.addEventListener('click', () => {
+    try { window.localStorage.setItem(DISMISS_KEY, today()); } catch { /* no-op */ }
+    close(false);
+  });
   modal.addEventListener('click', (event) => { if (event.target.closest('[data-rsvp-close]')) close(); });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.hidden) close(); });
   form.addEventListener('change', (event) => { if (event.target.name === 'attendance') setAttendanceUi(); });
@@ -77,4 +100,8 @@ export function initRsvp() {
     close();
     showToast('참석 여부를 저장했습니다. 감사합니다.');
   });
+
+  if (!hasSubmitted() && !dismissedToday()) {
+    window.setTimeout(showPrompt, 650);
+  }
 }

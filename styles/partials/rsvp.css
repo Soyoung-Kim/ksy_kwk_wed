@@ -6,6 +6,8 @@
 .rsvp-dialog { position: relative; z-index: 1; width: min(460px, 100%); max-height: calc(100vh - 32px); overflow: auto; padding: 28px 22px 22px; border-radius: 26px; background: #fffdfb; box-shadow: 0 24px 60px rgba(40, 22, 30, 0.28); }
 .rsvp-dialog h3 { margin: 0; color: #352e2d; font-size: 1.42rem; letter-spacing: -0.045em; }
 .rsvp-dialog-description { margin: 8px 0 22px; color: #70635e; font-size: 0.9rem; line-height: 1.6; }
+.rsvp-prompt-actions { display: grid; gap: 10px; }
+.rsvp-prompt-actions .button { width: 100%; }
 .rsvp-close { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; background: transparent; color: #765d61; font-size: 1.8rem; cursor: pointer; }
 .rsvp-form { display: grid; gap: 16px; }
 .rsvp-choice-fieldset { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin: 0; padding: 0; border: 0; }
