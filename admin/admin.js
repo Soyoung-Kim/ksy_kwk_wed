@@ -2,13 +2,14 @@ import { supabaseClient } from '../scripts/supabaseClient.js';
 
 const GALLERY_BUCKET = 'wedding-gallery';
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp']);
-const state = { contacts: [], accounts: [], gallery: [] };
+const state = { contacts: [], accounts: [], gallery: [], rsvps: [] };
 const els = {
   loginView: document.getElementById('login-view'), adminView: document.getElementById('admin-view'),
   loginForm: document.getElementById('login-form'), loginId: document.getElementById('login-id'),
   loginPassword: document.getElementById('login-password'), loginStatus: document.getElementById('login-status'),
   adminStatus: document.getElementById('admin-status'), contacts: document.getElementById('contacts-list'),
   accounts: document.getElementById('accounts-list'), gallery: document.getElementById('gallery-list'),
+  rsvpSummary: document.getElementById('rsvp-summary'), rsvpList: document.getElementById('rsvp-list'),
   uploadForm: document.getElementById('gallery-upload-form'), uploadFile: document.getElementById('gallery-file'),
   uploadAlt: document.getElementById('gallery-alt'), logout: document.getElementById('logout-button'),
   toast: document.getElementById('admin-toast')
@@ -97,6 +98,33 @@ function renderAccounts() {
   });
 }
 
+function renderRsvps() {
+  if (!els.rsvpSummary || !els.rsvpList) return;
+  const attending = state.rsvps.filter((row) => row.attendance === 'attending');
+  const declined = state.rsvps.filter((row) => row.attendance === 'declined');
+  const guestTotal = attending.reduce((sum, row) => sum + Number(row.guest_count || 0), 0);
+  els.rsvpSummary.innerHTML = [
+    ['참석', `${attending.length}건`],
+    ['불참', `${declined.length}건`],
+    ['예상 인원', `${guestTotal}명`]
+  ].map(([label, value]) => `<div class="rsvp-summary-item"><span>${label}</span><strong>${value}</strong></div>`).join('');
+  els.rsvpList.replaceChildren();
+  if (!state.rsvps.length) {
+    els.rsvpList.textContent = '아직 응답이 없습니다.';
+    return;
+  }
+  state.rsvps.forEach((row) => {
+    const item = document.createElement('article'); item.className = 'rsvp-row';
+    const response = row.attendance === 'attending' ? `참석 · ${row.guest_count}명` : '불참';
+    const status = document.createElement('span'); status.className = `rsvp-row-status ${row.attendance === 'declined' ? 'declined' : ''}`; status.textContent = response;
+    const copy = document.createElement('div'); copy.className = 'rsvp-row-copy';
+    const name = document.createElement('strong'); name.textContent = row.guest_name || '이름 미입력';
+    const message = document.createElement('span'); message.textContent = row.message || '전달 사항 없음'; copy.append(name, message);
+    const time = document.createElement('time'); time.textContent = new Date(row.updated_at).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+    item.append(status, copy, time); els.rsvpList.append(item);
+  });
+}
+
 function renderGallery() {
   els.gallery.replaceChildren();
   state.gallery.forEach((row) => {
@@ -128,15 +156,16 @@ function renderGallery() {
 
 async function loadData() {
   setStatus('관리 정보를 불러오는 중입니다.');
-  const [contacts, accounts, gallery] = await Promise.all([
+  const [contacts, accounts, gallery, rsvps] = await Promise.all([
     supabaseClient.from('wedding_contacts').select('id, side, contact_type, role_label, name, phone, display_order, is_visible').order('display_order'),
     supabaseClient.from('wedding_accounts').select('id, side, side_label, bank_name, account_holder, account_number, display_order, is_visible').order('display_order'),
-    supabaseClient.from('wedding_gallery').select('*').order('display_order')
+    supabaseClient.from('wedding_gallery').select('*').order('display_order'),
+    supabaseClient.from('wedding_rsvps').select('attendance, guest_count, guest_name, message, updated_at').order('updated_at', { ascending: false })
   ]);
-  const error = contacts.error || accounts.error || gallery.error;
+  const error = contacts.error || accounts.error || gallery.error || rsvps.error;
   if (error) return setStatus(`관리 정보를 불러오지 못했습니다: ${error.message}`);
-  state.contacts = contacts.data || []; state.accounts = accounts.data || []; state.gallery = gallery.data || [];
-  renderContacts(); renderAccounts(); renderGallery(); setStatus('');
+  state.contacts = contacts.data || []; state.accounts = accounts.data || []; state.gallery = gallery.data || []; state.rsvps = rsvps.data || [];
+  renderContacts(); renderAccounts(); renderRsvps(); renderGallery(); setStatus('');
 }
 
 async function showForSession(session) {

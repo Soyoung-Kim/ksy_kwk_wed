@@ -110,7 +110,8 @@ async function init() {
     mapsModule,
     guestbookModule,
     sliderModule,
-    galleryModule
+    galleryModule,
+    rsvpModule
   ] = await Promise.all([
     safeImport('intro', './features/intro.js'),
     safeImport('countdown', './features/countdown.js'),
@@ -120,7 +121,8 @@ async function init() {
     safeImport('maps', './features/maps.js'),
     safeImport('guestbook', './features/guestbook.js'),
     safeImport('slider', './features/slider.js'),
-    safeImport('gallery', './features/gallery.js')
+    safeImport('gallery', './features/gallery.js'),
+    safeImport('rsvp', './features/rsvp.js')
   ]);
 
   if (introModule?.initIntroParallax) {
@@ -175,6 +177,12 @@ async function init() {
     await safeRun('gallery', async () => {
       const photos = sliderModule.getGalleryPhotos();
       galleryModule.initGallery(Array.isArray(photos) ? photos : []);
+    });
+  }
+
+  if (rsvpModule?.initRsvp) {
+    await safeRun('rsvp', async () => {
+      rsvpModule.initRsvp();
     });
   }
 }
