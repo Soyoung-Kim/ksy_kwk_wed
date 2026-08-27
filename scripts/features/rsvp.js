@@ -51,7 +51,7 @@ export function initRsvp() {
   const dismissedToday = () => {
     try { return window.localStorage.getItem(DISMISS_KEY) === today(); } catch { return false; }
   };
-  const close = (restoreFocus = true) => { modal.hidden = true; document.body.style.overflow = ''; if (restoreFocus) openButton.focus(); };
+  const close = () => { modal.hidden = true; document.body.style.overflow = ''; };
   const showForm = () => {
     promptView.hidden = true; formView.hidden = false; modal.hidden = false; document.body.style.overflow = 'hidden';
     setAttendanceUi(); form.querySelector('input[name="attendance"]')?.focus();
@@ -68,7 +68,7 @@ export function initRsvp() {
   promptYes.addEventListener('click', showForm);
   promptLater.addEventListener('click', () => {
     try { window.localStorage.setItem(DISMISS_KEY, today()); } catch { /* no-op */ }
-    close(false);
+    close();
   });
   modal.addEventListener('click', (event) => { if (event.target.closest('[data-rsvp-close]')) close(); });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.hidden) close(); });
