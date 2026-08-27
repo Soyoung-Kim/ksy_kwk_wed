@@ -136,6 +136,7 @@ function renderGallery() {
             alt="${escapeHtml(photo.alt)}"
             class="is-loading"
             loading="lazy"
+            decoding="async"
           />
         </button>
       `;

@@ -20,6 +20,8 @@
   border-radius: 20px;
   background: #f4eeea;
   cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: 180px;
 }
 
 .gallery-item::before,

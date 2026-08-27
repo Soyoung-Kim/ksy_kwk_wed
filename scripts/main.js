@@ -43,6 +43,23 @@ function resetScrollToTop() {
   window.requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
 }
 
+function initIntroScrollSnap() {
+  const cover = document.getElementById('invitation-cover');
+  if (!cover) return;
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const releasePoint = Math.max(120, cover.offsetHeight - (window.innerHeight || 1) * 0.55);
+    document.documentElement.classList.toggle('is-intro-snap', window.scrollY < releasePoint);
+  };
+  const onScroll = () => {
+    if (!frame) frame = window.requestAnimationFrame(update);
+  };
+  update();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+}
+
 function initTextSizeControl() {
   const toggle = document.getElementById('text-size-toggle');
   if (!toggle) return;
@@ -183,7 +200,21 @@ async function init() {
       const photos = sliderModule.getGalleryPhotos();
       galleryModule.initGallery(Array.isArray(photos) ? photos : []);
       sliderModule.onGalleryPhotosUpdated?.((updatedPhotos) => {
-        galleryModule.initGallery(Array.isArray(updatedPhotos) ? updatedPhotos : []);
+        const applyUpdate = () => galleryModule.initGallery(Array.isArray(updatedPhotos) ? updatedPhotos : []);
+        const gallery = document.getElementById('gallery');
+        const rect = gallery?.getBoundingClientRect();
+        const isVisible = rect && rect.top < window.innerHeight && rect.bottom > 0;
+        if (!isVisible) {
+          window.requestIdleCallback?.(applyUpdate, { timeout: 800 }) || window.setTimeout(applyUpdate, 180);
+          return;
+        }
+        // Avoid replacing image nodes while the visitor is scrolling this section.
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0]?.isIntersecting) return;
+          observer.disconnect();
+          applyUpdate();
+        });
+        observer.observe(gallery);
       });
     });
   }
@@ -198,6 +229,7 @@ async function init() {
 document.addEventListener('DOMContentLoaded', () => {
   resetScrollToTop();
   window.addEventListener('pageshow', resetScrollToTop, { once: true });
+  initIntroScrollSnap();
   initInteractionGuard();
   initTextSizeControl();
   initFloatingNavigation();

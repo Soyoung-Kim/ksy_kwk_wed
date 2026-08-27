@@ -53,10 +53,10 @@ async function loadManagedPhotos() {
   return Array.isArray(data) ? data.map((photo) => ({ src: photo.image_url, alt: photo.alt })) : [];
 }
 
-function createSlide(photo, index) {
+function createSlide(photo, index, eager = false) {
   return `
     <div class="slide" data-index="${index}">
-      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${index === 0 ? 'eager' : 'lazy'}" />
+      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async" />
     </div>
   `;
 }
@@ -69,7 +69,8 @@ function renderSlider(photos) {
   const loopPhotos = photos.length > 1
     ? [photos[photos.length - 1], ...photos, photos[0]]
     : photos;
-  slidesEl.innerHTML = `<div class="slide-track">${loopPhotos.map(createSlide).join('')}</div>`;
+  const firstPhotoIndex = photos.length > 1 ? 1 : 0;
+  slidesEl.innerHTML = `<div class="slide-track">${loopPhotos.map((photo, index) => createSlide(photo, index, index === firstPhotoIndex)).join('')}</div>`;
   dotsEl.innerHTML = photos.map((_, index) => `
     <button type="button" class="dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="${index + 1}번 사진"></button>
   `).join('');
