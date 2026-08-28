@@ -1,4 +1,4 @@
-import { qs, qsa, escapeHtml } from '../utils.js';
+import { qs, escapeHtml } from '../utils.js';
 
 const INITIAL_VISIBLE_COUNT = 6;
 
@@ -68,10 +68,6 @@ function ensureGalleryUi() {
   };
 }
 
-function getVisiblePhotos() {
-  return galleryState.photos.slice(0, galleryState.visibleCount);
-}
-
 function updateGalleryCount(countEl) {
   if (!countEl) return;
   countEl.textContent = `${galleryState.photos.length} photos`;
@@ -109,6 +105,49 @@ function renderEmpty(galleryEl, countEl, moreWrapEl) {
   }
 }
 
+function galleryItemMarkup(photo, index) {
+  return `
+    <button
+      type="button"
+      class="gallery-item"
+      data-gallery-index="${index}"
+      aria-label="${escapeHtml(photo.alt)} 크게 보기"
+    >
+      <img
+        src="${escapeHtml(photo.thumb)}"
+        alt="${escapeHtml(photo.alt)}"
+        class="is-loading"
+        loading="eager"
+        decoding="async"
+      />
+    </button>
+  `;
+}
+
+function hydrateGalleryImages(images) {
+  images.forEach((image) => {
+    const finishLoading = () => {
+      image.classList.remove('is-loading');
+      image.closest('.gallery-item')?.classList.add('is-loaded');
+    };
+    if (image.complete) finishLoading();
+    image.addEventListener('load', finishLoading, { once: true });
+    image.addEventListener('error', finishLoading, { once: true });
+  });
+}
+
+function appendGalleryItems(galleryEl, startIndex, endIndex) {
+  const fragment = document.createRange().createContextualFragment(
+    galleryState.photos
+      .slice(startIndex, endIndex)
+      .map((photo, offset) => galleryItemMarkup(photo, startIndex + offset))
+      .join('')
+  );
+  const images = [...fragment.querySelectorAll('img')];
+  galleryEl.appendChild(fragment);
+  hydrateGalleryImages(images);
+}
+
 function renderGallery() {
   const ui = ensureGalleryUi();
   if (!ui) return;
@@ -122,40 +161,10 @@ function renderGallery() {
     return;
   }
 
-  const visiblePhotos = getVisiblePhotos();
-
-  galleryEl.innerHTML = visiblePhotos
-    .map((photo, index) => {
-      return `
-        <button
-          type="button"
-          class="gallery-item"
-          data-gallery-index="${index}"
-          aria-label="${escapeHtml(photo.alt)} 크게 보기"
-        >
-          <img
-            src="${escapeHtml(photo.thumb)}"
-            alt="${escapeHtml(photo.alt)}"
-            class="is-loading"
-            loading="lazy"
-            decoding="async"
-          />
-        </button>
-      `;
-    })
-    .join('');
+  galleryEl.innerHTML = '';
+  appendGalleryItems(galleryEl, 0, galleryState.visibleCount);
 
   updateMoreButton(moreWrapEl, moreButtonEl);
-
-  qsa('#gallery img').forEach((image) => {
-    const finishLoading = () => {
-      image.classList.remove('is-loading');
-      image.closest('.gallery-item')?.classList.add('is-loaded');
-    };
-    if (image.complete) finishLoading();
-    image.addEventListener('load', finishLoading, { once: true });
-    image.addEventListener('error', finishLoading, { once: true });
-  });
 }
 
 function openLightbox(index) {
@@ -205,11 +214,15 @@ function closeLightbox() {
 }
 
 function toggleGalleryExpanded() {
+  const previousCount = galleryState.visibleCount;
   galleryState.visibleCount = Math.min(
     galleryState.visibleCount + INITIAL_VISIBLE_COUNT,
     galleryState.photos.length
   );
-  renderGallery();
+  const ui = ensureGalleryUi();
+  if (!ui || galleryState.visibleCount === previousCount) return;
+  appendGalleryItems(ui.galleryEl, previousCount, galleryState.visibleCount);
+  updateMoreButton(ui.moreWrapEl, ui.moreButtonEl);
 }
 
 function bindGalleryEvents() {

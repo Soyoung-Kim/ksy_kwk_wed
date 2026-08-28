@@ -44,7 +44,10 @@ async function loadLocalPhotos() {
   if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
   const data = await response.json();
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
-  return data.sort((left, right) => fileNumber(left) - fileNumber(right));
+  // 로컬 원본·표시본을 요청하지 않고, 가장 작은 썸네일만 공개 화면에 사용합니다.
+  return data
+    .map((photo) => ({ ...photo, src: photo.thumb || photo.src }))
+    .sort((left, right) => fileNumber(left) - fileNumber(right));
 }
 
 async function loadManagedPhotos() {
@@ -57,11 +60,14 @@ async function loadManagedPhotos() {
     .order('display_order');
 
   if (error) return null;
-  return Array.isArray(data) ? data.map((photo) => ({
-    src: photo.thumbnail_url || photo.image_url,
-    thumb: photo.thumbnail_url || photo.image_url,
-    alt: photo.alt
-  })) : [];
+  return Array.isArray(data) ? data
+    // 원본만 있는 기존 행은 공개 갤러리에 넣지 않습니다.
+    .filter((photo) => typeof photo.thumbnail_url === 'string' && photo.thumbnail_url.trim())
+    .map((photo) => ({
+      src: photo.thumbnail_url,
+      thumb: photo.thumbnail_url,
+      alt: photo.alt
+    })) : [];
 }
 
 function normalizedIndex(index) {
