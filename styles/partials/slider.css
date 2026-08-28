@@ -18,15 +18,23 @@
 
 .slide-track {
   display: flex;
-  width: 100%;
+  width: 300%;
   height: 100%;
   will-change: transform;
 }
 
+.slide-track.single {
+  width: 100%;
+}
+
 .slide {
   position: relative;
-  flex: 0 0 100%;
+  flex: 0 0 33.333333%;
   height: 100%;
+}
+
+.slide-track.single .slide {
+  flex-basis: 100%;
 }
 
 .slide::before {
@@ -92,22 +100,18 @@
   bottom: 14px;
   z-index: 2;
   transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
+  display: block;
 }
 
-.slide-dots .dot {
-  width: 10px;
-  height: 10px;
+.slider-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
   border-radius: 999px;
-  border: 0;
-  padding: 0;
-  background: rgba(255, 255, 255, 0.48);
-  cursor: pointer;
-  transition: transform 0.16s ease, background 0.16s ease;
-}
-
-.slide-dots .dot.active {
-  background: #fff;
-  transform: scale(1.15);
+  background: rgba(39, 31, 29, 0.42);
+  color: #fff;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
 }

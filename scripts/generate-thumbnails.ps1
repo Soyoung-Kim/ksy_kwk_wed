@@ -1,6 +1,7 @@
 param(
   [int]$MaxEdge = 640,
-  [int]$Quality = 82
+  [int]$Quality = 82,
+  [string]$OutputFolder = 'thumbs'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -8,7 +9,7 @@ Add-Type -AssemblyName System.Drawing
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $sourceDirectory = Join-Path $projectRoot 'assets/photos'
-$outputDirectory = Join-Path $sourceDirectory 'thumbs'
+$outputDirectory = Join-Path $sourceDirectory $OutputFolder
 $names = @('28', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '22', '23', '24', '25', '26')
 
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
@@ -74,5 +75,5 @@ foreach ($name in $names) {
     $source.Dispose()
   }
 
-  Write-Output "Created thumbs/$name.jpg ($width x $height)"
+  Write-Output "Created $OutputFolder/$name.jpg ($width x $height)"
 }

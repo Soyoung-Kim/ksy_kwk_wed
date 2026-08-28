@@ -7,6 +7,7 @@ const sliderState = {
   currentSlide: 0,
   slideTimer: null,
   touchStartX: 0,
+  isAnimating: false,
   usesManagedPhotos: false
 };
 let galleryPhotosUpdatedListener = null;
@@ -15,7 +16,7 @@ export async function initSlider() {
   const data = await loadLocalPhotos();
   sliderState.allPhotos = data;
   sliderState.photos = data;
-  renderSlider(sliderState.photos);
+  renderSlider();
   bindSliderControls();
   startSliderTimer();
 
@@ -26,10 +27,15 @@ export async function initSlider() {
     sliderState.photos = managedPhotos;
     sliderState.currentSlide = 0;
     sliderState.usesManagedPhotos = true;
-    renderSlider(sliderState.photos);
+    renderSlider();
     restartSliderTimer();
     galleryPhotosUpdatedListener?.(sliderState.allPhotos);
   }).catch(() => { /* Local photos remain available as a safe fallback. */ });
+}
+
+function fileNumber(photo) {
+  const match = String(photo?.src || '').match(/\/(\d+)\.[a-z]+(?:\?.*)?$/i);
+  return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
 }
 
 async function loadLocalPhotos() {
@@ -37,7 +43,7 @@ async function loadLocalPhotos() {
   if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
   const data = await response.json();
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
-  return data;
+  return data.sort((left, right) => fileNumber(left) - fileNumber(right));
 }
 
 async function loadManagedPhotos() {
@@ -57,35 +63,33 @@ async function loadManagedPhotos() {
   })) : [];
 }
 
-function createSlide(photo, index, eager = false) {
+function normalizedIndex(index) {
+  const total = sliderState.photos.length;
+  return total ? (index + total) % total : 0;
+}
+
+function createSlide(photo, index) {
   return `
     <div class="slide" data-index="${index}">
-      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async" />
+      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${index === sliderState.currentSlide ? 'eager' : 'lazy'}" decoding="async" />
     </div>
   `;
 }
 
-function renderSlider(photos) {
+function renderWindow() {
   const slidesEl = qs('#slides');
-  const dotsEl = qs('#slide-dots');
-  if (!slidesEl || !dotsEl || !photos.length) return;
+  if (!slidesEl || !sliderState.photos.length) return;
 
-  const loopPhotos = photos.length > 1
-    ? [photos[photos.length - 1], ...photos, photos[0]]
-    : photos;
-  const firstPhotoIndex = photos.length > 1 ? 1 : 0;
-  slidesEl.innerHTML = `<div class="slide-track">${loopPhotos.map((photo, index) => createSlide(photo, index, index === firstPhotoIndex)).join('')}</div>`;
-  dotsEl.innerHTML = photos.map((_, index) => `
-    <button type="button" class="dot ${index === 0 ? 'active' : ''}" data-index="${index}" aria-label="${index + 1}번 사진"></button>
-  `).join('');
+  const previous = normalizedIndex(sliderState.currentSlide - 1);
+  const next = normalizedIndex(sliderState.currentSlide + 1);
+  const windowIndexes = sliderState.photos.length > 1
+    ? [previous, sliderState.currentSlide, next]
+    : [sliderState.currentSlide];
 
-  setTrackPosition(0, false);
-  qsa('#slide-dots .dot').forEach((dot) => {
-    dot.addEventListener('click', () => {
-      goToSlide(Number(dot.dataset.index || 0));
-      restartSliderTimer();
-    });
-  });
+  slidesEl.innerHTML = `<div class="slide-track${windowIndexes.length === 1 ? ' single' : ''}">${windowIndexes
+    .map((index) => createSlide(sliderState.photos[index], index))
+    .join('')}</div>`;
+  setTrackPosition(windowIndexes.length === 1 ? 0 : 1, false);
 
   qsa('#slides .slide-image').forEach((image) => {
     const finishLoading = () => image.classList.remove('is-loading');
@@ -93,58 +97,72 @@ function renderSlider(photos) {
     image.addEventListener('load', finishLoading, { once: true });
     image.addEventListener('error', finishLoading, { once: true });
   });
-
-  qs('#slides .slide-track')?.addEventListener('transitionend', () => {
-    const total = sliderState.photos.length;
-    if (sliderState.currentSlide === -1) {
-      sliderState.currentSlide = total - 1;
-      setTrackPosition(sliderState.currentSlide, false);
-    } else if (sliderState.currentSlide === total) {
-      sliderState.currentSlide = 0;
-      setTrackPosition(0, false);
-    }
-  });
 }
 
-function setTrackPosition(index, animate = true) {
+function renderDots() {
+  const dotsEl = qs('#slide-dots');
+  if (!dotsEl) return;
+  dotsEl.innerHTML = `<span class="slider-count" aria-live="polite">${sliderState.currentSlide + 1} / ${sliderState.photos.length}</span>`;
+}
+
+function renderSlider() {
+  if (!sliderState.photos.length) return;
+  renderWindow();
+  renderDots();
+}
+
+function setTrackPosition(position, animate = true) {
   const track = qs('#slides .slide-track');
   if (!track) return;
-  track.style.transition = animate ? 'transform 560ms cubic-bezier(.22,.61,.36,1)' : 'none';
-  const offset = sliderState.photos.length > 1 ? index + 1 : index;
-  track.style.transform = `translate3d(-${offset * 100}%, 0, 0)`;
+  track.style.transition = animate ? 'transform 420ms cubic-bezier(.22,.61,.36,1)' : 'none';
+  track.style.transform = `translate3d(-${position * (100 / 3)}%, 0, 0)`;
 }
 
-function updateDots(index) {
-  const total = sliderState.photos.length;
-  const normalized = (index + total) % total;
-  qsa('#slide-dots .dot').forEach((dot, dotIndex) => {
-    dot.classList.toggle('active', dotIndex === normalized);
-  });
+function updateDots() {
+  const count = qs('#slide-dots .slider-count');
+  if (count) count.textContent = `${sliderState.currentSlide + 1} / ${sliderState.photos.length}`;
 }
 
-function goToSlide(index) {
-  const total = sliderState.photos.length;
-  if (!total) return;
-  sliderState.currentSlide = index;
-  updateDots(index);
-  setTrackPosition(index);
+function showSlide(index) {
+  if (!sliderState.photos.length) return;
+  sliderState.currentSlide = normalizedIndex(index);
+  sliderState.isAnimating = false;
+  renderWindow();
+  updateDots();
+}
+
+function moveSlide(direction) {
+  if (sliderState.isAnimating || sliderState.photos.length < 2) return;
+  sliderState.isAnimating = true;
+  sliderState.currentSlide = normalizedIndex(sliderState.currentSlide + direction);
+  updateDots();
+  setTrackPosition(direction > 0 ? 2 : 0, true);
+
+  const track = qs('#slides .slide-track');
+  const settle = () => {
+    if (!sliderState.isAnimating) return;
+    sliderState.isAnimating = false;
+    renderWindow();
+  };
+  track?.addEventListener('transitionend', settle, { once: true });
+  window.setTimeout(settle, 520);
 }
 
 function nextSlide() {
-  goToSlide(sliderState.currentSlide + 1);
+  moveSlide(1);
 }
 
 function prevSlide() {
-  goToSlide(sliderState.currentSlide - 1);
+  moveSlide(-1);
 }
 
 function startSliderTimer() {
   stopSliderTimer();
-  if (sliderState.photos.length > 1) sliderState.slideTimer = setInterval(nextSlide, 3800);
+  if (sliderState.photos.length > 1) sliderState.slideTimer = window.setInterval(nextSlide, 5200);
 }
 
 function stopSliderTimer() {
-  if (sliderState.slideTimer) clearInterval(sliderState.slideTimer);
+  if (sliderState.slideTimer) window.clearInterval(sliderState.slideTimer);
   sliderState.slideTimer = null;
 }
 
@@ -165,11 +183,13 @@ function bindSliderControls() {
   slider.addEventListener('mouseleave', startSliderTimer);
   slider.addEventListener('touchstart', (event) => {
     sliderState.touchStartX = event.changedTouches[0].clientX;
+    stopSliderTimer();
   }, { passive: true });
   slider.addEventListener('touchend', (event) => {
     const diff = event.changedTouches[0].clientX - sliderState.touchStartX;
-    if (Math.abs(diff) < 36) return;
-    if (diff < 0) nextSlide(); else prevSlide();
+    if (Math.abs(diff) >= 36) {
+      if (diff < 0) nextSlide(); else prevSlide();
+    }
     restartSliderTimer();
   }, { passive: true });
 }
