@@ -79,6 +79,32 @@ function photoSource(photo) {
   return photo?.thumb || photo?.src || '';
 }
 
+function setSliderLoading(visible) {
+  const slider = qs('#photo-slider');
+  if (!slider) return;
+  let loadingEl = qs('#slider-loading', slider);
+  if (!loadingEl) {
+    loadingEl = document.createElement('div');
+    loadingEl.id = 'slider-loading';
+    loadingEl.className = 'slider-loading';
+    loadingEl.setAttribute('role', 'status');
+    loadingEl.innerHTML = '<span aria-hidden="true"></span>사진을 준비하고 있어요';
+    slider.appendChild(loadingEl);
+  }
+  loadingEl.hidden = !visible;
+}
+
+function watchInitialSlideImage(image) {
+  if (!image) return;
+  if (image.complete) {
+    setSliderLoading(false);
+    return;
+  }
+  setSliderLoading(true);
+  image.addEventListener('load', () => setSliderLoading(false), { once: true });
+  image.addEventListener('error', () => setSliderLoading(false), { once: true });
+}
+
 function renderSlider() {
   const slidesEl = qs('#slides');
   if (!slidesEl || !sliderState.photos.length) return;
@@ -91,6 +117,7 @@ function renderSlider() {
       <img class="slide-image" alt="" aria-hidden="true" decoding="async" />
     </div>
   `;
+  watchInitialSlideImage(slidesEl.querySelector('.slide-image.is-active'));
   updateCount();
   preloadAdjacentPhotos();
 }
@@ -126,6 +153,7 @@ function moveSlide(direction) {
     activeImage.setAttribute('aria-hidden', 'true');
     incomingImage.classList.add('is-active');
     activeImage.classList.remove('is-active');
+    setSliderLoading(false);
     sliderState.currentSlide = nextIndex;
     updateCount();
     window.setTimeout(() => {
@@ -139,6 +167,7 @@ function moveSlide(direction) {
   if (incomingImage.complete) {
     window.requestAnimationFrame(reveal);
   } else {
+    setSliderLoading(true);
     incomingImage.addEventListener('load', reveal, { once: true });
     incomingImage.addEventListener('error', reveal, { once: true });
   }

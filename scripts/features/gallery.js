@@ -1,6 +1,7 @@
 import { qs, escapeHtml } from '../utils.js';
 
 const INITIAL_VISIBLE_COUNT = 6;
+let galleryLoadingTimer = null;
 
 const galleryState = {
   photos: [],
@@ -42,6 +43,7 @@ function ensureGalleryUi() {
 
   let moreWrapEl = qs('#gallery-more-wrap', sectionEl || document);
   let moreButtonEl = qs('#gallery-more-btn', sectionEl || document);
+  let loadingEl = qs('#gallery-loading', sectionEl || document);
 
   if (!moreWrapEl && sectionEl) {
     moreWrapEl = document.createElement('div');
@@ -59,12 +61,23 @@ function ensureGalleryUi() {
     galleryEl.insertAdjacentElement('afterend', moreWrapEl);
   }
 
+  if (!loadingEl && sectionEl) {
+    loadingEl = document.createElement('div');
+    loadingEl.id = 'gallery-loading';
+    loadingEl.className = 'gallery-loading';
+    loadingEl.hidden = true;
+    loadingEl.setAttribute('role', 'status');
+    loadingEl.innerHTML = '<span class="gallery-loading-spinner" aria-hidden="true"></span><span class="gallery-loading-text">사진을 준비하고 있어요</span><span class="gallery-loading-progress"><i></i></span>';
+    galleryEl.insertAdjacentElement('afterend', loadingEl);
+  }
+
   return {
     galleryEl,
     sectionEl,
     countEl,
     moreWrapEl,
-    moreButtonEl
+    moreButtonEl,
+    loadingEl
   };
 }
 
@@ -125,11 +138,38 @@ function galleryItemMarkup(photo, index) {
   `;
 }
 
-function hydrateGalleryImages(images) {
+function setGalleryLoading(loadingEl, completed, total) {
+  if (!loadingEl) return;
+  window.clearTimeout(galleryLoadingTimer);
+  const textEl = loadingEl.querySelector('.gallery-loading-text');
+  const barEl = loadingEl.querySelector('.gallery-loading-progress > i');
+  loadingEl.hidden = false;
+  if (textEl) textEl.textContent = `사진을 준비하고 있어요 ${completed} / ${total}`;
+  if (barEl) barEl.style.width = `${Math.round((completed / total) * 100)}%`;
+}
+
+function hideGalleryLoading(loadingEl) {
+  if (!loadingEl) return;
+  window.clearTimeout(galleryLoadingTimer);
+  galleryLoadingTimer = window.setTimeout(() => { loadingEl.hidden = true; }, 220);
+}
+
+function hydrateGalleryImages(images, loadingEl) {
+  if (!images.length) return;
+  let completed = 0;
+  setGalleryLoading(loadingEl, completed, images.length);
+
+  const markComplete = () => {
+    completed += 1;
+    setGalleryLoading(loadingEl, completed, images.length);
+    if (completed === images.length) hideGalleryLoading(loadingEl);
+  };
+
   images.forEach((image) => {
     const finishLoading = () => {
       image.classList.remove('is-loading');
       image.closest('.gallery-item')?.classList.add('is-loaded');
+      markComplete();
     };
     if (image.complete) finishLoading();
     image.addEventListener('load', finishLoading, { once: true });
@@ -137,7 +177,7 @@ function hydrateGalleryImages(images) {
   });
 }
 
-function appendGalleryItems(galleryEl, startIndex, endIndex) {
+function appendGalleryItems(galleryEl, startIndex, endIndex, loadingEl) {
   const fragment = document.createRange().createContextualFragment(
     galleryState.photos
       .slice(startIndex, endIndex)
@@ -146,14 +186,14 @@ function appendGalleryItems(galleryEl, startIndex, endIndex) {
   );
   const images = [...fragment.querySelectorAll('img')];
   galleryEl.appendChild(fragment);
-  hydrateGalleryImages(images);
+  hydrateGalleryImages(images, loadingEl);
 }
 
 function renderGallery() {
   const ui = ensureGalleryUi();
   if (!ui) return;
 
-  const { galleryEl, countEl, moreWrapEl, moreButtonEl } = ui;
+  const { galleryEl, countEl, moreWrapEl, moreButtonEl, loadingEl } = ui;
 
   updateGalleryCount(countEl);
 
@@ -163,7 +203,7 @@ function renderGallery() {
   }
 
   galleryEl.innerHTML = '';
-  appendGalleryItems(galleryEl, 0, galleryState.visibleCount);
+  appendGalleryItems(galleryEl, 0, galleryState.visibleCount, loadingEl);
 
   updateMoreButton(moreWrapEl, moreButtonEl);
 }
@@ -228,7 +268,7 @@ function toggleGalleryExpanded() {
   );
   const ui = ensureGalleryUi();
   if (!ui || galleryState.visibleCount === previousCount) return;
-  appendGalleryItems(ui.galleryEl, previousCount, galleryState.visibleCount);
+  appendGalleryItems(ui.galleryEl, previousCount, galleryState.visibleCount, ui.loadingEl);
   updateMoreButton(ui.moreWrapEl, ui.moreButtonEl);
 }
 
