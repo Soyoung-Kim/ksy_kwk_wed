@@ -48,9 +48,12 @@ async function loadLocalPhotos() {
   if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
   const data = await response.json();
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
-  // 로컬 원본·표시본을 요청하지 않고, 가장 작은 썸네일만 공개 화면에 사용합니다.
+  // 로컬 원본은 보내지 않고, 960px 중간 해상도 이미지만 공개 화면에 사용합니다.
   return data
-    .map((photo) => ({ ...photo, src: photo.thumb || photo.src }))
+    .map((photo) => ({
+      ...photo,
+      medium: String(photo.thumb || '').replace('/thumbs/', '/medium/') || photo.src
+    }))
     .sort((left, right) => fileNumber(left) - fileNumber(right));
 }
 
@@ -81,7 +84,7 @@ function normalizedIndex(index) {
 }
 
 function photoSource(photo) {
-  return photo?.thumb || photo?.src || '';
+  return photo?.medium || photo?.thumb || photo?.src || '';
 }
 
 function setSliderLoading(visible) {
