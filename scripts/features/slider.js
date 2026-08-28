@@ -69,9 +69,11 @@ function normalizedIndex(index) {
 }
 
 function createSlide(photo, index) {
+  const sliderSource = photo.thumb || photo.src;
+  const isCurrent = index === sliderState.currentSlide;
   return `
     <div class="slide" data-index="${index}">
-      <img class="slide-image is-loading" src="${escapeHtml(photo.src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${index === sliderState.currentSlide ? 'eager' : 'lazy'}" decoding="async" />
+      <img class="slide-image is-loading" src="${escapeHtml(sliderSource)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${isCurrent ? 'eager' : 'lazy'}" fetchpriority="${isCurrent ? 'high' : 'low'}" decoding="async" />
     </div>
   `;
 }

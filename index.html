@@ -15,6 +15,10 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/photos/main_logo.png" />
   <meta name="theme-color" content="#fbf6f1" />
+  <!-- Gallery starts with these tiny previews, so the first swipe never waits for a full photo. -->
+  <link rel="preload" as="image" href="./assets/photos/thumbs/1.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="./assets/photos/thumbs/2.jpg" />
+  <link rel="preload" as="image" href="./assets/photos/thumbs/3.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
