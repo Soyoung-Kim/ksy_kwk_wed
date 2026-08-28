@@ -14,6 +14,7 @@
   width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  background: #f3ece8;
 }
 
 .fade-stage {
@@ -38,7 +39,7 @@
 .slide-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
