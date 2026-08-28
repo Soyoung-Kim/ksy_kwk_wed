@@ -52,4 +52,7 @@ button.danger { color: #a04f58; background: #fff3f4; border: 1px solid rgba(180,
 .gallery-editor-card { display: grid; grid-template-columns: 74px 1fr auto; gap: 12px; align-items: center; padding: 12px; border: 1px solid rgba(143,113,92,.16); border-radius: 16px; background: #fffdfa; }
 .gallery-editor-card img { width: 74px; height: 74px; border-radius: 10px; object-fit: cover; }
 .gallery-editor-card .editor-fields { grid-template-columns: 1fr 86px; }
+.gallery-editor-card .editor-fields .visibility-field { display: flex; align-items: center; gap: 8px; grid-column: 1 / -1; }
+.visibility-field input { width: 18px; min-height: 18px; padding: 0; accent-color: #a78365; }
+.gallery-editor-card .editor-actions { grid-column: 1 / -1; margin-top: 0; }
 @media (max-width: 560px) { .admin-shell { width: min(100% - 20px, 760px); padding-top: 22px; } .admin-login, .admin-section { padding: 20px; border-radius: 20px; } .admin-header { flex-direction: column; } .editor-fields, .upload-form { grid-template-columns: 1fr; } .gallery-editor-card { grid-template-columns: 62px 1fr; } .gallery-editor-card img { width: 62px; height: 62px; } .gallery-editor-card > button { grid-column: 1 / -1; } }

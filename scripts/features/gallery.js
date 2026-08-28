@@ -17,6 +17,7 @@ function normalizePhotos(photos) {
     .filter((photo) => photo && typeof photo.src === 'string' && photo.src.trim())
     .map((photo, index) => ({
       src: photo.src,
+      thumb: photo.thumb || photo.src,
       alt: photo.alt || `웨딩 사진 ${index + 1}`
     }));
 }
@@ -132,7 +133,7 @@ function renderGallery() {
           aria-label="${escapeHtml(photo.alt)} 크게 보기"
         >
           <img
-            src="${escapeHtml(photo.src)}"
+            src="${escapeHtml(photo.thumb)}"
             alt="${escapeHtml(photo.alt)}"
             class="is-loading"
             loading="lazy"

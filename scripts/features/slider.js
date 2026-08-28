@@ -45,12 +45,16 @@ async function loadManagedPhotos() {
 
   const { data, error } = await supabaseClient
     .from('wedding_gallery')
-    .select('image_url, alt')
+    .select('image_url, thumbnail_url, alt')
     .eq('is_visible', true)
     .order('display_order');
 
   if (error) return null;
-  return Array.isArray(data) ? data.map((photo) => ({ src: photo.image_url, alt: photo.alt })) : [];
+  return Array.isArray(data) ? data.map((photo) => ({
+    src: photo.image_url,
+    thumb: photo.thumbnail_url || photo.image_url,
+    alt: photo.alt
+  })) : [];
 }
 
 function createSlide(photo, index, eager = false) {
