@@ -16,7 +16,8 @@ function normalizePhotos(photos) {
   return photos
     .filter((photo) => photo && typeof photo.src === 'string' && photo.src.trim())
     .map((photo, index) => ({
-      src: photo.src,
+      // 확대·저장을 제한한 청첩장에서는 큰 원본을 다시 받지 않습니다.
+      src: photo.thumb || photo.src,
       thumb: photo.thumb || photo.src,
       alt: photo.alt || `웨딩 사진 ${index + 1}`
     }));

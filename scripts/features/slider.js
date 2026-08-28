@@ -1,4 +1,4 @@
-import { qs, qsa, escapeHtml } from '../utils.js';
+import { qs, escapeHtml } from '../utils.js';
 import { supabaseClient } from '../supabaseClient.js';
 
 const sliderState = {
@@ -57,7 +57,7 @@ async function loadManagedPhotos() {
 
   if (error) return null;
   return Array.isArray(data) ? data.map((photo) => ({
-    src: photo.image_url,
+    src: photo.thumbnail_url || photo.image_url,
     thumb: photo.thumbnail_url || photo.image_url,
     alt: photo.alt
   })) : [];
@@ -68,86 +68,73 @@ function normalizedIndex(index) {
   return total ? (index + total) % total : 0;
 }
 
-function createSlide(photo, index) {
-  const sliderSource = photo.thumb || photo.src;
-  const isCurrent = index === sliderState.currentSlide;
-  return `
-    <div class="slide" data-index="${index}">
-      <img class="slide-image is-loading" src="${escapeHtml(sliderSource)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${index + 1}`)}" loading="${isCurrent ? 'eager' : 'lazy'}" fetchpriority="${isCurrent ? 'high' : 'low'}" decoding="async" />
-    </div>
-  `;
-}
-
-function renderWindow() {
-  const slidesEl = qs('#slides');
-  if (!slidesEl || !sliderState.photos.length) return;
-
-  const previous = normalizedIndex(sliderState.currentSlide - 1);
-  const next = normalizedIndex(sliderState.currentSlide + 1);
-  const windowIndexes = sliderState.photos.length > 1
-    ? [previous, sliderState.currentSlide, next]
-    : [sliderState.currentSlide];
-
-  slidesEl.innerHTML = `<div class="slide-track${windowIndexes.length === 1 ? ' single' : ''}">${windowIndexes
-    .map((index) => createSlide(sliderState.photos[index], index))
-    .join('')}</div>`;
-  setTrackPosition(windowIndexes.length === 1 ? 0 : 1, false);
-
-  qsa('#slides .slide-image').forEach((image) => {
-    const finishLoading = () => image.classList.remove('is-loading');
-    if (image.complete) finishLoading();
-    image.addEventListener('load', finishLoading, { once: true });
-    image.addEventListener('error', finishLoading, { once: true });
-  });
-}
-
-function renderDots() {
-  const dotsEl = qs('#slide-dots');
-  if (!dotsEl) return;
-  dotsEl.innerHTML = `<span class="slider-count" aria-live="polite">${sliderState.currentSlide + 1} / ${sliderState.photos.length}</span>`;
+function photoSource(photo) {
+  return photo?.thumb || photo?.src || '';
 }
 
 function renderSlider() {
-  if (!sliderState.photos.length) return;
-  renderWindow();
-  renderDots();
+  const slidesEl = qs('#slides');
+  if (!slidesEl || !sliderState.photos.length) return;
+
+  const photo = sliderState.photos[sliderState.currentSlide];
+  const src = photoSource(photo);
+  slidesEl.innerHTML = `
+    <div class="fade-stage">
+      <img class="slide-image is-active" src="${escapeHtml(src)}" alt="${escapeHtml(photo.alt || `웨딩 사진 ${sliderState.currentSlide + 1}`)}" loading="eager" fetchpriority="high" decoding="async" />
+      <img class="slide-image" alt="" aria-hidden="true" decoding="async" />
+    </div>
+  `;
+  updateCount();
+  preloadAdjacentPhotos();
 }
 
-function setTrackPosition(position, animate = true) {
-  const track = qs('#slides .slide-track');
-  if (!track) return;
-  track.style.transition = animate ? 'transform 420ms cubic-bezier(.22,.61,.36,1)' : 'none';
-  track.style.transform = `translate3d(-${position * (100 / 3)}%, 0, 0)`;
+function updateCount() {
+  const count = qs('#slide-dots');
+  if (count) count.innerHTML = `<span class="slider-count" aria-live="polite">${sliderState.currentSlide + 1} / ${sliderState.photos.length}</span>`;
 }
 
-function updateDots() {
-  const count = qs('#slide-dots .slider-count');
-  if (count) count.textContent = `${sliderState.currentSlide + 1} / ${sliderState.photos.length}`;
-}
-
-function showSlide(index) {
-  if (!sliderState.photos.length) return;
-  sliderState.currentSlide = normalizedIndex(index);
-  sliderState.isAnimating = false;
-  renderWindow();
-  updateDots();
+function preloadAdjacentPhotos() {
+  if (sliderState.photos.length < 2) return;
+  [-1, 1].forEach((offset) => {
+    const source = photoSource(sliderState.photos[normalizedIndex(sliderState.currentSlide + offset)]);
+    if (!source) return;
+    const image = new Image();
+    image.src = source;
+  });
 }
 
 function moveSlide(direction) {
   if (sliderState.isAnimating || sliderState.photos.length < 2) return;
-  sliderState.isAnimating = true;
-  sliderState.currentSlide = normalizedIndex(sliderState.currentSlide + direction);
-  updateDots();
-  setTrackPosition(direction > 0 ? 2 : 0, true);
+  const slidesEl = qs('#slides');
+  const activeImage = slidesEl?.querySelector('.slide-image.is-active');
+  const incomingImage = slidesEl?.querySelector('.slide-image:not(.is-active)');
+  if (!activeImage || !incomingImage) return;
 
-  const track = qs('#slides .slide-track');
-  const settle = () => {
+  sliderState.isAnimating = true;
+  const nextIndex = normalizedIndex(sliderState.currentSlide + direction);
+  const nextPhoto = sliderState.photos[nextIndex];
+  const reveal = () => {
     if (!sliderState.isAnimating) return;
-    sliderState.isAnimating = false;
-    renderWindow();
+    incomingImage.removeAttribute('aria-hidden');
+    activeImage.setAttribute('aria-hidden', 'true');
+    incomingImage.classList.add('is-active');
+    activeImage.classList.remove('is-active');
+    sliderState.currentSlide = nextIndex;
+    updateCount();
+    window.setTimeout(() => {
+      sliderState.isAnimating = false;
+      preloadAdjacentPhotos();
+    }, 360);
   };
-  track?.addEventListener('transitionend', settle, { once: true });
-  window.setTimeout(settle, 520);
+
+  incomingImage.alt = nextPhoto.alt || `웨딩 사진 ${nextIndex + 1}`;
+  incomingImage.src = photoSource(nextPhoto);
+  if (incomingImage.complete) {
+    window.requestAnimationFrame(reveal);
+  } else {
+    incomingImage.addEventListener('load', reveal, { once: true });
+    incomingImage.addEventListener('error', reveal, { once: true });
+  }
 }
 
 function nextSlide() {
@@ -194,6 +181,10 @@ function bindSliderControls() {
     }
     restartSliderTimer();
   }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopSliderTimer(); else startSliderTimer();
+  });
 }
 
 export function getGalleryPhotos() {
