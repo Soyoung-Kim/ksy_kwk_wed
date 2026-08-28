@@ -76,15 +76,16 @@ function updateGalleryCount(countEl) {
 function updateMoreButton(moreWrapEl, moreButtonEl) {
   if (!moreWrapEl || !moreButtonEl) return;
 
-  const hasMore = galleryState.visibleCount < galleryState.photos.length;
-  moreWrapEl.hidden = !hasMore;
-
-  if (!hasMore) {
+  if (galleryState.photos.length <= INITIAL_VISIBLE_COUNT) {
+    moreWrapEl.hidden = true;
     return;
   }
 
-  moreButtonEl.textContent = '사진 더 보기';
-  moreButtonEl.setAttribute('aria-expanded', 'false');
+  const hasMore = galleryState.visibleCount < galleryState.photos.length;
+  moreWrapEl.hidden = false;
+
+  moreButtonEl.textContent = hasMore ? '사진 더 보기' : '사진 접기';
+  moreButtonEl.setAttribute('aria-expanded', String(!hasMore));
 }
 
 function renderEmpty(galleryEl, countEl, moreWrapEl) {
@@ -214,6 +215,12 @@ function closeLightbox() {
 }
 
 function toggleGalleryExpanded() {
+  if (galleryState.visibleCount >= galleryState.photos.length) {
+    galleryState.visibleCount = INITIAL_VISIBLE_COUNT;
+    renderGallery();
+    return;
+  }
+
   const previousCount = galleryState.visibleCount;
   galleryState.visibleCount = Math.min(
     galleryState.visibleCount + INITIAL_VISIBLE_COUNT,
