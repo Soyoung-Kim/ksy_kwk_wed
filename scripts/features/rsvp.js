@@ -43,6 +43,12 @@ export function initRsvp() {
     const attending = new FormData(form).get('attendance') === 'attending';
     countField.hidden = !attending;
     countField.querySelector('select').disabled = !attending;
+    form.querySelectorAll('.rsvp-choice').forEach((choice) => {
+      const input = choice.querySelector('input[name="attendance"]');
+      choice.classList.toggle('is-selected', Boolean(input?.checked));
+      choice.classList.toggle('is-attending', input?.value === 'attending');
+      choice.classList.toggle('is-declined', input?.value === 'declined');
+    });
   };
   const today = () => new Date().toLocaleDateString('en-CA');
   const hasSubmitted = () => {
