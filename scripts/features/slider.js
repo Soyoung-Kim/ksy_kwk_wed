@@ -23,7 +23,8 @@ export async function initSlider() {
   bindSliderControls();
   startSliderTimer();
 
-  // Supabase 목록은 첫 화면을 막지 않고 뒤에서 받아 교체합니다.
+  // 관리자에서 직접 업로드한 Storage 사진만 뒤에서 반영합니다.
+  // 로컬 asset 행은 photos.json의 숫자 파일 순서를 덮어쓰지 않습니다.
   loadManagedPhotos().then((managedPhotos) => {
     if (!managedPhotos?.length) return;
     sliderState.allPhotos = managedPhotos;
@@ -58,13 +59,14 @@ async function loadManagedPhotos() {
 
   const { data, error } = await supabaseClient
     .from('wedding_gallery')
-    .select('image_url, thumbnail_url, alt')
+    .select('image_url, thumbnail_url, alt, source_type')
     .eq('is_visible', true)
     .order('display_order');
 
   if (error) return null;
   return Array.isArray(data) ? data
-    // 원본만 있는 기존 행은 공개 갤러리에 넣지 않습니다.
+    // 원본만 있는 기존 행과 로컬 asset 중복 행은 공개 갤러리에 넣지 않습니다.
+    .filter((photo) => photo.source_type === 'storage')
     .filter((photo) => typeof photo.thumbnail_url === 'string' && photo.thumbnail_url.trim())
     .map((photo) => ({
       src: photo.thumbnail_url,
