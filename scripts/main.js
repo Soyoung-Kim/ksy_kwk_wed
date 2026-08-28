@@ -26,16 +26,8 @@ function initInteractionGuard() {
     }
   });
 
-  // 모바일 브라우저의 두 손가락 핀치 확대를 제한합니다.
-  document.addEventListener('touchmove', (event) => {
-    if (event.touches.length > 1 && !event.target.closest('#rough-map-lightbox')) event.preventDefault();
-  }, { passive: false });
-
-  ['gesturestart', 'gesturechange', 'gestureend'].forEach((eventName) => {
-    document.addEventListener(eventName, (event) => {
-      if (!event.target.closest?.('#rough-map-lightbox')) event.preventDefault();
-    }, { passive: false });
-  });
+  // 전역 touchmove 차단은 모바일 스크롤 성능을 크게 떨어뜨립니다.
+  // 확대 제한은 CSS touch-action과 viewport 설정으로 처리합니다.
 }
 
 function resetScrollToTop() {

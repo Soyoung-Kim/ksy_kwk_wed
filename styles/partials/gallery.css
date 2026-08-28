@@ -66,6 +66,17 @@
   background: linear-gradient(100deg, #eee6df 25%, #f8f4f0 45%, #eee6df 65%);
   background-size: 220% 100%;
   animation: image-loading 1.5s ease-in-out infinite;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.gallery-item.is-loaded::after {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes image-loading {
+  to { background-position: -220% 0; }
 }
 
 .gallery-item:hover img,

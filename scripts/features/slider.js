@@ -8,6 +8,7 @@ const sliderState = {
   slideTimer: null,
   touchStartX: 0,
   isAnimating: false,
+  isVisible: false,
   usesManagedPhotos: false
 };
 let galleryPhotosUpdatedListener = null;
@@ -147,7 +148,7 @@ function prevSlide() {
 
 function startSliderTimer() {
   stopSliderTimer();
-  if (sliderState.photos.length > 1) sliderState.slideTimer = window.setInterval(nextSlide, 5200);
+  if (sliderState.isVisible && sliderState.photos.length > 1) sliderState.slideTimer = window.setInterval(nextSlide, 5200);
 }
 
 function stopSliderTimer() {
@@ -181,6 +182,16 @@ function bindSliderControls() {
     }
     restartSliderTimer();
   }, { passive: true });
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      sliderState.isVisible = Boolean(entries[0]?.isIntersecting);
+      if (sliderState.isVisible) startSliderTimer(); else stopSliderTimer();
+    }, { threshold: 0.2 });
+    observer.observe(slider);
+  } else {
+    sliderState.isVisible = true;
+  }
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) stopSliderTimer(); else startSliderTimer();

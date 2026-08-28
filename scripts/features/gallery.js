@@ -148,7 +148,10 @@ function renderGallery() {
   updateMoreButton(moreWrapEl, moreButtonEl);
 
   qsa('#gallery img').forEach((image) => {
-    const finishLoading = () => image.classList.remove('is-loading');
+    const finishLoading = () => {
+      image.classList.remove('is-loading');
+      image.closest('.gallery-item')?.classList.add('is-loaded');
+    };
     if (image.complete) finishLoading();
     image.addEventListener('load', finishLoading, { once: true });
     image.addEventListener('error', finishLoading, { once: true });
