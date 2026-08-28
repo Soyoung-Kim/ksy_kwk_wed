@@ -10,7 +10,6 @@ const sliderState = {
   isAnimating: false,
   queuedDirection: 0,
   isVisible: false,
-  allPreloaded: false,
   usesManagedPhotos: false
 };
 let galleryPhotosUpdatedListener = null;
@@ -30,7 +29,6 @@ export async function initSlider() {
     sliderState.allPhotos = managedPhotos;
     sliderState.photos = managedPhotos;
     sliderState.currentSlide = 0;
-    sliderState.allPreloaded = false;
     sliderState.usesManagedPhotos = true;
     renderSlider();
     restartSliderTimer();
@@ -48,11 +46,11 @@ async function loadLocalPhotos() {
   if (!response.ok) throw new Error('photos.json 파일을 불러오지 못했습니다.');
   const data = await response.json();
   if (!Array.isArray(data)) throw new Error('photos.json 형식이 올바르지 않습니다.');
-  // 로컬 원본은 보내지 않고, 960px 중간 해상도 이미지만 공개 화면에 사용합니다.
+  // 갤러리 격자는 썸네일을 쓰고, 슬라이더·팝업은 원본 사진을 사용합니다.
   return data
     .map((photo) => ({
       ...photo,
-      medium: String(photo.thumb || '').replace('/thumbs/', '/medium/') || photo.src
+      original: String(photo.src || '').replace('/display/', '/') || photo.src
     }))
     .sort((left, right) => fileNumber(left) - fileNumber(right));
 }
@@ -84,7 +82,7 @@ function normalizedIndex(index) {
 }
 
 function photoSource(photo) {
-  return photo?.medium || photo?.thumb || photo?.src || '';
+  return photo?.original || photo?.src || photo?.thumb || '';
 }
 
 function setSliderLoading(visible) {
@@ -143,23 +141,6 @@ function preloadAdjacentPhotos() {
     const image = new Image();
     image.src = source;
   });
-}
-
-function preloadAllPhotos() {
-  if (sliderState.allPreloaded || sliderState.photos.length < 2) return;
-  sliderState.allPreloaded = true;
-  const sources = [...new Set(sliderState.photos.map(photoSource).filter(Boolean))];
-  const preload = () => sources.forEach((source) => {
-    const image = new Image();
-    image.decoding = 'async';
-    image.src = source;
-  });
-
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(preload, { timeout: 1600 });
-  } else {
-    window.setTimeout(preload, 300);
-  }
 }
 
 function moveSlide(direction) {
@@ -261,7 +242,6 @@ function bindSliderControls() {
       sliderState.isVisible = Boolean(entries[0]?.isIntersecting);
       if (sliderState.isVisible) {
         startSliderTimer();
-        preloadAllPhotos();
       } else {
         stopSliderTimer();
       }
@@ -269,7 +249,6 @@ function bindSliderControls() {
     observer.observe(slider);
   } else {
     sliderState.isVisible = true;
-    preloadAllPhotos();
   }
 
   document.addEventListener('visibilitychange', () => {
