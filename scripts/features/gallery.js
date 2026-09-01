@@ -10,7 +10,9 @@ const galleryState = {
   visibleCount: INITIAL_VISIBLE_COUNT,
   bound: false,
   lightboxIndex: 0,
-  lightboxTouchStartX: 0
+  lightboxTouchStartX: 0,
+  lightboxLoading: false,
+  lightboxLoadRequest: 0
 };
 
 function normalizePhotos(photos) {
@@ -225,10 +227,18 @@ function openLightbox(index) {
 
   if (!lightboxEl || !lightboxImageEl) return;
 
-  galleryState.lightboxIndex = index;
-  setLightboxPhoto();
   lightboxEl.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  galleryState.lightboxIndex = index;
+  setLightboxPhoto();
+}
+
+function setLightboxLoading(isLoading) {
+  const lightboxEl = qs('#lightbox');
+  const loadingEl = qs('#lightbox-loading');
+  galleryState.lightboxLoading = isLoading;
+  lightboxEl?.classList.toggle('is-loading', isLoading);
+  if (loadingEl) loadingEl.hidden = !isLoading;
 }
 
 function setLightboxPhoto() {
@@ -236,8 +246,16 @@ function setLightboxPhoto() {
   const lightboxImageEl = qs('#lightbox-image');
   const lightboxCountEl = qs('#lightbox-count');
   if (!photo || !lightboxImageEl) return;
+  const request = ++galleryState.lightboxLoadRequest;
+  const finishLoading = () => {
+    if (request === galleryState.lightboxLoadRequest) setLightboxLoading(false);
+  };
+  setLightboxLoading(true);
+  lightboxImageEl.onload = finishLoading;
+  lightboxImageEl.onerror = finishLoading;
   lightboxImageEl.src = photo.src;
   lightboxImageEl.alt = photo.alt;
+  if (lightboxImageEl.complete) window.requestAnimationFrame(finishLoading);
   if (lightboxCountEl) {
     lightboxCountEl.textContent = `${galleryState.lightboxIndex + 1} / ${galleryState.photos.length}`;
   }
@@ -245,7 +263,7 @@ function setLightboxPhoto() {
 
 function moveLightbox(direction) {
   const total = galleryState.photos.length;
-  if (!total) return;
+  if (!total || galleryState.lightboxLoading) return;
   galleryState.lightboxIndex = (galleryState.lightboxIndex + direction + total) % total;
   setLightboxPhoto();
 }
@@ -257,6 +275,7 @@ function closeLightbox() {
   if (!lightboxEl || !lightboxImageEl) return;
 
   lightboxEl.classList.add('hidden');
+  setLightboxLoading(false);
   lightboxImageEl.src = '';
   lightboxImageEl.alt = '';
   document.body.style.overflow = '';
@@ -304,12 +323,12 @@ function bindGalleryEvents() {
       return;
     }
 
-    if (event.target.closest('#lightbox-prev')) {
+    if (event.target.closest('#lightbox-prev') && !galleryState.lightboxLoading) {
       moveLightbox(-1);
       return;
     }
 
-    if (event.target.closest('#lightbox-next')) {
+    if (event.target.closest('#lightbox-next') && !galleryState.lightboxLoading) {
       moveLightbox(1);
       return;
     }
@@ -324,8 +343,8 @@ function bindGalleryEvents() {
     if (event.key === 'Escape') {
       closeLightbox();
     }
-    if (event.key === 'ArrowLeft') moveLightbox(-1);
-    if (event.key === 'ArrowRight') moveLightbox(1);
+    if (event.key === 'ArrowLeft' && !galleryState.lightboxLoading) moveLightbox(-1);
+    if (event.key === 'ArrowRight' && !galleryState.lightboxLoading) moveLightbox(1);
   });
 
   const lightboxEl = qs('#lightbox');
@@ -334,7 +353,7 @@ function bindGalleryEvents() {
   }, { passive: true });
   lightboxEl?.addEventListener('touchend', (event) => {
     const diff = event.changedTouches[0].clientX - galleryState.lightboxTouchStartX;
-    if (Math.abs(diff) < 36) return;
+    if (galleryState.lightboxLoading || Math.abs(diff) < 36) return;
     moveLightbox(diff < 0 ? 1 : -1);
   }, { passive: true });
 
