@@ -1,11 +1,11 @@
 [
+  { "src": "./assets/photos/display/7.jpg", "thumb": "./assets/photos/thumbs/7.jpg", "alt": "웨딩 사진 7" },
+  { "src": "./assets/photos/display/6.jpg", "thumb": "./assets/photos/thumbs/6.jpg", "alt": "웨딩 사진 6" },
   { "src": "./assets/photos/display/1.jpg", "thumb": "./assets/photos/thumbs/1.jpg", "alt": "웨딩 사진 1" },
   { "src": "./assets/photos/display/2.jpg", "thumb": "./assets/photos/thumbs/2.jpg", "alt": "웨딩 사진 2" },
   { "src": "./assets/photos/display/3.jpg", "thumb": "./assets/photos/thumbs/3.jpg", "alt": "웨딩 사진 3" },
   { "src": "./assets/photos/display/4.jpg", "thumb": "./assets/photos/thumbs/4.jpg", "alt": "웨딩 사진 4" },
   { "src": "./assets/photos/display/5.jpg", "thumb": "./assets/photos/thumbs/5.jpg", "alt": "웨딩 사진 5" },
-  { "src": "./assets/photos/display/6.jpg", "thumb": "./assets/photos/thumbs/6.jpg", "alt": "웨딩 사진 6" },
-  { "src": "./assets/photos/display/7.jpg", "thumb": "./assets/photos/thumbs/7.jpg", "alt": "웨딩 사진 7" },
   { "src": "./assets/photos/display/8.jpg", "thumb": "./assets/photos/thumbs/8.jpg", "alt": "웨딩 사진 8" },
   { "src": "./assets/photos/display/9.jpg", "thumb": "./assets/photos/thumbs/9.jpg", "alt": "웨딩 사진 9" },
   { "src": "./assets/photos/display/10.jpg", "thumb": "./assets/photos/thumbs/10.jpg", "alt": "웨딩 사진 10" },
