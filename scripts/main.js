@@ -14,7 +14,7 @@ function showToastFallback(message) {
   }, 2200);
 }
 function initInteractionGuard() {
-  // 전체 우클릭 방지.
+  // 전체 우클릭 방지
   document.addEventListener('contextmenu', (event) => {
     event.preventDefault();
   });
