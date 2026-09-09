@@ -2,7 +2,7 @@ import { assertAllowedClientRequest, getSupabaseAdmin } from '../_shared/guestbo
 import { json, methodNotAllowed, okOptions } from '../_shared/http.ts';
 
 const MAX_FILES = 10;
-const MAX_ORIGINAL_BYTES = 15 * 1024 * 1024;
+const MAX_ORIGINAL_BYTES = 25 * 1024 * 1024;
 const MAX_THUMBNAIL_BYTES = 1024 * 1024;
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
 const THUMBNAIL_BUCKET = 'wedding-guest-thumbnails';
@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     const thumbs = form.getAll('thumbnails').filter((value): value is File => value instanceof File);
     if (!files.length || files.length > MAX_FILES) throw new Error(`사진은 한 번에 최대 ${MAX_FILES}장까지 올릴 수 있습니다.`);
     if (thumbs.length !== files.length) throw new Error('사진 미리보기 생성에 실패했습니다. 다시 시도해주세요.');
-    files.forEach((file) => { if (!IMAGE_TYPES.has(file.type) || file.size > MAX_ORIGINAL_BYTES) throw new Error('JPG, PNG, WebP 사진만 장당 15MB 이하로 올릴 수 있습니다.'); });
+    files.forEach((file) => { if (!IMAGE_TYPES.has(file.type) || file.size > MAX_ORIGINAL_BYTES) throw new Error('JPG, PNG, WebP 사진만 장당 25MB 이하로 올릴 수 있습니다.'); });
     thumbs.forEach((file) => { if (file.type !== 'image/jpeg' || file.size > MAX_THUMBNAIL_BYTES) throw new Error('사진 미리보기 형식이 올바르지 않습니다.'); });
     const supabase = getSupabaseAdmin();
     const { data: settings, error: settingsError } = await supabase.from('wedding_guest_photo_settings').select('google_drive_folder_id, uploads_enabled, auto_publish').eq('site_key', siteKey).single();
