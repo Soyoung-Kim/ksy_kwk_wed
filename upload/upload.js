@@ -130,7 +130,10 @@ form.addEventListener('submit', async (event) => {
     }
     clearProgress();
     setStatus(`${pending.length}장 업로드를 완료했습니다. 감사합니다!`, 100);
-    setTimeout(() => location.replace('../moments/'), 900);
+    setTimeout(() => {
+      if (document.body.dataset.uploadModal === 'true') window.dispatchEvent(new CustomEvent('guest-photo-uploaded'));
+      else location.replace('../moments/');
+    }, 900);
   } catch (error) {
     setStatus(`${error.message || '업로드에 실패했습니다.'} 완료된 사진은 저장되어 있습니다. 다시 선택하면 이어서 올릴 수 있어요.`);
   } finally {
