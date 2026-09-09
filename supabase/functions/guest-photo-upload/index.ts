@@ -4,7 +4,7 @@ import { json, methodNotAllowed, okOptions } from '../_shared/http.ts';
 const MAX_FILES = 10;
 const MAX_ORIGINAL_BYTES = 15 * 1024 * 1024;
 const MAX_THUMBNAIL_BYTES = 1024 * 1024;
-const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
 const THUMBNAIL_BUCKET = 'wedding-guest-thumbnails';
 
 async function accessToken(refreshToken: string) {
