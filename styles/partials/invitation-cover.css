@@ -113,11 +113,12 @@
 
 .cover-date {
   margin: 0 0 10px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 7vw, 2.55rem);
-  font-weight: 600;
-  line-height: 0.9;
-  letter-spacing: 0.04em;
+  font-family: Pretendard, system-ui, sans-serif;
+  font-size: clamp(1.92rem, 6.7vw, 2.4rem);
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.035em;
 }
 
 .cover-names {
