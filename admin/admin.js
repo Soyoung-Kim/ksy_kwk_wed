@@ -11,7 +11,7 @@ const els = {
   loginPassword: document.getElementById('login-password'), loginStatus: document.getElementById('login-status'),
   adminStatus: document.getElementById('admin-status'), contacts: document.getElementById('contacts-list'),
   accounts: document.getElementById('accounts-list'), gallery: document.getElementById('gallery-list'),
-  rsvpSummary: document.getElementById('rsvp-summary'), rsvpFilters: document.getElementById('rsvp-filters'), rsvpList: document.getElementById('rsvp-list'),
+  rsvpSummary: document.getElementById('rsvp-summary'), rsvpSourceSummary: document.getElementById('rsvp-source-summary'), rsvpFilters: document.getElementById('rsvp-filters'), rsvpList: document.getElementById('rsvp-list'),
   uploadForm: document.getElementById('gallery-upload-form'), uploadFile: document.getElementById('gallery-file'),
   uploadAlt: document.getElementById('gallery-alt'), logout: document.getElementById('logout-button'),
   toast: document.getElementById('admin-toast'),
@@ -168,14 +168,30 @@ function renderAccounts() {
 
 function renderRsvps() {
   if (!els.rsvpSummary || !els.rsvpList) return;
-  const attending = state.rsvps.filter((row) => row.attendance === 'attending');
-  const declined = state.rsvps.filter((row) => row.attendance === 'declined');
-  const guestTotal = attending.reduce((sum, row) => sum + Number(row.guest_count || 0), 0);
+  const summaryOf = (rows) => {
+    const attending = rows.filter((row) => row.attendance === 'attending');
+    return {
+      attending: attending.length,
+      declined: rows.filter((row) => row.attendance === 'declined').length,
+      guests: attending.reduce((sum, row) => sum + Number(row.guest_count || 0), 0)
+    };
+  };
+  const total = summaryOf(state.rsvps);
   els.rsvpSummary.innerHTML = [
-    ['참석', `${attending.length}건`],
-    ['불참', `${declined.length}건`],
-    ['예상 인원', `${guestTotal}명`]
+    ['참석', `${total.attending}건`],
+    ['불참', `${total.declined}건`],
+    ['예상 인원', `${total.guests}명`]
   ].map(([label, value]) => `<div class="rsvp-summary-item"><span>${label}</span><strong>${value}</strong></div>`).join('');
+  if (els.rsvpSourceSummary) {
+    const sources = [
+      ['ksy_kwk_wed', '원본 링크', 'ksy'],
+      ['kwk_ksy_wed', '복제 링크', 'kwk']
+    ];
+    els.rsvpSourceSummary.innerHTML = sources.map(([siteKey, label, shortLabel]) => {
+      const summary = summaryOf(state.rsvps.filter((row) => row.site_key === siteKey));
+      return `<article class="rsvp-source-card"><header><strong>${label}</strong><span>${shortLabel}</span></header><dl><div><dt>참석</dt><dd>${summary.attending}건</dd></div><div><dt>불참</dt><dd>${summary.declined}건</dd></div><div><dt>예상 인원</dt><dd>${summary.guests}명</dd></div></dl></article>`;
+    }).join('');
+  }
   const isAllSelected = state.rsvpSources.size === RSVP_SOURCES.length;
   els.rsvpFilters?.querySelectorAll('[data-rsvp-filter]').forEach((button) => {
     const filter = button.dataset.rsvpFilter;
