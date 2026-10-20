@@ -4,7 +4,7 @@ import { APP_CONFIG } from '../config.js';
 const GALLERY_BUCKET = 'wedding-gallery';
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp']);
 const RSVP_SOURCES = ['ksy_kwk_wed', 'kwk_ksy_wed'];
-const state = { contacts: [], accounts: [], gallery: [], rsvps: [], accountsEnabled: true, galleryStorageEnabled: false, galleryOrder: [], localGallery: [], rsvpSources: new Set(RSVP_SOURCES) };
+const state = { contacts: [], accounts: [], gallery: [], rsvps: [], accountsEnabled: true, rsvpPromptEnabled: true, galleryStorageEnabled: false, galleryOrder: [], localGallery: [], rsvpSources: new Set(RSVP_SOURCES) };
 const els = {
   loginView: document.getElementById('login-view'), adminView: document.getElementById('admin-view'),
   loginForm: document.getElementById('login-form'), loginId: document.getElementById('login-id'),
@@ -15,7 +15,7 @@ const els = {
   uploadForm: document.getElementById('gallery-upload-form'), uploadFile: document.getElementById('gallery-file'),
   uploadAlt: document.getElementById('gallery-alt'), logout: document.getElementById('logout-button'),
   toast: document.getElementById('admin-toast'),
-  siteSettingsForm: document.getElementById('site-settings-form'), accountsEnabled: document.getElementById('accounts-enabled'),
+  siteSettingsForm: document.getElementById('site-settings-form'), accountsEnabled: document.getElementById('accounts-enabled'), rsvpPromptEnabled: document.getElementById('rsvp-prompt-enabled'),
   galleryStorageEnabled: document.getElementById('gallery-storage-enabled'), localGalleryOrder: document.getElementById('local-gallery-order'), localGalleryOrderSave: document.getElementById('local-gallery-order-save'),
   googleDriveConnect: document.getElementById('google-drive-connect'),
   siteKeyLabel: document.getElementById('site-key-label'), invitationUrl: document.getElementById('invitation-url')
@@ -364,17 +364,19 @@ async function loadData() {
     supabaseClient.from('wedding_accounts').select('id, side, side_label, bank_name, account_holder, account_number, display_order, is_visible').order('display_order'),
     supabaseClient.from('wedding_gallery').select('*').order('display_order'),
     supabaseClient.from('wedding_rsvps').select('attendance, guest_count, guest_name, message, site_key, updated_at').order('updated_at', { ascending: false }),
-    supabaseClient.from('wedding_site_settings').select('accounts_enabled, gallery_storage_enabled, gallery_order').eq('site_key', APP_CONFIG.siteKey).maybeSingle(),
+    supabaseClient.from('wedding_site_settings').select('accounts_enabled, rsvp_prompt_enabled, gallery_storage_enabled, gallery_order').eq('site_key', APP_CONFIG.siteKey).maybeSingle(),
     loadLocalGallery()
   ]);
   const error = contacts.error || accounts.error || gallery.error || rsvps.error;
   if (error) return setStatus(`관리 정보를 불러오지 못했습니다: ${error.message}`);
   state.contacts = contacts.data || []; state.accounts = accounts.data || []; state.gallery = gallery.data || []; state.rsvps = rsvps.data || [];
   state.accountsEnabled = siteSettings.data?.accounts_enabled !== false;
+  state.rsvpPromptEnabled = siteSettings.data?.rsvp_prompt_enabled !== false;
   state.galleryStorageEnabled = siteSettings.data?.gallery_storage_enabled === true;
   state.galleryOrder = Array.isArray(siteSettings.data?.gallery_order) ? siteSettings.data.gallery_order : [];
   state.localGallery = applyLocalGalleryOrder(localGallery, state.galleryOrder);
   if (els.accountsEnabled) els.accountsEnabled.checked = state.accountsEnabled;
+  if (els.rsvpPromptEnabled) els.rsvpPromptEnabled.checked = state.rsvpPromptEnabled;
   if (els.galleryStorageEnabled) els.galleryStorageEnabled.checked = state.galleryStorageEnabled;
   renderContacts(); renderAccounts(); renderRsvps(); renderGallery(); renderLocalGalleryOrder(); setStatus('');
 }
@@ -414,10 +416,12 @@ els.siteSettingsForm?.addEventListener('submit', async (event) => {
   const { error } = await supabaseClient.from('wedding_site_settings').upsert({
     site_key: APP_CONFIG.siteKey,
     accounts_enabled: els.accountsEnabled.checked,
+    rsvp_prompt_enabled: els.rsvpPromptEnabled.checked,
     gallery_storage_enabled: els.galleryStorageEnabled.checked
   }, { onConflict: 'site_key' });
   if (error) return notify(`설정 저장에 실패했습니다: ${error.message}`, 'error');
   state.accountsEnabled = els.accountsEnabled.checked;
+  state.rsvpPromptEnabled = els.rsvpPromptEnabled.checked;
   state.galleryStorageEnabled = els.galleryStorageEnabled.checked;
   notify('섹션 표시 설정을 저장했습니다.');
 });
